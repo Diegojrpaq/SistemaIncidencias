@@ -1,4 +1,20 @@
-import Image from "next/image";
+import React from 'react'
+
+
+export default function page() {
+  return (
+    <>
+    <div>implementacion de prime react</div>
+    <div className="box-color">
+      <h5>Order</h5>
+      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ratione unde sit molestias libero ipsa? Velit.</p>
+    </div>
+    </>
+  )
+}
+
+
+/* import Image from "next/image";
 import styles from "../../styles/page.module.css";
 
 export default function Home() {
@@ -93,3 +109,4 @@ export default function Home() {
     </main>
   );
 }
+ */
