@@ -1,14 +1,63 @@
 import React from 'react'
 
+// Declarar la interfaz para el objeto
+interface Contenido {
+  tittle: string;
+  contenidoString: string;
+}
+
 
 export default function page() {
+
+  const contenido:Contenido={
+    'tittle':'order',
+    'contenidoString':'Nuevo contenido corregido y trabajado en Object'
+  }
   return (
     <>
-    <div>implementacion de prime react</div>
-    <div className="box-color">
-      <h5>Order</h5>
-      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ratione unde sit molestias libero ipsa? Velit.</p>
-    </div>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-12">
+            <p>implementacion de prime react</p>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-6 col-md-3">
+            <div className="box-color-primary">
+              <h5>{contenido.tittle}</h5>
+              <p>{contenido.contenidoString}</p>
+            </div>
+          </div>
+          <div className="col-6 col-md-3">
+            <div className="box-color-secondary">
+              <h5>{contenido.tittle}</h5>
+              <p>{contenido.contenidoString}</p>
+            </div>
+          </div>
+          <div className="col-6 col-md-3">
+            <div className="box-color-tertiary">
+              <h5>{contenido.tittle}</h5>
+              <p>{contenido.contenidoString}</p>
+            </div>
+          </div>
+          <div className="col-6 col-md-3">
+            <div className="box-color-tertiary-optional">
+              <h5>{contenido.tittle}</h5>
+              <p>{contenido.contenidoString}</p>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-12">
+            <div className="box-color-primary-contrast">
+              <h5>{contenido.tittle}</h5>
+              <p>{contenido.contenidoString}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
     </>
   )
 }
