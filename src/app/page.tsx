@@ -10,7 +10,7 @@ interface Contenido {
 export default function page() {
 
   const contenido:Contenido={
-    'tittle':'order',
+    'tittle':'Orders',
     'contenidoString':'Nuevo contenido corregido y trabajado en Object'
   }
   return (
