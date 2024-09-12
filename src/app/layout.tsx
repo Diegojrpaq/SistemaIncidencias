@@ -4,6 +4,13 @@ import "../../styles/globals.css";
 import "../../styles/theme.css";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import '../../styles/componentsStyles/exampleCardFlex.module.css'
+//import "primereact/resources/themes/lara-light-teal/theme.css";
+//import 'primereact/resources/themes/lara-light-orange/theme.css';
+import 'primereact/resources/themes/vela-orange/theme.css';
+
+
+import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      {/* <PrimeReactProvider value={{ unstyled: true }}> */}
+      <PrimeReactProvider >
+        <body className={inter.className}>{children}</body>
+      </PrimeReactProvider>
     </html>
   );
 }

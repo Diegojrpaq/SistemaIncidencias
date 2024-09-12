@@ -106,3 +106,10 @@ a {
   }
 }
  */
+
+ .myButtonSecondary{
+  border-radius: 10px;
+  width: 10rem;
+  background: var(--color-secondary);
+  color: var(--color-fount-secondary);
+}

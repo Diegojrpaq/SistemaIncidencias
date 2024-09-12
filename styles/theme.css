@@ -22,10 +22,11 @@
     --color-success:rgb(46, 194, 46);
     --color-warning:rgb(255, 255, 39);
     --color-danger:rgb(218, 36, 36); 
-}
+} 
 /* :root{
     --foreground-rgb:#293241;
     --background-end:#545B67;
+    --foreground-rgb-optional:#111827;
 
 
 
@@ -50,7 +51,6 @@
 
 .container-fluid{
     background: var(--foreground-rgb);
-    border: red 2px solid;
     height: 100vh;
 }
 

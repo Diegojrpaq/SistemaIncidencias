@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from '../../../styles/componentsStyles/exampleCardFlex.module.css'
+import { Button } from 'primereact/button';
 
 // Declarar la interfaz para el objeto
 interface Contenido {
@@ -54,6 +55,17 @@ export default function page() {
               <h5>{contenido.tittle}</h5>
               <p>{contenido.contenidoString}</p>
             </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-12">
+            <p className="h3">Aqui vamos a poner componentes para calar el tema de PrimeReact</p>
+            <Button 
+             label='Submit' 
+               /*  className={`btn-primary btn ${styles.myButton}`} */
+                className='myButtonSecondary' 
+             >
+             </Button>
           </div>
         </div>
       </div>
