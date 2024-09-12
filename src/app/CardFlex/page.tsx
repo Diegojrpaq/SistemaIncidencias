@@ -1,13 +1,67 @@
 import React from 'react'
+import styles from '../../../styles/componentsStyles/exampleCardFlex.module.css'
 
-export default function page() {
-  return (
-    <div>
-      page home
-    </div>
-  )
+// Declarar la interfaz para el objeto
+interface Contenido {
+  tittle: string;
+  contenidoString: string;
 }
 
+
+export default function page() {
+
+  const contenido:Contenido={
+    'tittle':'Orders',
+    'contenidoString':'Nuevo contenido corregido y trabajado en Object'
+  }
+  return (
+    <>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-12">
+            <p>implementacion de prime react</p>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-6 col-md-3">
+            <div className={styles.boxColorPrimary}>
+              <h5>{contenido.tittle}</h5>
+              <p>{contenido.contenidoString}</p>
+            </div>
+          </div>
+          <div className="col-6 col-md-3">
+            <div className={styles.boxColorSecondary}>
+              <h5>{contenido.tittle}</h5>
+              <p>{contenido.contenidoString}</p>
+            </div>
+          </div>
+          <div className="col-6 col-md-3">
+            <div className={styles.boxColorTertiary}>
+              <h5>{contenido.tittle}</h5>
+              <p>{contenido.contenidoString}</p>
+            </div>
+          </div>
+          <div className="col-6 col-md-3">
+            <div className={styles.boxColorTertiaryOptional}>
+              <h5>{contenido.tittle}</h5>
+              <p>{contenido.contenidoString}</p>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-12">
+            <div className={styles.boxColorPrimaryContrast}>
+              <h5>{contenido.tittle}</h5>
+              <p>{contenido.contenidoString}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </>
+  )
+}
 
 
 /* import Image from "next/image";

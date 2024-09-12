@@ -1,6 +1,6 @@
-/* :root{
-    /*configuraciones de colores tema light*/
-   /*  --foreground-rgb:#f2f4f6;
+:root{
+    
+    --foreground-rgb:#f2f4f6;
     --background-end:#DEE2e6;
 
 
@@ -21,11 +21,9 @@
 
     --color-success:rgb(46, 194, 46);
     --color-warning:rgb(255, 255, 39);
-    --color-danger:rgb(218, 36, 36); */
-    /*configuraciones de colores tema light
-}*/
-:root{
-    /*configuraciones de colores tema light*/
+    --color-danger:rgb(218, 36, 36); 
+}
+/* :root{
     --foreground-rgb:#293241;
     --background-end:#545B67;
 
@@ -48,8 +46,7 @@
     --color-success:rgb(46, 194, 46);
     --color-warning:rgb(255, 255, 39);
     --color-danger:rgb(218, 36, 36);
-    /*configuraciones de colores tema light*/
-}
+} */
 
 .container-fluid{
     background: var(--foreground-rgb);
@@ -57,82 +54,3 @@
     height: 100vh;
 }
 
-.box-color-primary{
-    width: auto;
-    height: auto;
-    background: var(--color-primary);
-    color: var(--color-fount-primary);
-    border-radius: 25px;
-    padding:1.5rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-self: center;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-.box-color-secondary{
-    width: auto;
-    height: auto;
-    background: var(--color-secondary);
-    color: var(--color-fount-secondary);
-    border-radius: 25px;
-    padding:1.5rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-self: center;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-.box-color-tertiary{
-    width: auto;
-    height: auto;
-    background: var(--color-tertiary);
-    color: var(--color-fount-tertiary);
-    border-radius: 25px;
-    padding:1.5rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-self: center;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.box-color-tertiary-optional{
-    width: auto;
-    height: auto;
-    background: var(--color-tertiary-optional);
-    color: var(--color-fount-tertiary-optional);
-    border-radius: 25px;
-    padding:1.5rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-self: center;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-.box-color-tertiary-optional{
-    width: auto;
-    height: auto;
-    background: var(--color-tertiary-optional);
-    color: var(--color-fount-tertiary-optional);
-    border-radius: 25px;
-    padding:1.5rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-self: center;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-.box-color-primary-contrast{
-    width: auto;
-    height: auto;
-    background: var(--color-primary-contrast);
-    color: var(--color-fount-primary-contrast);
-    border-radius: 25px;
-    padding:1.5rem;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    margin-bottom: 1rem;
-}
