@@ -32,11 +32,11 @@ export default function RootLayout({
       {/* <PrimeReactProvider value={{ unstyled: true }}> */}
       <PrimeReactProvider >
         <body className={inter.className}>
-          <Sidebar/>
-         <div className="container-fluid">
-         {children}
-         </div>
-          </body>
+          <Sidebar />
+          <div className="container-fluid">
+            {children}
+          </div>
+        </body>
       </PrimeReactProvider>
     </html>
   );

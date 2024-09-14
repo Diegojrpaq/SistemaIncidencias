@@ -4,6 +4,7 @@ import React, {useState} from 'react';
 import SHeaderList from './SHeaderList';
 import SListItem from './SListItem';
 import styles from '../styles/componentsStyles/sidebar.module.css';
+import STittle from './STittle';
 //import logoSidebar from '../public/assets/LOGO.png'
 
 
@@ -33,7 +34,8 @@ interface UserData {
                     <img src={logoUrl} alt="" className='img-fluid' />
                 </div>
                 <div className={styles.sidebarContainerItems}>
-                    <h2>Dashboard</h2>
+                    <STittle>DASHBOARD</STittle>
+                    <SListItem></SListItem>
                 </div>
               {/*   <SHeaderList title="Incidencias" icon='bi bi-clipboard2-data' idcollapse='1'>
 

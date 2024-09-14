@@ -54,8 +54,4 @@
     --color-danger:rgb(218, 36, 36);
 } */
 
-.container-fluid{
-    background: var(--foreground-rgb);
-    height: 100vh;
-}
 
