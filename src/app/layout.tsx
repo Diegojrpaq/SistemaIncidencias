@@ -10,6 +10,7 @@ import 'primereact/resources/themes/vela-orange/theme.css';
 
 
 import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
+import Sidebar from "../../components/Sidebar";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -28,7 +29,12 @@ export default function RootLayout({
     <html lang="en">
       {/* <PrimeReactProvider value={{ unstyled: true }}> */}
       <PrimeReactProvider >
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className}>
+          <Sidebar/>
+         <div className="container-fluid">
+         {children}
+         </div>
+          </body>
       </PrimeReactProvider>
     </html>
   );
