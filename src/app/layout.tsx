@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../../styles/globals.css";
+
 import "../../styles/theme.css";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import '../../styles/componentsStyles/exampleCardFlex.module.css'
@@ -11,6 +12,7 @@ import 'primereact/resources/themes/vela-orange/theme.css';
 
 import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
 import Sidebar from "../../components/Sidebar";
+
 
 
 const inter = Inter({ subsets: ["latin"] });

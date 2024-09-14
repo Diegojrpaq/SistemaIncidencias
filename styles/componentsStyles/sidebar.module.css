@@ -25,8 +25,7 @@
 }
 
 .sidebarHeader{
-  width: max-content;
-  display:flex;
+  width: 100%;
   background: var(--color-primary-translucent-translucent);
   padding: .5rem;
   box-shadow: 0 8px 32px 0 var(--shadow-primary);
