@@ -1,0 +1,19 @@
+.appContainer {
+    background: var(--background-end);
+    transition: background-color 0.3s, color 0.3s;
+    border: 2px solid green !important;
+}
+
+.myButton {
+    margin: 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: var(--color-secondary);
+    color: var(--color-fount-secondary);
+}
+
+.myButton:hover {
+    opacity: 0.8;
+}

@@ -35,7 +35,6 @@ interface UserData {
                 </div>
                 <div className={styles.sidebarContainerItems}>
                     <STittle>DASHBOARD</STittle>
-                    <SListItem></SListItem>
                 </div>
               {/*   <SHeaderList title="Incidencias" icon='bi bi-clipboard2-data' idcollapse='1'>
 
