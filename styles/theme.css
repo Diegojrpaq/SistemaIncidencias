@@ -3,9 +3,6 @@
     --foreground-rgb:#f2f4f6;
     --background-end:#DEE2e6;
 
-
-
-
     --color-primary: #464df2;
     --color-primary-translucent: hsla(238, 87%, 61%, 0.30);
     --color-primary-contrast: rgb(255, 255, 255);
@@ -28,12 +25,12 @@
 
     --shadow-primary:rgba(31, 38,135,0.37);
 } 
-/* :root{
+
+
+.dark{
     --foreground-rgb:#293241;
     --background-end:#545B67;
     --foreground-rgb-optional:#111827;
-
-
 
     --color-primary: #777BF1;
     --color-primary-contrast: #343d4A;
@@ -52,6 +49,35 @@
     --color-success:rgb(46, 194, 46);
     --color-warning:rgb(255, 255, 39);
     --color-danger:rgb(218, 36, 36);
-} */
+
+    --shadow-primary:rgba(31, 38,135,0.37);
+}
+
+
+.neon{
+    --foreground-rgb:#293241;
+    --background-end:#545B67;
+    --foreground-rgb-optional:#111827;
+
+    --color-primary: #777BF1;
+    --color-primary-contrast: #343d4A;
+    --color-secondary: linear-gradient(90deg, rgb(255, 179, 64) 0%, rgb(255, 167, 64) 100%);
+    --color-tertiary:#69707A;
+    --color-tertiary-optional:#A9ADB3;
+
+    --color-fount-primary:#293241;
+    --color-fount-primary-contrast:#797a7b;
+    --color-fount-secondary:white;
+    --color-fount-tertiary:white;
+    --color-fount-tertiary-optional:#FFFFFF;
+    --color-fount-dark: black;
+    --color-fount-light: white;
+
+    --color-success:rgb(46, 194, 46);
+    --color-warning:rgb(255, 255, 39);
+    --color-danger:rgb(218, 36, 36);
+
+    --shadow-primary:rgba(31, 38,135,0.37);
+}
 
 

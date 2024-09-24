@@ -1,10 +1,22 @@
+'use client'
+
+import { Button } from 'primereact/button'
 import React from 'react'
 
 export default function page() {
   return (
-    <div>
-      page home
-    </div>
+    <>
+      <div>
+        page home
+      </div>
+      <Button
+        onClick={() =>
+          alert('ya me clickaste cambiamos de tema')
+        }
+        className='btn btn-primary'>
+        click me for change of theme
+      </Button>
+    </>
   )
 }
 
