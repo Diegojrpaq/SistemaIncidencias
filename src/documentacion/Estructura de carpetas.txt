@@ -1,0 +1,76 @@
+Estructura Recomendada
+
+Puedes crear una carpeta llamada components en la raíz del proyecto
+o dentro de la carpeta app para almacenar tus componentes reutilizables.
+La elección depende de tu preferencia y de cómo quieras organizar tu proyecto.
+Aquí hay una estructura típica:
+
+my-next-app/
+├── src/
+│   ├── components/             // Componentes de la aplicación
+│   │   ├── navbar/            // Componente Header
+│   │   │   ├── navbar.tsx      // Componente Header
+│   │   │   └── navbar.module.css // Estilos del Componente Header
+│   │   ├── sidebar/           // Componente Sidebar
+│   │   │   ├── sidebar.tsx     // Lógica del componente Sidebar
+│   │   │   └── sidebar.module.css // Estilos del componente Sidebar
+│   │   ├── viewColumn/        // Componente ViewColumn
+│   │   │   ├── viewColumn.tsx  // Lógica del componente ViewColumn
+│   │   │   └── viewColumn.module.css // Estilos del componente ViewColumn
+│   │   └── card/              // Componente Card
+│   │       ├── card.tsx        // Lógica del componente Card
+│   │       └── card.module.css  // Estilos del componente Card
+│   ├── documentacion/         // Documentación de la aplicación
+│   ├── app/
+│   │   ├── (mainLayout)  
+│   │   │    ├── page.tsx       // Ruta /principal recordemos que al utilizar los parentesis reasignamos la carpeta principal
+│   │   │    └── layout.tsx         // Layout compartido para todas las rutas dentro de el mainLayout
+│   │   │
+│   │   ├── login/              // Ruta y carpeta para la página de login
+│   │   │    ├── layout.tsx      // Layout específico para login
+│   │   │    └── page.tsx        // Página de login
+│   │   │
+│   │   ├── layout.tsx          // Layout principal de la app
+│   │   └── (otros archivos)    // Otras rutas de la app
+│   │
+│   ├── styles/                // Estilos generales de la aplicación
+│   │   ├── globals.css        // Estilos globales
+│   │   └── theme.css          // Tema de estilos
+├── public/                    // Archivos públicos
+├── next.config.js             // Configuración de Next.js
+├── package.json               // Dependencias y scripts
+└── tsconfig.json              // Configuración de TypeScript
+Detalles:
+
+components/: Carpeta para almacenar todos tus componentes reutilizables. Puedes crear subcarpetas aquí si tienes muchos componentes o si quieres organizar por tipo (e.g., forms/, ui/).
+Carpeta para Estilos
+
+La carpeta styles suele ser el lugar para tus archivos de CSS. Aquí tienes cómo podrías estructurarlo:
+
+
+styles/
+├── globals.css       // Estilos globales aplicados a toda la aplicación
+└── theme.css         // Estilos relacionados con el tema (colores, fuentes, etc.)
+
+Detalles:
+
+globals.css: Aquí puedes definir estilos globales que se aplicarán a toda la aplicación.
+theme.css: Puedes utilizar este archivo para definir variables CSS o estilos comunes que quieras reutilizar en toda tu aplicación.
+
+anotaciones extras
+1.- Recordemos que si el archivo app no cuenta con una page.tsx podemos asignar una ruta para que esta 
+tome el papel de ruta raiz compartiendo entre las rutas el layout principal y cada una tomando un layout
+diferente
+
+2.-Anotacion dos recordemos que podemos reconfigurar una ruta principal por si necesitamos crear una 
+variedad de layouts que no compartan entre si todas las rutas de la aplicacion esto se puede lograr 
+eliminando el page principal y asignando una 
+
+
+se tomaran por ignnorado las carpetas 
+cambiodetema
+cardflex
+formreducer
+practicas
+
+estas carpetas se tomaron solo para implmentar nextindependiente al proyecto 
