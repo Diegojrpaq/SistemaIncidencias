@@ -1,3 +1,4 @@
+import { NextUiProvider } from "@/providers/NextUiProvider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
@@ -16,10 +17,12 @@ export default function RootLayout({
   return (
     <html lang="en">
         <body className={inter.className}>
+          <NextUiProvider>
           <div className="container-fluid">
             <h1>layout padre</h1>
             {children}
           </div>
+          </NextUiProvider>
         </body>
     </html>
   );
