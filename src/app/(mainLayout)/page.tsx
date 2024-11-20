@@ -29,6 +29,15 @@ export default function page() {
           <SidebarItem icon={config} text={"Configuraciones"} />
           <SidebarItem icon={reporte} text={"Tablero de Incidencias"} />
           <SidebarItem icon={incidencias} text={"Incidencias"} />
+          <SidebarItem icon={config} text={"Configuraciones"} />
+          <SidebarItem icon={reporte} text={"Tablero de Incidencias"} />
+          <SidebarItem icon={incidencias} text={"Incidencias"} />
+          <SidebarItem icon={config} text={"Configuraciones"} />
+          <SidebarItem icon={reporte} text={"Tablero de Incidencias"} />
+          <SidebarItem icon={incidencias} text={"Incidencias"} />
+          <SidebarItem icon={config} text={"Configuraciones"} />
+          <SidebarItem icon={reporte} text={"Tablero de Incidencias"} />
+          <SidebarItem icon={incidencias} text={"Incidencias"} />
           <SidebarItem icon={config} text={"Configuraciones"} /> */}
         </Sidebar>
 

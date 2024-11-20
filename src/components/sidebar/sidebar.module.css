@@ -1,0 +1,9 @@
+.scrollContainer {
+    overflow: auto;
+    scrollbar-width: none; /* Para Firefox */
+  }
+  
+  .scrollContainer::-webkit-scrollbar {
+    display: none; /* Para Chrome, Safari y Edge */
+  }
+  

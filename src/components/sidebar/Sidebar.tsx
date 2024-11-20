@@ -3,6 +3,7 @@
 import React, { useContext, createContext, useState } from "react"
 import Image from "next/image";
 import logo from '../../../public/assets/LOGO.png';
+import styles from './sidebar.module.css'
 
 interface SidebarProps {
   children: React.ReactNode
@@ -45,8 +46,8 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
         <SidebarContext.Provider value={{ expanded }}>
           <ul className={`
             flex flex-col h-full w-full justify-around px-3 
-            ${expanded ? 'overflow-y-auto scrollbar-none' : 'overflow-y-hidden'} 
-            overflow-x-hidden`}
+            overflow-y-auto overflow-x-hidden ${styles.scrollContainer}
+            `}
           >
             {children}
           </ul>
