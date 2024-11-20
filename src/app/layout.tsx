@@ -18,8 +18,8 @@ export default function RootLayout({
     <html lang="en">
         <body className={inter.className}>
           <NextUiProvider>
-          <div className="container-fluid">
-            <h1>layout padre</h1>
+          <div className="">
+            {/* <h1>layout padre</h1> */}
             {children}
           </div>
           </NextUiProvider>
