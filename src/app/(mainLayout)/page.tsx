@@ -1,44 +1,25 @@
 'use client'
 
 import React from 'react'
-import Sidebar, { SidebarItem } from "@/components/sidebar/Sidebar";
+import Sidebar, {
+   SidebarItem 
+} from "@/components/sidebar/Sidebar";
 import '../../styles/globals.css'
-import icon from '../../../public/assets/informe.png';
-import reporte from '../../../public/assets/reporte.png';
-import incidencias from '../../../public/assets/incidencias.png';
-import config from '../../../public/assets/config.png';
+import { 
+  LuSettings, 
+  LuFileBarChart2, 
+  LuLayoutDashboard, 
+  LuListTodo 
+} from "react-icons/lu";
 export default function page() {
   return (
     <>
       <div className='flex h-screen'>
         <Sidebar>
-          <SidebarItem icon={icon} text={"Dashboard"} active alert={undefined} />
-          <SidebarItem icon={reporte} text={"Tablero de Incidencias"} />
-          <SidebarItem icon={incidencias} text={"Incidencias"} />
-          <SidebarItem icon={config} text={"Configuraciones"} />
-          {/* <SidebarItem icon={icon} text={"Dashboard"} alert={undefined} />
-          <SidebarItem icon={reporte} text={"Tablero de Incidencias"} />
-          <SidebarItem icon={incidencias} text={"Incidencias"} />
-          <SidebarItem icon={config} text={"Configuraciones"} />
-          <SidebarItem icon={icon} text={"Dashboard"} alert={undefined} />
-          <SidebarItem icon={reporte} text={"Tablero de Incidencias"} />
-          <SidebarItem icon={incidencias} text={"Incidencias"} />
-          <SidebarItem icon={config} text={"Configuraciones"} />
-          <SidebarItem icon={reporte} text={"Tablero de Incidencias"} />
-          <SidebarItem icon={incidencias} text={"Incidencias"} />
-          <SidebarItem icon={config} text={"Configuraciones"} />
-          <SidebarItem icon={reporte} text={"Tablero de Incidencias"} />
-          <SidebarItem icon={incidencias} text={"Incidencias"} />
-          <SidebarItem icon={config} text={"Configuraciones"} />
-          <SidebarItem icon={reporte} text={"Tablero de Incidencias"} />
-          <SidebarItem icon={incidencias} text={"Incidencias"} />
-          <SidebarItem icon={config} text={"Configuraciones"} />
-          <SidebarItem icon={reporte} text={"Tablero de Incidencias"} />
-          <SidebarItem icon={incidencias} text={"Incidencias"} />
-          <SidebarItem icon={config} text={"Configuraciones"} />
-          <SidebarItem icon={reporte} text={"Tablero de Incidencias"} />
-          <SidebarItem icon={incidencias} text={"Incidencias"} />
-          <SidebarItem icon={config} text={"Configuraciones"} /> */}
+          <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} />
+          <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
+          <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} />
+          <SidebarItem icon={<LuSettings size={27} />} active text={"Configuraciones"} />
         </Sidebar>
 
         <div className="flex-1 flex flex-col">

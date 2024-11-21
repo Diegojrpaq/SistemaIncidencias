@@ -2,6 +2,7 @@
 
 import React, { useContext, createContext, useState } from "react"
 import Image from "next/image";
+import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import logo from '../../../public/assets/LOGO.png';
 import styles from './sidebar.module.css'
 
@@ -38,8 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
             onClick={() => setExpanded((curr) => !curr)}
             className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
           >
-            {expanded ? "<" : ">"}
-            {/* {expanded ? <ChevronFirst /> : <ChevronLast />} */}
+            {expanded ? <LuChevronLeft size={24} /> : <LuChevronRight size={24} />}
           </button>
         </div>
 
@@ -108,12 +108,13 @@ export function SidebarItem({ icon, text, active, alert }: propsSidebarItems) {
         }
     `}
     >
-      <Image
+      {/* <Image
         width={20}
         height={0}
         alt="Icon"
         src={icon}
-      />
+      /> */}
+      {icon}
       <span
         className={`
           overflow-hidden transition-all 
