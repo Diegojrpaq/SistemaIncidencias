@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useContext, createContext, useState } from "react"
+import React, { useContext, createContext, useState, useEffect } from "react"
 import Image from "next/image";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import logo from '../../../public/assets/LOGO.png';
@@ -18,61 +18,116 @@ const SidebarContext = createContext<InterfaceSidebarContext | undefined>(undefi
 
 const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   const [expanded, setExpanded] = useState(true)
+  const [active, setActive] = useState(false);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Detectar tamaño de pantalla
+    const handleResize = () => {
+      if (window.innerWidth <= 640) {
+        setIsMobile(true);
+        setExpanded(false);
+      } else {
+        setIsMobile(false);
+      }
+    };
+
+    // Establecer el estado al cargar el componente
+    handleResize();
+
+    // Agregar event listener para cambios en el tamaño de la ventana
+    window.addEventListener('resize', handleResize);
+
+    // Limpiar el event listener al desmontar el componente
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const activeSidebar = () => {
+    setActive(!active);
+    setExpanded((curr) => !curr)
+  }
   return (
     <aside className="h-screen">
-      <nav className={`
-        h-full flex flex-col bg-white border-r shadow-sm 
-        ${expanded ? 'w-64' : 'w-16'} 
-        transition-width duration-300`}
+
+      <button
+        className="fixed top-1/2 left-0 sm:hidden p-3 rounded-full z-50 transform -translate-y-1/2"
+        onClick={activeSidebar}
       >
-        <div className="p-4 pb-2 flex justify-center items-center">
-          <Image
-            src={logo}
-            className={`
+        {expanded ? <LuChevronLeft size={24} /> : <LuChevronRight size={24} />}
+      </button>
+
+      <div className={`${isMobile ? 'h-full' : 'h-full md:flex flex-col bg-white border-r shadow-sm '}`}>
+        <nav className={`
+        h-full md:flex flex-col bg-white border-r shadow-sm 
+        ${isMobile ?
+            expanded ? 'w-screen fixed flex flex-col h-full text-xl' : 'w-16 h-max -ml-20'
+            : expanded ? 'w-64' : 'w-16'}
+        transition-width duration-300`
+        }
+        >
+          <div className="p-4 pb-2 flex justify-center items-center">
+            {/* <Image
+              src={logo}
+              className={`
               overflow-hidden transition-all 
               ${expanded ? "w-full" : "w-0"
-              }`}
+                }`}
               alt="logo_Nextpack"
-          />
-          <button
-            onClick={() => setExpanded((curr) => !curr)}
-            className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
-          >
-            {expanded ? <LuChevronLeft size={24} /> : <LuChevronRight size={24} />}
-          </button>
-        </div>
+            /> */}
 
-        <SidebarContext.Provider value={{ expanded }}>
-          <ul className={`
-            flex flex-col h-full w-full justify-around px-3 
-            overflow-y-auto overflow-x-hidden ${styles.scrollContainer}
+            <div className="w-full">
+              <Image
+                src={logo}
+                className={`
+              overflow-hidden transition-all 
+             `}
+                alt="logo_Nextpack"
+                width={isMobile ? 160 : 300}
+              />
+            </div>
+            <button
+              onClick={() => setExpanded((curr) => !curr)}
+              className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 hidden md:block"
+            >
+              {expanded ? <LuChevronLeft size={24} /> : <LuChevronRight size={24} />}
+            </button>
+          </div>
+
+          <SidebarContext.Provider value={{ expanded }}>
+            <ul className={`
+            flex flex-col h-full w-full 
+            ${isMobile ? 
+              'items-start justify-start gap-2' : 
+              'justify-around'} px-3 
+              overflow-y-auto overflow-x-hidden ${styles.scrollContainer}
             `}
-          >
-            {children}
-          </ul>
-        </SidebarContext.Provider>
+            >
+              {children}
+            </ul>
+          </SidebarContext.Provider>
 
-        <div className="border-t flex justify-center p-3">
-          <img
-            src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
-            alt=""
-            className="w-10 h-10 rounded-md"
-          />
-          <div
-            className={`
+          <div className="border-t flex justify-center p-3">
+            <img
+              src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
+              alt=""
+              className="w-10 h-10 rounded-md"
+            />
+            <div
+              className={`
               flex justify-between items-center
               overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "hidden w-0"}
           `}
-          >
-            <div className="leading-4">
-              <h4 className="font-semibold">Moises Velez Avila</h4>
-              <span className="text-xs text-gray-600">Desarollo1@nextpack.mx</span>
-            </div>
-            {/*             <MoreVertical size={20} />
+            >
+              <div className="leading-4">
+                <h4 className="font-semibold">Moises Velez Avila</h4>
+                <span className="text-xs text-gray-600">Desarollo1@nextpack.mx</span>
+              </div>
+              {/*             <MoreVertical size={20} />
  */}          </div>
-        </div>
-      </nav>
+          </div>
+        </nav>
+      </div>
     </aside>
   )
 }
@@ -108,12 +163,6 @@ export function SidebarItem({ icon, text, active, alert }: propsSidebarItems) {
         }
     `}
     >
-      {/* <Image
-        width={20}
-        height={0}
-        alt="Icon"
-        src={icon}
-      /> */}
       {icon}
       <span
         className={`

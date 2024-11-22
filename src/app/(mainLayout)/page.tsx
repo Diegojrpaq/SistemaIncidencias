@@ -20,6 +20,26 @@ export default function page() {
           <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
           <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} />
           <SidebarItem icon={<LuSettings size={27} />} active text={"Configuraciones"} />
+
+          {/* <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} />
+          <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
+          <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} />
+
+          <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} />
+          <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
+          <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} />
+
+          <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} />
+          <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
+          <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} />
+
+          <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} />
+          <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
+          <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} />
+
+          <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} />
+          <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
+          <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} /> */}
         </Sidebar>
 
         <div className="flex-1 flex flex-col">

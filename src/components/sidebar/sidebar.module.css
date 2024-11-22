@@ -1,9 +1,21 @@
 .scrollContainer {
-    overflow: auto;
-    scrollbar-width: none; /* Para Firefox */
+  overflow: auto;
+  scrollbar-width: none;
+  /* Para Firefox */
+}
+
+.scrollContainer::-webkit-scrollbar {
+  display: none;
+  /* Para Chrome, Safari y Edge */
+}
+
+.sidebarStyle {
+  /* display: block; */
+  background-color: red;
+}
+
+/* @media (max-width: 767px) {
+  .sidebarStyle {
+    background-color: green;
   }
-  
-  .scrollContainer::-webkit-scrollbar {
-    display: none; /* Para Chrome, Safari y Edge */
-  }
-  
+} */
