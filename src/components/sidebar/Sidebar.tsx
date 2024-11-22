@@ -39,7 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
     // Agregar event listener para cambios en el tamaño de la ventana
     window.addEventListener('resize', handleResize);
 
-    // Limpiar el event listener al desmontar el componente
+    // Limpiar el event listener al desmontar el componente expanded ? 'translate-x-72 transition-transform' : '-translate-x-4 transition-transform'
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -48,34 +48,36 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
     setExpanded((curr) => !curr)
   }
   return (
-    <aside className="h-screen">
+    <aside className="h-screen static">
 
       <button
-        className="fixed top-1/2 left-0 sm:hidden p-3 rounded-full z-50 transform -translate-y-1/2"
+        className={
+          `fixed top-1/2  sm:hidden bg-gray-50 hover:bg-gray-100
+           p-3 rounded-full z-50 transform -translate-y-1/2
+          ${isMobile ?
+            expanded ? 'translate-x-[92vw] transition-transform bg-gray-200' : 
+            '-translate-x-4 transition-transform'
+            : ''
+          }
+           `
+        }
         onClick={activeSidebar}
       >
         {expanded ? <LuChevronLeft size={24} /> : <LuChevronRight size={24} />}
       </button>
 
-      <div className={`${isMobile ? 'h-full' : 'h-full md:flex flex-col bg-white border-r shadow-sm '}`}>
+      <div className={`${isMobile ? 'h-full' : 
+        'h-full md:flex flex-col bg-white border-r shadow-sm'}`}
+      >
         <nav className={`
         h-full md:flex flex-col bg-white border-r shadow-sm 
         ${isMobile ?
             expanded ? 'w-screen fixed flex flex-col h-full text-xl' : 'w-16 h-max -ml-20'
             : expanded ? 'w-64' : 'w-16'}
-        transition-width duration-300`
+            transition-width duration-300`
         }
         >
           <div className="p-4 pb-2 flex justify-center items-center">
-            {/* <Image
-              src={logo}
-              className={`
-              overflow-hidden transition-all 
-              ${expanded ? "w-full" : "w-0"
-                }`}
-              alt="logo_Nextpack"
-            /> */}
-
             <div className="w-full">
               <Image
                 src={logo}
