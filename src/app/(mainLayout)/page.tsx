@@ -15,6 +15,7 @@ import {
 import { fetchGet } from "@/lib/api";
 import { dataResponse } from '@/lib/interfaces';
 import Navbar from '@/components/navbar/Navbar';
+import MainIncidencias from '@/components/main/mainIncidencias';
 
 export default function page() {
   const [data, setData] = useState<dataResponse | null>(null);
@@ -49,26 +50,6 @@ export default function page() {
             <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
             <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} />
             <SidebarItem icon={<LuSettings size={27} />} active text={"Configuraciones"} />
-
-            {/* <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} />
-            <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
-            <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} />
-  
-            <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} />
-            <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
-            <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} />
-  
-            <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} />
-            <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
-            <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} />
-  
-            <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} />
-            <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
-            <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} />
-  
-            <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} />
-            <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
-            <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} /> */}
           </Sidebar>
 
           <div className="flex-1 flex flex-col z-10">
@@ -76,9 +57,10 @@ export default function page() {
             <Navbar />
 
             {/* Main content */}
-            <main className='flex-1 p-4 bg-white'>
+            {/* <main className=''>
               Main
-            </main>
+            </main> */}
+            <MainIncidencias />
           </div>
         </div>
       </>
