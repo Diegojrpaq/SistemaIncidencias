@@ -5,9 +5,12 @@ import Image from "next/image";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import logo from '../../../public/assets/LOGO.png';
 import styles from './sidebar.module.css'
+import { dataUser } from "@/lib/interfaces";
+
 
 interface SidebarProps {
-  children: React.ReactNode
+  children: React.ReactNode,
+  dataUser: dataUser
 }
 
 interface InterfaceSidebarContext {
@@ -16,12 +19,11 @@ interface InterfaceSidebarContext {
 
 const SidebarContext = createContext<InterfaceSidebarContext | undefined>(undefined)
 
-const Sidebar: React.FC<SidebarProps> = ({ children }) => {
+const Sidebar: React.FC<SidebarProps> = ({ children, dataUser }) => {
   const [expanded, setExpanded] = useState(true)
   const [active, setActive] = useState(false);
-
   const [isMobile, setIsMobile] = useState(false);
-
+  console.log('Sidebar: ', dataUser)
   useEffect(() => {
     // Detectar tamaño de pantalla
     const handleResize = () => {
@@ -49,14 +51,13 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   }
   return (
     <aside className="h-screen static">
-
       <button
         className={
           `fixed top-1/2  sm:hidden bg-gray-50 hover:bg-gray-100
            p-3 rounded-full z-50 transform -translate-y-1/2
           ${isMobile ?
-            expanded ? 'translate-x-[92vw] transition-transform bg-gray-200' : 
-            '-translate-x-4 transition-transform'
+            expanded ? 'translate-x-[92vw] transition-transform bg-gray-200' :
+              '-translate-x-4 transition-transform'
             : ''
           }
            `
@@ -66,7 +67,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
         {expanded ? <LuChevronLeft size={24} /> : <LuChevronRight size={24} />}
       </button>
 
-      <div className={`${isMobile ? 'h-full' : 
+      <div className={`${isMobile ? 'h-full' :
         'h-full md:flex flex-col bg-white border-r shadow-sm'}`}
       >
         <nav className={`
@@ -99,9 +100,9 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
           <SidebarContext.Provider value={{ expanded }}>
             <ul className={`
             flex flex-col h-full w-full 
-            ${isMobile ? 
-              'items-start justify-start gap-2' : 
-              'justify-around'} px-3 
+            ${isMobile ?
+                'items-start justify-start gap-2' :
+                'justify-around'} px-3 
               overflow-y-auto overflow-x-hidden ${styles.scrollContainer}
             `}
             >
@@ -109,9 +110,9 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
             </ul>
           </SidebarContext.Provider>
 
-          <div className="border-t flex justify-center p-3">
+          <div className="border-t flex items-center justify-center p-3">
             <img
-              src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
+              src={`https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true&name=${dataUser.nombre}`}
               alt=""
               className="w-10 h-10 rounded-md"
             />
@@ -122,8 +123,8 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
           `}
             >
               <div className="leading-4">
-                <h4 className="font-semibold">Moises Velez Avila</h4>
-                <span className="text-xs text-gray-600">Desarollo1@nextpack.mx</span>
+                <h4 className="font-semibold">{dataUser.nombre}</h4>
+                <span className="text-xs text-gray-600">{dataUser.correo_electronico}</span>
               </div>
               {/*             <MoreVertical size={20} />
  */}          </div>
