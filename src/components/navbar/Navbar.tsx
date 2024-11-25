@@ -10,7 +10,13 @@ const Navbar = () => {
         {key: 6, label: 'Zacatecas'}
     ]
   return (
-    <nav className='flex w-full justify-between items-center p-4 border-b border-b-gray-300'>
+    <nav className={
+        `
+        flex w-full justify-between
+        items-center p-4 border-b
+        border-b-gray-300 max-h-20
+        `
+    }>
         <div className='md:w-full'>
             Destino: Guadalajara
         </div>
@@ -18,7 +24,8 @@ const Navbar = () => {
         <div className='w-full'>
         <Select 
         label="Selecciona un destino" 
-        className="mix-w-xs" 
+        className="max-w-xs" 
+        size='sm'
       >
         {destinos.map((destino) => (
           <SelectItem key={destino.key}>
