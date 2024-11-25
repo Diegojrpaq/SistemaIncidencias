@@ -14,6 +14,7 @@ import {
 } from "react-icons/lu";
 import { fetchGet } from "@/lib/api";
 import { dataResponse } from '@/lib/interfaces';
+import Navbar from '@/components/navbar/Navbar';
 
 export default function page() {
   const [data, setData] = useState<dataResponse | null>(null);
@@ -70,14 +71,12 @@ export default function page() {
             <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} /> */}
           </Sidebar>
 
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col z-10">
             {/* Navbar */}
-            <nav className='bg-blue-600 text-white p-4'>
-              Navbar
-            </nav>
+            <Navbar />
 
             {/* Main content */}
-            <main className='flex-1 p-4 bg-gray-300'>
+            <main className='flex-1 p-4 bg-white'>
               Main
             </main>
           </div>

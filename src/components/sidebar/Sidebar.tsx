@@ -50,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children, dataUser }) => {
     setExpanded((curr) => !curr)
   }
   return (
-    <aside className="h-screen static">
+    <aside className="h-screen static z-50">
       <button
         className={
           `fixed top-1/2  sm:hidden bg-gray-50 hover:bg-gray-100
