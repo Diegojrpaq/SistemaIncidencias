@@ -7,6 +7,7 @@ import {
     CardHeader
 } from '@nextui-org/react';
 import MenuDropdown from '../MenuDropdown/MenuDropdown';
+import { formatDate } from '@/lib/utils';
 
 interface propsCard {
     dataCard: Incidencia
@@ -24,7 +25,7 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
                     <MenuDropdown />
                 </div>
                 <small className="text-default-500">Destino: {dataCard.destino}</small>
-                <small className="text-default-500">Fecha: {dataCard.fechaRegistro}</small>
+                <small className="text-default-500">Fecha: {formatDate(dataCard.fechaRegistro)}</small>
                 <small className="text-default-500">Creado por: {dataCard.empleadoNombre}</small>
             </CardHeader>
             <CardBody className="overflow-visible py-2">
