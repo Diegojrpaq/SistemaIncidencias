@@ -14,7 +14,7 @@ interface propsCard {
 
 const CardIncidencia = ({ dataCard }: propsCard) => {
     return (
-        <Card className="pt-3">
+        <Card className="pt-3 overflow-visible">
             <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                 <div className='flex gap-5 justify-between
                 items-center w-full'>

@@ -16,6 +16,8 @@ import { fetchGet } from "@/lib/api";
 import { dataResponse } from '@/lib/interfaces';
 import Navbar from '@/components/navbar/Navbar';
 import MainIncidencias from '@/components/main/mainIncidencias';
+import { useContext } from 'react';
+import { IncidenciaProvider, IncidenciasContext } from '@/context/IncidenciasContext';
 
 export default function page() {
   const [data, setData] = useState<dataResponse | null>(null);
@@ -60,7 +62,9 @@ export default function page() {
             {/* <main className=''>
               Main
             </main> */}
-            <MainIncidencias />
+            <IncidenciaProvider>
+              <MainIncidencias />
+            </IncidenciaProvider>
           </div>
         </div>
       </>

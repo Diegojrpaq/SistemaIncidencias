@@ -1,36 +1,37 @@
 import React from 'react'
 import CardIncidencia from '@/components/CardIncidencia/CardIncidencia';
-
+import { Incidencia } from '@/lib/interfaces';
+import {Chip} from "@nextui-org/react";
 interface propsColumn {
     title: string;
+    incidencias: Incidencia[] | undefined;
 }
-const Column = ({ title }: propsColumn) => {
-    const dataExample = {
-        "numGuia": "CEL-28729",
-        "fechaRegistro": "20241122",
-        "cotizacionPrincipalOrigenId": 4,
-        "origen": "CELAYA",
-        "cotizacionPrincipalDestinoId": 21,
-        "destino": "PUEBLA ",
-        "volumen": 0.059,
-        "peso": 99.8,
-        "cantidad": 1,
-        "clienteOrigenId": 94102,
-        "clienteOrigenNombre": "JOSE HILARIO ROMERO MENDOZA",
-        "clienteDestinoId": 209013,
-        "clienteDestinoNombre": "EMMANUEL RAMIREZ JIMENEZ y o irahy josselin ramirez jimenez",
-        "incidencia": 0,
-        "resuelto": 0,
-        "nota": "faltante de etiquetas ",
-        "empleadoId": 2470,
-        "empleadoNombre": "Marco Antonio Basurto de Dios"
-      }
+const Column = ({ title, incidencias }: propsColumn) => {
     return (
-        <div className='flex flex-col bg-gray-200
-    w-full rounded-lg p-3 max-w-96 shadow-lg'
-        >
-            <h3 className='text-center'>{title}</h3>
-            <CardIncidencia dataCard={dataExample} />
+        <div className='flex flex-col items-center bg-gray-200
+            rounded-lg min-w-[364px]'>
+            <div className='flex items-center p-4 w-full'>
+                <h3 className='text-start text-lg mr-2'>{title}</h3>
+                <Chip 
+                    radius="sm"
+                >
+                    {
+                        incidencias && incidencias.length
+                    }
+                </Chip>
+            </div>
+            <div className='flex flex-col
+                w-full rounded-lg p-3 max-w-96 shadow-lg 
+                gap-3 h-full overflow-y-auto space-y-4 
+                scrollbar-hide'
+            >
+                {
+                   incidencias && incidencias?.map((incidencia) => (
+                        <CardIncidencia dataCard={incidencia} />
+                    ))
+                }
+
+            </div>
         </div>
     )
 }

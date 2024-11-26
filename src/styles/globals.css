@@ -110,6 +110,17 @@ a {
  @tailwind components;
  @tailwind utilities;
 
+ @layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* Para IE y Edge */
+    scrollbar-width: none; /* Para Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Para Chrome, Safari y Edge */
+  }
+}
+
  .container-fluid{
   margin-left: 224px !important;
   background: var(--foreground-rgb);
