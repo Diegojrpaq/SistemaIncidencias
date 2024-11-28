@@ -1,4 +1,5 @@
-import { Incidencia } from "@/lib/interfaces";
+import { IncidenciaDataModal } from "@/lib/interfaces";
+import { formatDate } from "@/lib/utils";
 import {
     Card,
     CardHeader,
@@ -8,7 +9,7 @@ import {
 } from "@nextui-org/react";
 
 interface infoGuiaProps {
-    incidencia: Incidencia
+    incidencia: IncidenciaDataModal
 }
 
 const InfoGuia = ({incidencia}: infoGuiaProps) => {
@@ -26,14 +27,14 @@ const InfoGuia = ({incidencia}: infoGuiaProps) => {
                         </CardHeader>
                         <Divider />
                         <CardBody>
-                            <div className="grid grid-cols-2 gap-5">
-                                <div>
+                            <div className="grid grid-cols-2 gap-5 p-2">
+                                <div className="flex flex-col gap-2">
                                     <p>numGuia: {incidencia.numGuia}</p>
                                     <p>origen: {incidencia.origen}</p>
                                     <p>destino: {incidencia.destino}</p>
                                     <p>cliente origen: {incidencia.clienteOrigenNombre}</p>
                                 </div>
-                                <div>
+                                <div className="flex flex-col gap-2 ">
                                     <p>volumen: {incidencia.volumen}</p>
                                     <p>peso: {incidencia.peso}</p>
                                     <p>cantidad: {incidencia.cantidad}</p>
@@ -43,12 +44,7 @@ const InfoGuia = ({incidencia}: infoGuiaProps) => {
                         </CardBody>
 
                     </Card>
-                    {/* <div className="bg-white rounded-md p-3">
-                                            info incidencia
-                                            Motivo incidencia:
-                                            Creada por:
-                                            status:
-                                        </div> */}
+                    
                     <Card>
                         <CardHeader className="flex gap-3">
 
@@ -60,14 +56,16 @@ const InfoGuia = ({incidencia}: infoGuiaProps) => {
                         <Divider />
                         <CardBody>
                             <div className="grid grid-cols-auto">
-                                <div>
-                                    <p>Motivo incidencia: {incidencia.nota}</p>
-                                    <p>Creada por: {incidencia.empleadoNombre}</p>
-                                    <p>status: {
+                                <div className="flex flex-col gap-2 p-2">
+                                    <p>Motivo incidencia: {incidencia.descripcion}</p>
+                                    <p>Sucursal: {incidencia.sucursal_incidencia}</p>
+                                    <p>Creada por: {incidencia.empleado_registra}</p>
+                                    <p>Registro incidencia: {formatDate(incidencia.fecha_registro_incidencia)}</p>
+                                    <p>Descripcion: {incidencia.nota}</p>
+                                    <p>Status: {
                                         `${incidencia.incidencia === 1 ? 'abierta'
                                             : ''}`
                                     }</p>
-
                                 </div>
                             </div>
                         </CardBody>

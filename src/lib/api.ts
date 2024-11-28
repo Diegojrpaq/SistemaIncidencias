@@ -14,14 +14,14 @@ export const fetchGet = async (url: string) => {
 export const getDataByGuia = async (url: string, numGuia: string) => {
   try {
     const response = await fetch(url, {
-      //mode: 'no-cors',
       method: 'POST',
-      // headers: {
-      //   'Content-Type': 'application/json',
-      // },
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         numGuia,
       }),
+      cache: 'no-store'
     })
     const data = await response.json();
     return data;

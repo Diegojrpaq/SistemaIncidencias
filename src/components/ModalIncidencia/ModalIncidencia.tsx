@@ -12,11 +12,13 @@ import {
     CardHeader,
     Divider,
     CardBody,
-    Image
+    Image,
+    Spinner
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import ContentModal from "../ContentModal/ContentModal";
 import InfoGuia from "../infoGuia/InfoGuia";
+import Chat from "../Chat/Chat";
 
 interface modalProps {
     incidencia: Incidencia
@@ -25,23 +27,18 @@ interface modalProps {
 const ModalIncidencia = ({ incidencia }: modalProps) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [inc, setInc] = useState();
-
-
-    useEffect(() => {
-        const getData = async () => {
-            const res = await getDataByGuia('http://192.168.10.137/Incidencias/validacionGuia', `${incidencia.numGuia}`);
-            setInc(res)
-        }
-
-        getData();
-    }, [])
-
-    console.log("Modal post:", inc)
-    //setInc(res);
+    const [statusRes, setStatusRes] = useState();
+    const getData = async () => {
+        const { status, ...dataIncidencia } = await getDataByGuia('http://192.168.10.137/Incidencias/validacionGuia', `${incidencia.numGuia}`);
+        setInc(dataIncidencia)
+        setStatusRes(status)
+        console.log(status)
+        //console.log(dataIncidencia)
+    }
     return (
         <>
             <Button
-                onPress={onOpen}
+                onPress={() => { onOpen(); getData() }}
                 variant='bordered'
                 size='md'
             >
@@ -51,68 +48,34 @@ const ModalIncidencia = ({ incidencia }: modalProps) => {
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
                 size="5xl"
-                className="max-h-[700px] w-full overflow-y-scroll
+                className="max-h-[800px] w-full overflow-y-scroll
                     scrollbar-hide min-w-[800px]"
             >
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader className="flex flex-col gap-1">Detalles</ModalHeader>
-                            <ModalBody>
+                            <ModalHeader className="flex">Detalles</ModalHeader>
+                            <ModalBody className="flex justify-center items-center">
                                 {/* <ContentModal incidencia={incidencia} /> */}
                                 <div className="flex">
                                     {/* Sección izquierda - Información */}
+
                                     <div className="w-2/3 h-96 overflow-y-auto p-4">
-                                        {/* Aquí va tu contenido de la izquierda */}
-                                        {/* <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p>
-                                        <p>Contenido de la información...</p> */}
-                                        <InfoGuia incidencia={incidencia} />
+                                        {
+                                            inc && statusRes === 200 ?
+                                                <InfoGuia incidencia={inc} />
+                                                : <Spinner />
+                                        }
                                     </div>
+
 
                                     {/* Sección derecha - Chat */}
                                     <div className="w-1/3 h-96 overflow-y-auto p-4">
-                                        {/* Aquí va tu contenido de chat */}
-                                        <div>Chat...</div>
-                                        <div>Mensaje 1</div>
-                                        <div>Mensaje 2</div>
-                                        <div>Mensaje 3</div>
-                                        <div>Mensaje 4</div>
-                                        <div>Mensaje 1</div>
-                                        <div>Mensaje 2</div>
-                                        <div>Mensaje 3</div>
-                                        <div>Mensaje 4</div>
-                                        <div>Mensaje 1</div>
-                                        <div>Mensaje 2</div>
-                                        <div>Mensaje 3</div>
-                                        <div>Mensaje 4</div>
-                                        <div>Mensaje 1</div>
-                                        <div>Mensaje 2</div>
-                                        <div>Mensaje 3</div>
-                                        <div>Mensaje 4</div>
-                                        <div>Mensaje 1</div>
-                                        <div>Mensaje 2</div>
-                                        <div>Mensaje 3</div>
-                                        <div>Mensaje 4</div>
-                                        {/* Continúa el contenido... */}
+                                        {
+                                            inc && statusRes === 200 ?
+                                                <Chat />
+                                                : <Spinner />
+                                        }
                                     </div>
                                 </div>
                             </ModalBody>
