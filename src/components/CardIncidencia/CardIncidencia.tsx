@@ -8,6 +8,7 @@ import {
 } from '@nextui-org/react';
 import MenuDropdown from '../MenuDropdown/MenuDropdown';
 import { formatDate } from '@/lib/utils';
+import ModalIncidencia from '../ModalIncidencia/ModalIncidencia';
 
 interface propsCard {
     dataCard: Incidencia
@@ -33,12 +34,16 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
             </CardBody>
 
             <CardFooter className='flex w-full justify-end'>
-                <Button
+                {/* <Button
                     variant='bordered'
                     size='md'
                 >
                     Ver mas
-                </Button>
+                </Button> */}
+                <ModalIncidencia 
+                    incidencia={dataCard}
+                     
+                />
             </CardFooter>
         </Card>
 
