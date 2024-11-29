@@ -1,5 +1,6 @@
 import React from 'react'
-import {Select, SelectItem} from "@nextui-org/react";
+import {Button, Select, SelectItem} from "@nextui-org/react";
+import { IoMdAdd } from "react-icons/io";
 const Navbar = () => {
     const destinos = [
         {key: 1, label: 'Guadalajara'},
@@ -20,6 +21,15 @@ const Navbar = () => {
         <div className='md:w-full'>
             Destino: Guadalajara
         </div>
+
+       <div className='w-full'>
+       <Button
+        color='primary'
+       >
+          Nueva incidencia
+          <IoMdAdd size={20}/>
+        </Button>
+       </div>
 
         <div className='w-full'>
         <Select 
