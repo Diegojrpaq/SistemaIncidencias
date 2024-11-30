@@ -141,6 +141,7 @@ interface propsSidebarItems {
   text?: string;
   active?: boolean;
   alert?: any;
+  link?:string;
 }
 
 const useSidebar = (): InterfaceSidebarContext => {
@@ -151,7 +152,7 @@ const useSidebar = (): InterfaceSidebarContext => {
   return context;
 };
 
-export function SidebarItem({ icon, text, active, alert }: propsSidebarItems) {
+export function SidebarItem({ icon, text, active, alert, link}: propsSidebarItems) {
   const { expanded } = useSidebar();
 
   return (
@@ -166,6 +167,7 @@ export function SidebarItem({ icon, text, active, alert }: propsSidebarItems) {
         }
     `}
     >
+      <a href="">
       {icon}
       <span
         className={`
@@ -196,6 +198,7 @@ export function SidebarItem({ icon, text, active, alert }: propsSidebarItems) {
           {text}
         </div>
       )}
+      </a>
     </li>
   )
 }
