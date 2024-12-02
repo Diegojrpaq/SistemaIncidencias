@@ -24,6 +24,7 @@ import { fetchGet } from "@/lib/api";
 import { dataResponse } from '@/lib/interfaces';
 import Navbar from '@/components/navbar/Navbar';
 import { IncidenciaProvider } from '@/context/IncidenciasContext';
+import Link from 'next/link';
 /*Importaciones de funcione dependencias */
 /*----------------------------------------------------------------------------*/
 
@@ -58,10 +59,10 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
       <>
         <div className='flex h-screen'>
           <Sidebar dataUser={sessionData?.User}>
-            <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} />
-            <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} />
-            <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} />
-            <SidebarItem icon={<LuSettings size={27} />} active text={"Configuraciones"} />
+            <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} link={"/"}/>
+            <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} link={"/"}/>
+            <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} link={"/about"}/>
+            <SidebarItem icon={<LuSettings size={27} />} active text={"Configuraciones"} link={"/"}/>
           </Sidebar>
 
           <div className="flex-1 flex flex-col z-10">

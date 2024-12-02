@@ -6,6 +6,8 @@ import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import logo from '../../../public/assets/LOGO.png';
 import styles from './sidebar.module.css'
 import { dataUser } from "@/lib/interfaces";
+import Link from "next/link";
+import { Url } from "next/dist/shared/lib/router/router";
 
 
 interface SidebarProps {
@@ -141,7 +143,7 @@ interface propsSidebarItems {
   text?: string;
   active?: boolean;
   alert?: any;
-  link?:string;
+  link: Url;
 }
 
 const useSidebar = (): InterfaceSidebarContext => {
@@ -156,6 +158,7 @@ export function SidebarItem({ icon, text, active, alert, link}: propsSidebarItem
   const { expanded } = useSidebar();
 
   return (
+    <Link href={link}>
     <li
       className={`
         relative flex justify-center items-center p-2
@@ -167,7 +170,7 @@ export function SidebarItem({ icon, text, active, alert, link}: propsSidebarItem
         }
     `}
     >
-      <a href="">
+    
       {icon}
       <span
         className={`
@@ -198,8 +201,9 @@ export function SidebarItem({ icon, text, active, alert, link}: propsSidebarItem
           {text}
         </div>
       )}
-      </a>
+    
     </li>
+    </Link>
   )
 }
 
