@@ -5,7 +5,8 @@ import {
     CardHeader,
     Divider,
     CardBody,
-    Image
+    Image,
+    Chip
 } from "@nextui-org/react";
 
 interface infoGuiaProps {
@@ -20,8 +21,8 @@ const InfoGuia = ({incidencia}: infoGuiaProps) => {
 
                     <Card>
                         <CardHeader className="flex gap-3">
-                            <div className="flex items-center gap-2">
-                                <p className="text-md">Información de la guía</p>
+                            <div className="flex items-center gap-2 ml-3">
+                                <p className="text-lg">Información de la guía</p>
                                 {/* <p className="text-md text-default-500">asdf</p> */}
                             </div>
                         </CardHeader>
@@ -29,16 +30,16 @@ const InfoGuia = ({incidencia}: infoGuiaProps) => {
                         <CardBody>
                             <div className="grid grid-cols-2 gap-5 p-2">
                                 <div className="flex flex-col gap-2">
-                                    <p>numGuia: {incidencia.numGuia}</p>
-                                    <p>origen: {incidencia.origen}</p>
-                                    <p>destino: {incidencia.destino}</p>
-                                    <p>cliente origen: {incidencia.clienteOrigenNombre}</p>
+                                    <p><Chip size="lg" radius="sm">NumGuia:</Chip> {incidencia.numGuia}</p>
+                                    <p><Chip size="lg" radius="sm">Origen:</Chip> {incidencia.origen}</p>
+                                    <p><Chip size="lg" radius="sm">Destino:</Chip> {incidencia.destino}</p>
+                                    <p><Chip size="lg" radius="sm">Cliente Origen:</Chip> {incidencia.clienteOrigenNombre}</p>
                                 </div>
                                 <div className="flex flex-col gap-2 ">
-                                    <p>volumen: {incidencia.volumen}</p>
-                                    <p>peso: {incidencia.peso}</p>
-                                    <p>cantidad: {incidencia.cantidad}</p>
-                                    <p>cliente destino: {incidencia.clienteDestinoNombre}</p>
+                                    <p><Chip size="lg" radius="sm">Volumen:</Chip> {incidencia.volumen} mt3</p>
+                                    <p><Chip size="lg" radius="sm">Peso:</Chip> {incidencia.peso} kg</p>
+                                    <p><Chip size="lg" radius="sm">Cantidad:</Chip> {incidencia.cantidad}</p>
+                                    <p><Chip size="lg" radius="sm">Cliente Destino:</Chip> {incidencia.clienteDestinoNombre}</p>
                                 </div>
                             </div>
                         </CardBody>
@@ -48,8 +49,8 @@ const InfoGuia = ({incidencia}: infoGuiaProps) => {
                     <Card>
                         <CardHeader className="flex gap-3">
 
-                            <div className="flex items-center gap-2">
-                                <p className="text-md">Información de la incidencia</p>
+                            <div className="flex items-center gap-2 ml-3">
+                                <p className="text-lg">Información de la incidencia</p>
                                 {/* <p className="text-md text-default-500">asdf</p> */}
                             </div>
                         </CardHeader>
@@ -57,13 +58,13 @@ const InfoGuia = ({incidencia}: infoGuiaProps) => {
                         <CardBody>
                             <div className="grid grid-cols-auto">
                                 <div className="flex flex-col gap-2 p-2">
-                                    <p>Motivo incidencia: {incidencia.descripcion}</p>
-                                    <p>Sucursal: {incidencia.sucursal_incidencia}</p>
-                                    <p>Creada por: {incidencia.empleado_registra}</p>
-                                    <p>Registro incidencia: {formatDate(incidencia.fecha_registro_incidencia)}</p>
-                                    <p>Descripcion: {incidencia.nota}</p>
-                                    <p>Status: {
-                                        `${incidencia.incidencia === 1 ? 'abierta'
+                                    <p><Chip size="lg" radius="sm">Motivo incidencia:</Chip> {incidencia.descripcion}</p>
+                                    <p><Chip size="lg" radius="sm">Sucursal:</Chip> {incidencia.sucursal_incidencia}</p>
+                                    <p><Chip size="lg" radius="sm">Creada por:</Chip> {incidencia.empleado_registra}</p>
+                                    <p><Chip size="lg" radius="sm">Registro incidencia:</Chip> {formatDate(incidencia.fecha_registro_incidencia)}</p>
+                                    <p><Chip size="lg" radius="sm">Descripcion:</Chip> {incidencia.nota}</p>
+                                    <p><Chip size="lg" radius="sm">Status:</Chip> {
+                                        `${incidencia.incidencia === 1 ? 'Abierta'
                                             : ''}`
                                     }</p>
                                 </div>
@@ -76,8 +77,8 @@ const InfoGuia = ({incidencia}: infoGuiaProps) => {
                     <Card>
                         <CardHeader className="flex gap-3">
 
-                            <div className="flex items-center gap-2">
-                                <p className="text-md">Evidencia</p>
+                            <div className="flex items-center gap-2 ml-3">
+                                <p className="text-lg">Evidencia</p>
                                 {/* <p className="text-md text-default-500">asdf</p> */}
                             </div>
                         </CardHeader>

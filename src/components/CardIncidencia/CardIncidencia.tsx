@@ -1,5 +1,6 @@
 import { Incidencia } from '@/lib/interfaces';
 import {
+    Avatar,
     Button,
     Card,
     CardBody,
@@ -19,8 +20,10 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
         <Card className="pt-3 overflow-visible">
             <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                 <div className='flex gap-5 justify-between
-                items-center w-full'>
-                    <div className='flex'>
+                items-center w-full mb-2'>
+                    
+                    <div className='flex items-center gap-3 w-full'>
+                    <Avatar isBordered radius="full" size="md" src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
                         <p className="text-sm font-bold">NumGuia: {dataCard.numGuia}</p>
                     </div>
                     <MenuDropdown />
@@ -31,6 +34,24 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
             </CardHeader>
             <CardBody className="overflow-visible py-2">
                 <h4 className="font-bold text-md">Motivo: {dataCard.nota}</h4>
+                <span className="pt-2">
+                    #Mazatlan
+                    <span className="py-2" aria-label="computer" role="img">
+                        💻
+                    </span>
+                </span>
+                <span className="pt-2">
+                    #Culiacan
+                    <span className="py-2" aria-label="computer" role="img">
+                        💻
+                    </span>
+                </span>
+                <span className="pt-2">
+                    #Guadalajara
+                    <span className="py-2" aria-label="computer" role="img">
+                        💻
+                    </span>
+                </span>
             </CardBody>
 
             <CardFooter className='flex w-full justify-end'>
@@ -40,9 +61,9 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
                 >
                     Ver mas
                 </Button> */}
-                <ModalIncidencia 
+                <ModalIncidencia
                     incidencia={dataCard}
-                     
+
                 />
             </CardFooter>
         </Card>

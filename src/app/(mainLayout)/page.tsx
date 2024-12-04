@@ -2,7 +2,7 @@
 import Column from '../../components/Column/Column'
 import { useContext } from "react";
 import { IncidenciasContext } from '@/context/IncidenciasContext'
-import MainIncidencias from '@/components/main/MainIncidencias';
+import MainIncidencias from '@/components/main/mainIncidencias';
 
 export default function page() {
   const catalogoIncidencias = useContext(IncidenciasContext);

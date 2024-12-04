@@ -14,7 +14,7 @@ interface contentModalProps {
 const ContentModal = ({ incidencia }: contentModalProps) => {
     return (
         <div>
-            <div className=" flex w-full gap-1">
+            <div className="flex w-full gap-1">
                 <div className="flex flex-col gap-3 
                     w-2/3 p-4 overflow-y-scroll"
                 >

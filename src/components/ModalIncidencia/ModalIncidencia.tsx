@@ -48,8 +48,8 @@ const ModalIncidencia = ({ incidencia }: modalProps) => {
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
                 size="5xl"
-                className="max-h-[800px] w-full overflow-y-scroll
-                    scrollbar-hide min-w-[800px]"
+                className="max-h-[800px] w-full
+                    scrollbar-hide lg:min-w-[1300px]"
             >
                 <ModalContent>
                     {(onClose) => (
@@ -60,7 +60,7 @@ const ModalIncidencia = ({ incidencia }: modalProps) => {
                                 <div className="flex">
                                     {/* Sección izquierda - Información */}
 
-                                    <div className="w-2/3 h-96 overflow-y-auto p-4">
+                                    <div className="w-2/3 max-h-[700px] overflow-y-auto p-4 overflow-x-hidden scrollbar-hide">
                                         {
                                             inc && statusRes === 200 ?
                                                 <InfoGuia incidencia={inc} />
@@ -70,7 +70,7 @@ const ModalIncidencia = ({ incidencia }: modalProps) => {
 
 
                                     {/* Sección derecha - Chat */}
-                                    <div className="w-1/3 h-96 overflow-y-auto p-4">
+                                    <div className="w-1/3  max-h-[700px] overflow-y-auto p-4 overflow-x-hidden scrollbar-hide">
                                         {
                                             inc && statusRes === 200 ?
                                                 <Chat />
