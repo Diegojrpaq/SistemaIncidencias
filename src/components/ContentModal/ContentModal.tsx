@@ -119,9 +119,9 @@ const ContentModal = ({ incidencia }: contentModalProps) => {
                     </Card>
                 </div>
 
-                <div className="bg-gray-200 w-1/3 p-4 rounded-lg shadow-lg">
+                {/* <div className="bg-gray-200 w-1/3 p-4 rounded-lg shadow-lg">
                     Hoolichat
-                </div>
+                </div> */}
             </div>
         </div>
     )

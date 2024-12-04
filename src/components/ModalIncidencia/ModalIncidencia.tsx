@@ -13,12 +13,13 @@ import {
     Divider,
     CardBody,
     Image,
-    Spinner
+    Spinner, Skeleton
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import ContentModal from "../ContentModal/ContentModal";
 import InfoGuia from "../infoGuia/InfoGuia";
 import Chat from "../Chat/Chat";
+import SkeletonInfoGuia from "../skeleton/skeletonInfoGuia";
 
 interface modalProps {
     incidencia: Incidencia
@@ -28,6 +29,13 @@ const ModalIncidencia = ({ incidencia }: modalProps) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [inc, setInc] = useState();
     const [statusRes, setStatusRes] = useState();
+    //Estado del skeleton
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    const toggleLoad = () => {
+        setIsLoaded(!isLoaded);
+    };
+
     const getData = async () => {
         const { status, ...dataIncidencia } = await getDataByGuia('http://192.168.10.137/Incidencias/validacionGuia', `${incidencia.numGuia}`);
         setInc(dataIncidencia)
@@ -56,36 +64,41 @@ const ModalIncidencia = ({ incidencia }: modalProps) => {
                         <>
                             <ModalHeader className="flex">Detalles</ModalHeader>
                             <ModalBody className="flex justify-center items-center">
-                                {/* <ContentModal incidencia={incidencia} /> */}
                                 <div className="flex">
                                     {/* Sección izquierda - Información */}
-
                                     <div className="w-2/3 max-h-[700px] overflow-y-auto p-4 overflow-x-hidden scrollbar-hide">
                                         {
                                             inc && statusRes === 200 ?
                                                 <InfoGuia incidencia={inc} />
-                                                : <Spinner />
+                                                : statusRes === 204 ?
+                                                    <div className="text-lg text-left w-96">
+                                                        No existe la guía
+                                                    </div>
+                                                    :
+                                                    <SkeletonInfoGuia />
                                         }
                                     </div>
-
-
                                     {/* Sección derecha - Chat */}
                                     <div className="w-1/3  max-h-[700px] overflow-y-auto p-4 overflow-x-hidden scrollbar-hide">
                                         {
                                             inc && statusRes === 200 ?
                                                 <Chat />
-                                                : <Spinner />
+                                                : statusRes === 204 ?
+                                                    <div className="text-lg text-left w-96">
+                                                        No existe información del chat
+                                                    </div>
+                                                    :
+                                                    <>
+                                                        <div className="h-screen shadow-lg">
+                                                            <Skeleton className="h-screen w-full rounded-md" />
+                                                        </div>
+                                                    </>
                                         }
                                     </div>
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                {/* <Button color="danger" variant="light" onPress={onClose}>
-                                    Close
-                                </Button>
-                                <Button color="primary" onPress={onClose}>
-                                    Action
-                                </Button> */}
+
                             </ModalFooter>
                         </>
                     )}
