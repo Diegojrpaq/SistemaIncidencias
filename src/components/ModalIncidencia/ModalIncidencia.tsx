@@ -17,6 +17,7 @@ import InfoGuia from "../infoGuia/InfoGuia";
 import Chat from "../Chat/Chat";
 import SkeletonInfoGuia from "../skeleton/skeletonInfoGuia";
 import { IoSendSharp } from "react-icons/io5";
+import { urlServer } from "@/lib/url";
 interface modalProps {
     incidencia: Incidencia
 }
@@ -50,7 +51,7 @@ const ModalIncidencia = ({ incidencia }: modalProps) => {
     };
 
     const getData = async () => {
-        const { status, ...dataIncidencia } = await getDataByGuia('http://192.168.10.137/Incidencias/validacionGuia', `${incidencia.numGuia}`);
+        const { status, ...dataIncidencia } = await getDataByGuia(`${urlServer}/Incidencias/validacionGuia`, `${incidencia.numGuia}`);
         setInc(dataIncidencia)
         setStatusRes(status)
         console.log(status)

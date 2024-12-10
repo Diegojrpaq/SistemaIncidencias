@@ -1,4 +1,5 @@
 import { Incidencia } from "@/lib/interfaces";
+import { urlServer } from "@/lib/url";
 import { createContext, ReactNode, useEffect, useState } from "react";
 
 interface IncidenciaContextType {
@@ -22,7 +23,7 @@ export const IncidenciaProvider: React.FC<IncidenciaProviderProps> = ({ children
         // Llama a la API para obtener los datos del usuario
         const fetchUser = async () => {
           try {
-            const response = await fetch(`http://192.168.10.137/Incidencias/getListIncidencias/1`); // Cambia la URL según tu configuración
+            const response = await fetch(`${urlServer}/Incidencias/getListIncidencias/1`); // Cambia la URL según tu configuración
             const data = await response.json();
             console.log("Incidencias: ",data.catalogoIncidencias)
             setIncidencias(data.catalogoIncidencias);
