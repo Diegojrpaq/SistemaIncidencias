@@ -24,7 +24,6 @@ import { fetchGet } from "@/lib/api";
 import { dataResponse } from '@/lib/interfaces';
 import Navbar from '@/components/navbar/Navbar';
 import { IncidenciaProvider } from '@/context/IncidenciasContext';
-import Link from 'next/link';
 import { urlServer } from '@/lib/url';
 /*Importaciones de funcione dependencias */
 /*----------------------------------------------------------------------------*/
@@ -69,7 +68,7 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
           <div className="flex-1 flex flex-col z-10">
             {/* Navbar */}
             <Navbar />
-            <IncidenciaProvider>
+            <IncidenciaProvider userData={sessionData?.User}>
               {children}
             </IncidenciaProvider>
 

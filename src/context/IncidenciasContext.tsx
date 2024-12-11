@@ -1,21 +1,23 @@
-import { Incidencia } from "@/lib/interfaces";
+import { dataUser, Incidencia } from "@/lib/interfaces";
 import { urlServer } from "@/lib/url";
 import { createContext, ReactNode, useEffect, useState } from "react";
 
 interface IncidenciaContextType {
     incidencias: Incidencia[];
+    userData: dataUser;
     //loading: boolean;
 }
 
-export const IncidenciasContext = createContext<Incidencia[] | undefined>(undefined);
+export const IncidenciasContext = createContext<IncidenciaContextType | undefined>(undefined);
 
 //props para provider
 interface IncidenciaProviderProps {
     children: ReactNode;
+    userData: dataUser;
 }
 
 //Crear provider
-export const IncidenciaProvider: React.FC<IncidenciaProviderProps> = ({ children }) => {
+export const IncidenciaProvider: React.FC<IncidenciaProviderProps> = ({ children, userData }) => {
     const [incidencias, setIncidencias] = useState<Incidencia[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -37,8 +39,13 @@ export const IncidenciaProvider: React.FC<IncidenciaProviderProps> = ({ children
         fetchUser();
       }, []);
 
+      const dataUserAndIncidencia = {
+        incidencias,
+        userData
+      }
+
       return (
-        <IncidenciasContext.Provider value={incidencias}>
+        <IncidenciasContext.Provider value={dataUserAndIncidencia}>
             {children}
         </IncidenciasContext.Provider>
       )
