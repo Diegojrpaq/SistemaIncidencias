@@ -60,7 +60,7 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
         <div className='flex h-screen'>
           <Sidebar dataUser={sessionData?.User}>
             <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} link={"/"}/>
-            <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} link={"/"}/>
+            <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} link={"/table"}/>
             <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} link={"/about"}/>
             <SidebarItem icon={<LuSettings size={27} />} active text={"Configuraciones"} link={"/"}/>
           </Sidebar>
