@@ -15,29 +15,36 @@ import InfoGuia from "../infoGuia/InfoGuia";
 import Chat from "../Chat/Chat";
 import SkeletonInfoGuia from "../skeleton/skeletonInfoGuia";
 import { urlServer } from "@/lib/url";
+import { EyeIcon } from "../icons/EyeIcon";
 interface modalProps {
-    incidencia: Incidencia
+    //incidencia: Incidencia
+    numGuia: string;
+    textButton: string;
 }
 
-const ModalIncidencia = ({ incidencia }: modalProps) => {
+const ModalIncidencia = ({ numGuia, textButton }: modalProps) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [inc, setInc] = useState();
     const [statusRes, setStatusRes] = useState();
 
     const getData = async () => {
-        const { status, ...dataIncidencia } = await getDataByGuia(`${urlServer}/Incidencias/validacionGuia`, `${incidencia.numGuia}`);
+        const { status, ...dataIncidencia } = await getDataByGuia(`${urlServer}/Incidencias/validacionGuia`, `${numGuia}`);
         setInc(dataIncidencia)
         setStatusRes(status)
     }
     return (
         <>
-            <Button
-                onPress={() => { onOpen(); getData() }}
-                variant='bordered'
-                size='md'
-            >
-                Ver mas
-            </Button>
+            {
+                textButton === "Ver mas" ?
+                    <Button
+                        onPress={() => { onOpen(); getData() }}
+                        variant='bordered'
+                        size='md'
+                    >
+                        {textButton}
+                    </Button> :
+                    <EyeIcon onClick={() => { onOpen(); getData() }} />
+            }
             <Modal
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}

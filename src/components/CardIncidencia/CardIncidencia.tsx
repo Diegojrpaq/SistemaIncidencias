@@ -62,8 +62,8 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
                     Ver mas
                 </Button> */}
                 <ModalIncidencia
-                    incidencia={dataCard}
-
+                    numGuia={dataCard.numGuia}
+                    textButton='Ver mas'
                 />
             </CardFooter>
         </Card>
