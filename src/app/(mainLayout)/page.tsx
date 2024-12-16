@@ -9,9 +9,10 @@ export default function page() {
   const dataUserAndIncidencias = useContext(IncidenciasContext);
   const incidencias = dataUserAndIncidencias?.incidencias;
   //Filtrar las incidencias para cada columna
-  const incidenciasAbiertas = incidencias?.filter((item: Incidencia) => item.incidencia === 1);
-  const incidenciasResolucion = incidencias?.filter((item: Incidencia) => item.incidencia === 2);
-  const incidenciasCerradas = incidencias?.filter((item: Incidencia) => item.incidencia === 0);
+  const incidenciasAbiertas = incidencias?.filter((item: Incidencia) => item.resuelto === 1);
+  const incidenciasResolucion = incidencias?.filter((item: Incidencia) => item.resuelto === 2);
+  const incidenciasSolicitudCierre = incidencias?.filter((item: Incidencia) => item.resuelto === 3);
+  const incidenciasCerradas = incidencias?.filter((item: Incidencia) => item.resuelto === 4);
 
   return (
     <>

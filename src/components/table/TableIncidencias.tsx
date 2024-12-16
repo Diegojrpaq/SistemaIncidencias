@@ -411,7 +411,7 @@ export const EditIcon = (props: IconSvgProps) => {
     );
 };
 const statusColorMap: Record<string, ChipProps["color"]> = {
-    0: "success",
+    4: "success",
     1: "danger",
     2: "warning",
 };
@@ -424,7 +424,7 @@ export default function TableIncidencias() {
     const dataUserAndIncidencias = useContext(IncidenciasContext);
     const incidencias = dataUserAndIncidencias?.incidencias;
     //type User = (typeof users)[0];
-    
+
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
     const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
@@ -512,11 +512,13 @@ export default function TableIncidencias() {
                 );
             case "status":
                 return (
-                    <Chip className="capitalize" color={statusColorMap[incidencia.incidencia]} size="sm" variant="flat">
+                    <Chip className="capitalize" color={statusColorMap[incidencia.resuelto]} size="sm" variant="flat">
                         {
-                            incidencia.incidencia === 1 ? "Abierta" : 
-                            incidencia.incidencia === 0 ? "Cerrada" :
-                            "En resolución"
+                            incidencia.resuelto === 1 ? "Abierta" :
+                                incidencia.resuelto === 2 ? "En resolución" :
+                                    incidencia.resuelto === 3 ? "Solicitud de Cierre" :
+                                        incidencia.resuelto === 4 ? "Cerrada" :
+                                            ""
                         }
                     </Chip>
                 );
@@ -526,9 +528,9 @@ export default function TableIncidencias() {
                         <Tooltip content="Details">
                             {/* Agregar modal */}
                             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                                <ModalIncidencia 
+                                <ModalIncidencia
                                     numGuia={incidencia.numGuia}
-                                    textButton="Table modal" 
+                                    textButton="Table modal"
                                 />
                             </span>
                         </Tooltip>
@@ -549,7 +551,7 @@ export default function TableIncidencias() {
                     <div className="flex justify-center">
                         {
                             typeof cellValue === "number" ?
-                            "" : formatDate(cellValue)
+                                "" : formatDate(cellValue)
                         }
                     </div>
                 )
