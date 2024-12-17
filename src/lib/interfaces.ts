@@ -2,9 +2,10 @@ export interface dataUser {
     id: number,
     nombre: string,
     correo_electronico: string,
-    sucursal_principal: string,
-    destino: string,
+    Sucursal_principal: string,
+    Destino: string,
     permiso: number[],
+    catalogoSucursales: catalogoSucursales[],
 }
 
 export interface dataResponse {
@@ -43,4 +44,9 @@ export interface IncidenciaDataModal extends Incidencia{
     is_paqueteria: number,
     numGuiaproporcionado: string,
     sucursal_incidencia: string
+}
+
+export interface catalogoSucursales {
+    id: number,
+    sucursal: string,
 }

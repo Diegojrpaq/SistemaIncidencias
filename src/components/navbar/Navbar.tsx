@@ -1,49 +1,43 @@
 import React from 'react'
-import {Button, Select, SelectItem} from "@nextui-org/react";
-import { IoMdAdd } from "react-icons/io";
-const Navbar = () => {
-    const destinos = [
-        {key: 1, label: 'Guadalajara'},
-        {key: 2, label: 'Monterrey'},
-        {key: 3, label: 'Puebla'},
-        {key: 4, label: 'Tijuana'},
-        {key: 5, label: 'Veracruz'},
-        {key: 6, label: 'Zacatecas'}
-    ]
+import { Select, SelectItem } from "@nextui-org/react";
+import { catalogoSucursales, dataUser } from '@/lib/interfaces';
+
+interface navbarProps {
+  user?: dataUser;
+  catalogoSucursales: catalogoSucursales[];
+}
+const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
+
+  const sucursales = catalogoSucursales.map((suc) => ({
+    key: suc.sucursal,
+    label: suc.sucursal,
+  }))
   return (
     <nav className={
-        `
+      `
         flex w-full justify-between
         items-center p-4 border-b
         border-b-gray-300 max-h-20
         `
     }>
-        <div className='md:w-full'>
-            Destino: Guadalajara
-        </div>
+      <div className='md:w-full'>
+        Destino: {user?.Destino}
+      </div>
 
-       <div className='w-full'>
-       <Button
-        color='primary'
-       >
-          Nueva incidencia
-          <IoMdAdd size={20}/>
-        </Button>
-       </div>
-
-        <div className='w-full'>
-        <Select 
-        label="Selecciona un destino" 
-        className="max-w-xs" 
-        size='sm'
-      >
-        {destinos.map((destino) => (
-          <SelectItem key={destino.key}>
-            {destino.label}
-          </SelectItem>
-        ))}
-      </Select>
-        </div>
+      <div className='w-full flex justify-end pr-4'>
+        <Select
+          label="Selecciona una sucursal"
+          className="max-w-xs"
+          size='sm'
+          defaultSelectedKeys={[`${user?.Sucursal_principal}`]}
+        >
+          {sucursales?.map((item) => (
+            <SelectItem key={item.key}>
+              {item.label}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
     </nav>
   )
 }

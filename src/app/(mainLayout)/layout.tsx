@@ -67,7 +67,7 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
 
           <div className="flex-1 flex flex-col z-10">
             {/* Navbar */}
-            <Navbar />
+            <Navbar user={sessionData?.User} catalogoSucursales={sessionData?.User?.catalogoSucursales} />
             <IncidenciaProvider userData={sessionData?.User}>
               {children}
             </IncidenciaProvider>
