@@ -7,7 +7,11 @@ interface navbarProps {
   catalogoSucursales: catalogoSucursales[];
 }
 const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
+  const [value, setValue] = React.useState<string>(`${user?.Sucursal_principal}`);
 
+  const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setValue(e.target.value);
+  };
   const sucursales = catalogoSucursales.map((suc) => ({
     key: suc.sucursal,
     label: suc.sucursal,
@@ -30,6 +34,7 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
           className="max-w-xs"
           size='sm'
           defaultSelectedKeys={[`${user?.Sucursal_principal}`]}
+          onChange={handleSelectionChange}
         >
           {sucursales?.map((item) => (
             <SelectItem key={item.key}>
