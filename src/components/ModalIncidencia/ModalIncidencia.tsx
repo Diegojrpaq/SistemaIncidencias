@@ -26,11 +26,14 @@ const ModalIncidencia = ({ numGuia, textButton }: modalProps) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [inc, setInc] = useState();
     const [statusRes, setStatusRes] = useState();
+    const [chatData, setChatData] = useState();
 
     const getData = async () => {
-        const { status, ...dataIncidencia } = await getDataByGuia(`${urlServer}/Incidencias/validacionGuia`, `${numGuia}`);
+        // const { status, ...dataIncidencia } = await getDataByGuia(`${urlServer}/Incidencias/validacionGuia`, `${numGuia}`);
+        const { status, ...dataIncidencia } = await getDataByGuia(`${urlServer}/Incidencias/validacionGuia`, `GUA-465660`);
         setInc(dataIncidencia)
         setStatusRes(status)
+        setChatData(dataIncidencia.chatData)
     }
     return (
         <>
@@ -77,7 +80,7 @@ const ModalIncidencia = ({ numGuia, textButton }: modalProps) => {
                                     {/* Sección derecha - Chat */}
                                     {
                                         inc && statusRes === 200 ?
-                                            <Chat />
+                                            <Chat chatData={chatData}/>
                                             : statusRes === 204 ?
                                                 <div className="w-1/2 text-lg text-center w-full">
                                                     No existe información del chat

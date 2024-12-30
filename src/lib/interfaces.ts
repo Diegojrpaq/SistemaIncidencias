@@ -50,3 +50,37 @@ export interface catalogoSucursales {
     id: number,
     sucursal: string,
 }
+
+export interface Mensaje {
+    idUser: number,
+    user: string,
+    idTipoMensaje: number,
+    mensaje: string,
+    fechaRegistro: string,
+}
+
+export interface Participante {
+    idAdmin: number,
+    isActive: number,
+    idEmpleado: number,
+    empleado: string,
+    fechaUnion: string,
+}
+
+export interface SucursalChat {
+    idSucursal: number,
+    sucursal: string,
+    isActive: number,
+    fechaUnion: string,
+}
+
+export interface chatData {
+    idAdmin: number,
+    admin: string,
+    fechaCreacion: string,
+    idChat: number,
+    nombreChat: string,
+    listMensajes: Mensaje[],
+    listParticipantes: Participante[],
+    listSucursales: SucursalChat[],
+}

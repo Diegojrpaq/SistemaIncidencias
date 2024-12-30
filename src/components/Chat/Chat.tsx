@@ -1,25 +1,50 @@
 import { IncidenciasContext } from '@/context/IncidenciasContext';
+import { chatData, Mensaje } from '@/lib/interfaces';
 import { Input } from '@nextui-org/react';
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { IoSendSharp } from "react-icons/io5";
 interface dataMessage {
     body: string;
     from: string | undefined;
 }
-const Chat = () => {
+
+interface propsChat {
+    chatData: chatData | undefined;
+}
+const Chat = ({chatData}: propsChat) => {
     const dataUserAndIncidencias = useContext(IncidenciasContext);
     const userData = dataUserAndIncidencias?.userData;
     const [messages, setMessages] = useState<dataMessage[]>([
-        {
-            body: 'Falta mercancia',
-            from: 'Juan Zaragoza',
-        },
-        {
-            body: 'Se envio completa',
-            from: 'Pedro Serrano',
-        },
+        // {
+        //     body: 'Falta mercancia',
+        //     from: 'Juan Zaragoza',
+        // },
+        // {
+        //     body: 'Se envio completa',
+        //     from: 'Pedro Serrano',
+        // },
     ]);
     const [valueMsg, setValueMsg] = useState("");
+
+    const formatMessages = (arr: Mensaje[]) => {
+        const messages = arr.map(message => {
+            return {
+                body: message.mensaje,
+                from: message.user,
+            }
+        })
+        return messages;
+    }
+
+    useEffect(() => {
+        setMessages(
+            chatData !== undefined ? chatData?.listMensajes?.map(item => ({
+                body: item.mensaje,
+                from: item.user,
+            }))
+            : []
+        )
+    }, [chatData])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -56,7 +81,7 @@ const Chat = () => {
         <>
             <div className="w-1/3 max-h-[700px] flex flex-col bg-gray-200 shadow-lg rounded-lg p-2">
                 <div className='w-full pl-3 pb-1 text-lg border-b-1 border-gray-600 break-words'>
-                    <h3>Nombre del chat</h3>
+                    <h3>Nombre del chat: {chatData?.nombreChat}</h3>
                 </div>
                 <div className="overflow-y-auto p-4 overflow-x-hidden scrollbar-hide">
                     <div className="h-screen">
