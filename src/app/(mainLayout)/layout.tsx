@@ -25,17 +25,20 @@ import { dataResponse } from '@/lib/interfaces';
 import Navbar from '@/components/navbar/Navbar';
 import { IncidenciaProvider } from '@/context/IncidenciasContext';
 import { urlServer } from '@/lib/url';
+import { useSearchParams } from 'next/navigation';
 /*Importaciones de funcione dependencias */
 /*----------------------------------------------------------------------------*/
 
 
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>){
   const [sessionData, setSessionData] = useState<dataResponse | null>(null);
+  const searchParams = useSearchParams();
+  const idUser = searchParams.get('id');
 
   useEffect(() => {
     const getDataUser = async () => {
       try {
-        const responseData = await fetchGet(`${urlServer}/Incidencias/getSession/1591`);
+        const responseData = await fetchGet(`${urlServer}/Incidencias/getSession/${idUser}`);
         if (responseData.status !== 200) {
           throw new Error('Error al obtener los datos');
         }
