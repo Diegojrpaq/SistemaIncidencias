@@ -1,11 +1,14 @@
 import { IncidenciasContext } from '@/context/IncidenciasContext';
+import { sendMessage } from '@/lib/api';
 import { chatData, Mensaje } from '@/lib/interfaces';
+import { formatDate, getDateAndTimeFormat } from '@/lib/utils';
 import { Input } from '@nextui-org/react';
 import React, { useContext, useEffect, useState } from 'react'
 import { IoSendSharp } from "react-icons/io5";
 interface dataMessage {
     body: string;
     from: string | undefined;
+    createdAt: string;
 }
 
 interface propsChat {
@@ -41,6 +44,7 @@ const Chat = ({chatData}: propsChat) => {
             chatData !== undefined ? chatData?.listMensajes?.map(item => ({
                 body: item.mensaje,
                 from: item.user,
+                createdAt: getDateAndTimeFormat(item.fechaRegistro),
             }))
             : []
         )
@@ -52,21 +56,35 @@ const Chat = ({chatData}: propsChat) => {
     };
 
     // Manejador de envío
-    const handleSend = () => {
+    const handleSend = async () => {
         if (valueMsg.trim()) {
+            const fechaHoy = new Date();
             //Crear nuevo mensaje
             const newMsg = {
                 body: valueMsg,
                 from: userData?.nombre,
+                createdAt: getDateAndTimeFormat(fechaHoy),
+            }
+
+            const sendDataMsg = {
+                idChat: chatData?.idChat,
+                idUser: userData?.id,
+                msgText: valueMsg,
             }
             //Guardar mensaje API
-
+            const sendMsg = await sendMessage(sendDataMsg)
+    
             /*Si se guardo correctamente en BD, se renderizara en el chat, 
             si hay error aparecera aviso de error.*/
-
+            if(sendMsg.status === 200) {
+                setMessages([...messages, newMsg]);
+                setValueMsg("");
+            } else {
+                console.log('Error al guardar mensaje')
+            }
             //Guardarlo para que se vea en el chat
-            setMessages([...messages, newMsg]);
-            setValueMsg(""); // Limpia el input
+            //setMessages([...messages, newMsg]);
+            //setValueMsg(""); // Limpia el input
         }
     };
 
@@ -107,6 +125,7 @@ const Chat = ({chatData}: propsChat) => {
 
                                         <div className='message max-w-xs'>
                                             <p className="break-words">{msg.body}</p>
+                                            <p className='text-right text-xs mt-2'>{msg.createdAt}</p>
                                         </div>
                                     </li>
                                 ))

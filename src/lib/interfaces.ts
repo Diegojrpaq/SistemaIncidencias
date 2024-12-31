@@ -84,3 +84,9 @@ export interface chatData {
     listParticipantes: Participante[],
     listSucursales: SucursalChat[],
 }
+
+export interface dataSendMessage {
+    idChat: number | undefined,
+    idUser: number | undefined,
+    msgText: string,
+}
