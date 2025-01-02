@@ -29,8 +29,8 @@ const ModalIncidencia = ({ numGuia, textButton }: modalProps) => {
     const [chatData, setChatData] = useState();
 
     const getData = async () => {
-        // const { status, ...dataIncidencia } = await getDataByGuia(`${urlServer}/Incidencias/validacionGuia`, `${numGuia}`);
-        const { status, ...dataIncidencia } = await getDataByGuia(`${urlServer}/Incidencias/validacionGuia`, `GUA-465660`);
+        const { status, ...dataIncidencia } = await getDataByGuia(`${urlServer}/Incidencias/validacionGuia`, `${numGuia}`);
+        //const { status, ...dataIncidencia } = await getDataByGuia(`${urlServer}/Incidencias/validacionGuia`, `GUA-465660`);
         setInc(dataIncidencia)
         setStatusRes(status)
         setChatData(dataIncidencia.chatData)

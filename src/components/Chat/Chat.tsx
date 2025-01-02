@@ -77,14 +77,16 @@ const Chat = ({chatData}: propsChat) => {
             /*Si se guardo correctamente en BD, se renderizara en el chat, 
             si hay error aparecera aviso de error.*/
             if(sendMsg.status === 200) {
-                setMessages([...messages, newMsg]);
-                setValueMsg("");
+                if(messages === undefined) {
+                    setMessages([newMsg]);
+                    setValueMsg("");
+                } else {
+                    setMessages([...messages, newMsg]);
+                    setValueMsg("");
+                }
             } else {
                 console.log('Error al guardar mensaje')
             }
-            //Guardarlo para que se vea en el chat
-            //setMessages([...messages, newMsg]);
-            //setValueMsg(""); // Limpia el input
         }
     };
 
@@ -105,7 +107,7 @@ const Chat = ({chatData}: propsChat) => {
                     <div className="h-screen">
                         <ul>
                             {
-                                messages.map((msg, index) => (
+                                messages && messages.map((msg, index) => (
                                     <li key={index}
                                         className={
                                             `message max-w-xs my-2 p-3 table text-sm rounded-md block
