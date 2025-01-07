@@ -43,7 +43,8 @@ export interface IncidenciaDataModal extends Incidencia{
     fecha_registro_incidencia: string,
     is_paqueteria: number,
     numGuiaproporcionado: string,
-    sucursal_incidencia: string
+    //sucursal_incidencia: string
+    suc_genera_incidencia?: string,
 }
 
 export interface catalogoSucursales {

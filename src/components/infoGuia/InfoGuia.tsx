@@ -59,7 +59,7 @@ const InfoGuia = ({incidencia}: infoGuiaProps) => {
                             <div className="grid grid-cols-auto">
                                 <div className="flex flex-col gap-2 p-2">
                                     <p><Chip size="lg" radius="sm">Motivo incidencia:</Chip> {incidencia.descripcion}</p>
-                                    <p><Chip size="lg" radius="sm">Sucursal:</Chip> {incidencia.sucursal_incidencia}</p>
+                                    <p><Chip size="lg" radius="sm">Sucursal:</Chip> {incidencia.suc_genera_incidencia}</p>
                                     <p><Chip size="lg" radius="sm">Creada por:</Chip> {incidencia.empleado_registra}</p>
                                     <p><Chip size="lg" radius="sm">Registro incidencia:</Chip> {formatDate(incidencia.fecha_registro_incidencia)}</p>
                                     <p><Chip size="lg" radius="sm">Descripcion:</Chip> {incidencia.nota}</p>
