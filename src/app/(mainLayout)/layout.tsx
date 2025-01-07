@@ -26,11 +26,12 @@ import Navbar from '@/components/navbar/Navbar';
 import { IncidenciaProvider } from '@/context/IncidenciasContext';
 import { urlServer } from '@/lib/url';
 import { useSearchParams } from 'next/navigation';
+import { SearchProvider } from '@/context/SearchContext';
 /*Importaciones de funcione dependencias */
 /*----------------------------------------------------------------------------*/
 
 
-export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>){
+export default function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
   const [sessionData, setSessionData] = useState<dataResponse | null>(null);
   const searchParams = useSearchParams();
   const idUser = searchParams.get('id');
@@ -62,24 +63,20 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
       <>
         <div className='flex h-screen'>
           <Sidebar dataUser={sessionData?.User}>
-            <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} link={"/"}/>
-            <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} link={"/table"}/>
-            <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} link={"/"}/>
-            <SidebarItem icon={<LuSettings size={27} />} active text={"Configuraciones"} link={"/about"}/>
+            <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} link={"/"} />
+            <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} link={"/table"} />
+            <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} link={"/"} />
+            <SidebarItem icon={<LuSettings size={27} />} active text={"Configuraciones"} link={"/about"} />
           </Sidebar>
 
           <div className="flex-1 flex flex-col z-10">
-            {/* Navbar */}
-            <Navbar user={sessionData?.User} catalogoSucursales={sessionData?.User?.catalogoSucursales} />
-            <IncidenciaProvider userData={sessionData?.User}>
-              {children}
-            </IncidenciaProvider>
-
-            {/* Main content */}
-            {/* <main className=''>
-              Main
-            </main> */}
-           
+            <SearchProvider>
+              {/* Navbar */}
+              <Navbar user={sessionData?.User} catalogoSucursales={sessionData?.User?.catalogoSucursales} />
+              <IncidenciaProvider userData={sessionData?.User}>
+                {children}
+              </IncidenciaProvider>
+            </SearchProvider>
           </div>
         </div>
       </>

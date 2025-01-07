@@ -1,12 +1,13 @@
 import React from 'react'
 import { Select, SelectItem, Input } from "@nextui-org/react";
 import { catalogoSucursales, dataUser } from '@/lib/interfaces';
-
+import { useSearch } from '@/context/SearchContext';
 interface navbarProps {
   user?: dataUser;
   catalogoSucursales: catalogoSucursales[];
 }
 const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
+  const { query, setQuery } = useSearch();
   const [value, setValue] = React.useState<string>(`${user?.Sucursal_principal}`);
 
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -47,6 +48,8 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
       <div>
         <div className="w-[310px] rounded-md flex justify-center items-center">
           <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             isClearable
             size='sm'
             classNames={{
