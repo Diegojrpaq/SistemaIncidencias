@@ -56,7 +56,6 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            isClearable
             size='sm'
             classNames={{
               input: [

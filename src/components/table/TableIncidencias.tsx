@@ -26,6 +26,7 @@ import { IncidenciasContext } from "@/context/IncidenciasContext";
 import { Incidencia } from "@/lib/interfaces";
 import { formatDate } from "@/lib/utils";
 import ModalIncidencia from "../ModalIncidencia/ModalIncidencia";
+import { useSearch } from "@/context/SearchContext";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
     size?: number;
@@ -423,7 +424,17 @@ const INITIAL_VISIBLE_COLUMNS = ["creador", "numGuia", "fechaRegistro", "origen"
 export default function TableIncidencias() {
     const dataUserAndIncidencias = useContext(IncidenciasContext);
     const incidencias = dataUserAndIncidencias?.incidencias;
+    const { query, filter } = useSearch();
     //type User = (typeof users)[0];
+
+    const filteredCards = incidencias?.filter((incidencia) => {
+        const matchesQuery =
+            incidencia.numGuia.toLowerCase().includes(query.toLowerCase());
+
+        const matchesFilter = filter === -1 || incidencia.idSucursal === filter;
+
+        return matchesQuery && matchesFilter;
+    });
 
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
@@ -525,7 +536,7 @@ export default function TableIncidencias() {
             case "actions":
                 return (
                     <div className="relative flex justify-center items-center gap-2">
-                        <Tooltip content="Details">
+                        <Tooltip content="Detalles">
                             {/* Agregar modal */}
                             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                                 <ModalIncidencia
@@ -534,7 +545,7 @@ export default function TableIncidencias() {
                                 />
                             </span>
                         </Tooltip>
-                        <Tooltip content="Edit user">
+                        {/* <Tooltip content="Edit user">
                             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                                 <EditIcon />
                             </span>
@@ -543,7 +554,7 @@ export default function TableIncidencias() {
                             <span className="text-lg text-danger cursor-pointer active:opacity-50">
                                 <DeleteIcon />
                             </span>
-                        </Tooltip>
+                        </Tooltip> */}
                     </div>
                 );
             case "fechaRegistro":
@@ -693,7 +704,7 @@ export default function TableIncidencias() {
                     </TableColumn>
                 )}
             </TableHeader>
-            <TableBody items={incidencias}>
+            <TableBody items={filteredCards}>
                 {(item) => (
                     <TableRow key={item.numGuia}>
                         {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
