@@ -7,16 +7,21 @@ interface navbarProps {
   catalogoSucursales: catalogoSucursales[];
 }
 const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
-  const { query, setQuery } = useSearch();
+  const { query, setQuery, filter, setFilter } = useSearch();
   const [value, setValue] = React.useState<string>(`${user?.Sucursal_principal}`);
 
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setValue(e.target.value);
+    setFilter(Number(e.target.value))
   };
   const sucursales = catalogoSucursales.map((suc) => ({
-    key: suc.sucursal,
+    key: suc.id,
     label: suc.sucursal,
   }))
+  sucursales.push({
+    key: -1,
+    label: 'Todas sucursales',
+  })
   return (
     <nav className={
       `
@@ -31,10 +36,11 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
 
       <div className='w-full flex justify-end pr-4'>
         <Select
+          value={filter}
           label="Selecciona una sucursal"
           className="max-w-xs"
           size='sm'
-          defaultSelectedKeys={[`${user?.Sucursal_principal}`]}
+          defaultSelectedKeys={[`${-1}`]}
           onChange={handleSelectionChange}
         >
           {sucursales?.map((item) => (

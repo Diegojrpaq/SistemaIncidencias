@@ -2,6 +2,7 @@ export interface dataUser {
     id: number,
     nombre: string,
     correo_electronico: string,
+    id_sucursal: number,
     Sucursal_principal: string,
     Destino: string,
     permiso: number[],
@@ -31,7 +32,8 @@ export interface Incidencia {
     resuelto: number,
     nota: string,
     empleadoId: number,
-    empleadoNombre: string
+    empleadoNombre: string,
+    idSucursal: number,
 }
 
 //descripcion, empleado_puesto, Resuelto, empleado_registra, fecha_registro_incidencia, is_paqueteria, numGuiaproporcionaddo, sucursal_incidencia

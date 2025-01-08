@@ -9,18 +9,27 @@ import { useSearch } from '@/context/SearchContext';
 export default function page() {
   const dataUserAndIncidencias = useContext(IncidenciasContext);
   const incidencias = dataUserAndIncidencias?.incidencias;
-  const { query } = useSearch();
+  const { query, filter } = useSearch();
 
   const searchIncidencias = incidencias?.filter(
     (incidencia) =>
       incidencia.numGuia.toLowerCase().includes(query.toLowerCase())
   );
 
+  const filteredCards = incidencias?.filter((incidencia) => {
+    const matchesQuery = 
+      incidencia.numGuia.toLowerCase().includes(query.toLowerCase());
+
+    const matchesFilter = filter === -1 || incidencia.idSucursal === filter;
+
+    return matchesQuery && matchesFilter;
+  })
+
   //Filtrar las incidencias para cada columna
-  const incidenciasAbiertas = searchIncidencias?.filter((item: Incidencia) => item.resuelto === 1);
-  const incidenciasResolucion = searchIncidencias?.filter((item: Incidencia) => item.resuelto === 2);
+  const incidenciasAbiertas = filteredCards?.filter((item: Incidencia) => item.resuelto === 1);
+  const incidenciasResolucion = filteredCards?.filter((item: Incidencia) => item.resuelto === 2);
   const incidenciasSolicitudCierre = incidencias?.filter((item: Incidencia) => item.resuelto === 3);
-  const incidenciasCerradas = searchIncidencias?.filter((item: Incidencia) => item.resuelto === 4);
+  const incidenciasCerradas = filteredCards?.filter((item: Incidencia) => item.resuelto === 4);
 
   return (
     <>

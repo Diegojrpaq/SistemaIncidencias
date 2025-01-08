@@ -8,15 +8,17 @@ import {
 interface SearchContextProps {
     query: string;
     setQuery: (query: string) => void;
+    filter: number;
+    setFilter: (filter: number) => void;
 }
 
 const SearchContext = createContext<SearchContextProps | undefined>(undefined);
 
 export const SearchProvider = ({ children }: { children: ReactNode }) => {
     const [query, setQuery] = useState<string>("");
-
+    const [filter, setFilter] = useState<number>(-1);
     return (
-        <SearchContext.Provider value={{ query, setQuery }}>
+        <SearchContext.Provider value={{ query, setQuery, filter, setFilter }}>
             {children}
         </SearchContext.Provider>
     );
