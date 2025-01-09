@@ -1,7 +1,7 @@
 import React from 'react'
 import CardIncidencia from '@/components/CardIncidencia/CardIncidencia';
 import { Incidencia } from '@/lib/interfaces';
-import {Chip} from "@nextui-org/react";
+import { Chip } from "@nextui-org/react";
 interface propsColumn {
     title: string;
     incidencias: Incidencia[] | undefined;
@@ -12,7 +12,7 @@ const Column = ({ title, incidencias }: propsColumn) => {
             rounded-lg min-w-[364px]'>
             <div className='flex items-center p-4 w-full'>
                 <h3 className='text-start text-lg mr-2'>{title}</h3>
-                <Chip 
+                <Chip
                     radius="sm"
                 >
                     {
@@ -26,8 +26,10 @@ const Column = ({ title, incidencias }: propsColumn) => {
                 scrollbar-hide'
             >
                 {
-                   incidencias && incidencias?.map((incidencia) => (
-                        <CardIncidencia dataCard={incidencia} />
+                    incidencias && incidencias?.map((incidencia) => (
+                        <div key={incidencia.numGuia + Math.random()}>
+                            <CardIncidencia dataCard={incidencia} />
+                        </div>
                     ))
                 }
 
