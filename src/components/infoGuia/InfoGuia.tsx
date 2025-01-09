@@ -9,6 +9,7 @@ import {
     Chip
 } from "@nextui-org/react";
 import TableSucursales from "../table/TableSucursales";
+import SelectSucursalAsociada from "../select/SelectSucursalAsociada";
 
 interface infoGuiaProps {
     incidencia: IncidenciaDataModal;
@@ -119,8 +120,9 @@ const InfoGuia = ({incidencia, chatData}: infoGuiaProps) => {
 
                     <Card>
                         <CardHeader className="flex gap-3">
-                            <div className="flex items-center gap-2 ml-3">
+                            <div className="flex w-full justify-between items-center gap-2 ml-3">
                                 <p className="text-lg">Información Sucursales</p>
+                                <SelectSucursalAsociada />
                             </div>
                         </CardHeader>
                         <Divider />
