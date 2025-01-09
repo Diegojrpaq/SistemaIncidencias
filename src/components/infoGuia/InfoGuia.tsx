@@ -1,4 +1,4 @@
-import { IncidenciaDataModal } from "@/lib/interfaces";
+import { chatData, IncidenciaDataModal } from "@/lib/interfaces";
 import { formatDate } from "@/lib/utils";
 import {
     Card,
@@ -8,12 +8,14 @@ import {
     Image,
     Chip
 } from "@nextui-org/react";
+import TableSucursales from "../table/TableSucursales";
 
 interface infoGuiaProps {
-    incidencia: IncidenciaDataModal
+    incidencia: IncidenciaDataModal;
+    chatData: chatData | undefined;
 }
 
-const InfoGuia = ({incidencia}: infoGuiaProps) => {
+const InfoGuia = ({incidencia, chatData}: infoGuiaProps) => {
   return (
 <div className="flex flex-col gap-3 
             p-4"
@@ -111,6 +113,19 @@ const InfoGuia = ({incidencia}: infoGuiaProps) => {
 
                                 </div>
                             </div>
+                        </CardBody>
+
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex gap-3">
+                            <div className="flex items-center gap-2 ml-3">
+                                <p className="text-lg">Información Sucursales</p>
+                            </div>
+                        </CardHeader>
+                        <Divider />
+                        <CardBody>
+                            <TableSucursales sucursales={chatData?.listSucursales}/>
                         </CardBody>
 
                     </Card>

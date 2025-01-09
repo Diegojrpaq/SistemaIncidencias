@@ -65,7 +65,7 @@ const ModalIncidencia = ({ numGuia, textButton }: modalProps) => {
                                     {
                                         inc && statusRes === 200 ?
                                             <div className="w-2/3 max-h-[700px] overflow-y-auto p-4 overflow-x-hidden scrollbar-hide">
-                                                <InfoGuia incidencia={inc} />
+                                                <InfoGuia incidencia={inc} chatData={chatData} />
                                             </div>
                                             : statusRes === 204 ?
                                                 <div className="text-lg text-center w-96">
