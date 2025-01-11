@@ -1,112 +1,54 @@
 'use client'
-
-import React from 'react'
+import Column from '../../components/Column/Column'
+import { useContext } from "react";
+import { IncidenciasContext } from '@/context/IncidenciasContext'
+import MainIncidencias from '@/components/main/mainIncidencias';
+import { Incidencia } from '@/lib/interfaces';
+import { useSearch } from '@/context/SearchContext';
 
 export default function page() {
+  const dataUserAndIncidencias = useContext(IncidenciasContext);
+  const incidencias = dataUserAndIncidencias?.incidencias;
+  const { query, filter } = useSearch();
+
+  const searchIncidencias = incidencias?.filter(
+    (incidencia) =>
+      incidencia.numGuia.toLowerCase().includes(query.toLowerCase())
+  );
+
+  const filteredCards = incidencias?.filter((incidencia) => {
+    const matchesQuery = 
+      incidencia.numGuia.toLowerCase().includes(query.toLowerCase());
+
+    const matchesFilter = filter === -1 || incidencia.idSucursal === filter;
+
+    return matchesQuery && matchesFilter;
+  })
+
+  //Filtrar las incidencias para cada columna
+  const incidenciasAbiertas = filteredCards?.filter((item: Incidencia) => item.resuelto === 1);
+  const incidenciasResolucion = filteredCards?.filter((item: Incidencia) => item.resuelto === 2);
+  const incidenciasSolicitudCierre = incidencias?.filter((item: Incidencia) => item.resuelto === 3);
+  const incidenciasCerradas = filteredCards?.filter((item: Incidencia) => item.resuelto === 4);
+
   return (
     <>
-      <div>
-        page home
-      </div>
+      <MainIncidencias>
+        <Column
+          title='Incidencias Abiertas'
+          incidencias={incidenciasAbiertas}
+        />
+        <Column
+          title='Incidencias en Resolución'
+          incidencias={incidenciasResolucion}
+        />
+        <Column
+          title='Incidencias Cerradas'
+          incidencias={incidenciasCerradas}
+        />
+      </MainIncidencias>
     </>
   )
+
+
 }
-
-
-
-/* import Image from "next/image";
-import styles from "../../styles/page.module.css";
-
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
-}
- */

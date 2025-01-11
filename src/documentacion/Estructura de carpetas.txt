@@ -23,6 +23,8 @@ my-next-app/
 │   ├── documentacion/         // Documentación de la aplicación
 │   ├── app/
 │   │   ├── (mainLayout)  
+│   │   │    ├── about
+│   │   │    │   └──page.tsx
 │   │   │    ├── page.tsx       // Ruta /principal recordemos que al utilizar los parentesis reasignamos la carpeta principal
 │   │   │    └── layout.tsx         // Layout compartido para todas las rutas dentro de el mainLayout
 │   │   │
