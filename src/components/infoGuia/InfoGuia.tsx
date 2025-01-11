@@ -1,4 +1,4 @@
-import { chatData, IncidenciaDataModal } from "@/lib/interfaces";
+import { chatData, IncidenciaDataModal, SucursalChat } from "@/lib/interfaces";
 import { formatDate } from "@/lib/utils";
 import {
     Card,
@@ -10,6 +10,7 @@ import {
 } from "@nextui-org/react";
 import TableSucursales from "../table/TableSucursales";
 import SelectSucursalAsociada from "../select/SelectSucursalAsociada";
+import { useState } from "react";
 
 interface infoGuiaProps {
     incidencia: IncidenciaDataModal;
@@ -17,6 +18,7 @@ interface infoGuiaProps {
 }
 
 const InfoGuia = ({ incidencia, chatData }: infoGuiaProps) => {
+    const [listSucursales, setListSucursales] = useState<SucursalChat[] | undefined>(chatData?.listSucursales)
     return (
         <div className="flex flex-col gap-3 p-4">
             <Card>
@@ -108,12 +110,17 @@ const InfoGuia = ({ incidencia, chatData }: infoGuiaProps) => {
                 <CardHeader className="flex gap-3">
                     <div className="flex w-full justify-between items-center gap-2 ml-3">
                         <p className="text-lg">Información Sucursales</p>
-                        <SelectSucursalAsociada />
+                        <SelectSucursalAsociada 
+                            idChat={chatData?.idChat} 
+                            sucursalesState={listSucursales}
+                            setSucursales={setListSucursales}
+                            numGuia={incidencia.numGuia}
+                        />
                     </div>
                 </CardHeader>
                 <Divider />
                 <CardBody>
-                    <TableSucursales sucursales={chatData?.listSucursales} />
+                    <TableSucursales sucursales={listSucursales} />
                 </CardBody>
             </Card>
         </div>

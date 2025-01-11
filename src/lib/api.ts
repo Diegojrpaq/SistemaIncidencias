@@ -49,3 +49,47 @@ export const sendMessage = async (dataMessage: dataSendMessage) => {
     console.error(`Error, no se pudo enviar el mensaje`, error);
   }
 }
+
+export const addSucursalIncidencia = async (
+  idSucursal: number | undefined,
+  idChat: number | undefined,
+  idUser: number | undefined,
+) => {
+  if (
+    idSucursal === undefined ||
+    idChat === undefined ||
+    idUser === undefined
+  ) {
+    return {
+      status: 400,
+      message: 'Faltan datos necesarios para agregar la sucursal a la incidencia',
+    };
+  }
+
+  try {
+    const response = await fetch(`${urlServer}/Incidencias/setSucursal`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        idUser,
+        idSucursal,
+        idChat,
+      }),
+      cache: 'no-store'
+    })
+    const data = await response.json();
+    return {
+      status: response.status,
+      message: "Sucursal agregada exitosamente",
+      data,
+    };
+  } catch (error) {
+    console.error(`Error, no se pudo agregar la sucursal a la incidencia`, error);
+    return {
+      status: 500,
+      message: 'Error interno del servidor',
+    };
+  }
+}
