@@ -73,8 +73,8 @@ CREATE TABLE incidencia_log_estatus (
     id_empleado_modifica BIGINT NOT NULL,
     fecha_cambio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_incidencia) REFERENCES viaje_incidencia(id),
-    FOREIGN KEY (id_estatus_anterior) REFERENCES catalogo_estatus_incidencia(id),
-    FOREIGN KEY (id_estatus_nuevo) REFERENCES catalogo_estatus_incidencia(id),
+    FOREIGN KEY (id_estatus_anterior) REFERENCES incidencia_viaje_estatus(id),
+    FOREIGN KEY (id_estatus_nuevo) REFERENCES incidencia_viaje_estatus(id),
     FOREIGN KEY (id_empleado_modifica) REFERENCES empleado_principal(id)
 );/*virificada en Capacitacion*/
 
@@ -102,6 +102,11 @@ CREATE TABLE chat_miembro (
     FOREIGN KEY (id_empleado) REFERENCES empleado_principal(id)
 );/*virificada en Capacitacion*/
 
+CREATE TABLE chat_tipo_mensaje (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    tipo TEXT NOT NULL,
+    descripcion TEXT
+);/*virificada en Capacitacion*/
 
 CREATE TABLE chat_mensaje (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -111,22 +116,18 @@ CREATE TABLE chat_mensaje (
     id_tipo_mensaje BIGINT NOT NULL,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_received BOOLEAN DEFAULT FALSE,
-    date_received TIMESTAMP default null,
+    date_received DATETIME default null,
     is_read BOOLEAN DEFAULT FALSE,
-    fecha_leido TIMESTAMP default null,
+    fecha_leido DATETIME default null,
     is_deleted BOOLEAN DEFAULT FALSE,
-    fecha_borrado TIMESTAMP default null,
-    mensaje_status int default 1;
-    -- FOREIGN KEY (id_tipo_mensaje) REFERENCES tipo_mensajes(id),
+    fecha_borrado DATETIME default null,
+    mensaje_status int default 1,
+    FOREIGN KEY (id_tipo_mensaje) REFERENCES tipo_mensajes(id),
     FOREIGN KEY (id_chat) REFERENCES chat_incidencias(id),
     FOREIGN KEY (id_user) REFERENCES empleado_principal(id)
 );/*virificada en Capacitacion*/
 
-CREATE TABLE chat_tipo_mensaje (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    tipo TEXT NOT NULL,
-    descripcion TEXT
-);/*virificada en Capacitacion*/
+
 
 CREATE TABLE chat_sucursal_involucrada (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
