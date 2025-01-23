@@ -16,6 +16,8 @@ import Chat from "../Chat/Chat";
 import SkeletonInfoGuia from "../skeleton/skeletonInfoGuia";
 import { urlServer } from "@/lib/url";
 import { EyeIcon } from "../icons/EyeIcon";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 interface modalProps {
     //incidencia: Incidencia
     numGuia: string;
@@ -58,6 +60,7 @@ const ModalIncidencia = ({ numGuia, textButton }: modalProps) => {
                 <ModalContent>
                     {(onClose) => (
                         <>
+                        <ToastContainer position='bottom-center' autoClose={3000} />
                             <ModalHeader className="flex">Detalles</ModalHeader>
                             <ModalBody className="flex justify-center items-center">
                                 <div className="w-full flex">
