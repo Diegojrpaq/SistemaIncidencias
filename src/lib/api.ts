@@ -93,3 +93,32 @@ export const addSucursalIncidencia = async (
     };
   }
 }
+
+export const getEscaneo = async (numGuia: string) => {
+  try {
+    const response = await fetch(`${urlServer}/Incidencias/getEscaneo/${numGuia}`);
+    if (!response.ok) {
+      throw new Error('Error en la solicitud');
+    }
+    const data = await response.json();
+    //console.log("Escaneo", data)
+    return data;
+  } catch (error) {
+    console.error('Error al obtener datos:', error);
+  }
+}
+
+export const fetchDataAllCards = async (cardIds: string[] | undefined) => {
+  if(cardIds === undefined) {
+    return {
+      status: 400,
+      message: 'Faltan datos necesarios para obtener el escaneo',
+    };
+  }
+  const requests = cardIds.map(numGuia => 
+    fetch(`${urlServer}/Incidencias/getEscaneo/${numGuia}`)
+     .then(res => res.json())
+  );
+  const responses = await Promise.all(requests);
+  return responses;
+}
