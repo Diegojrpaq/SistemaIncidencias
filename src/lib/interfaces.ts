@@ -34,10 +34,11 @@ export interface Incidencia {
     empleadoId: number,
     empleadoNombre: string,
     idSucursal: number,
+    dataEscaneo: null | dataEscaneo,
 }
 
 //descripcion, empleado_puesto, Resuelto, empleado_registra, fecha_registro_incidencia, is_paqueteria, numGuiaproporcionaddo, sucursal_incidencia
-export interface IncidenciaDataModal extends Incidencia{
+export interface IncidenciaDataModal extends Incidencia {
     descripcion: string,
     empleado_puesto: string,
     Resuelto: number,
@@ -92,4 +93,37 @@ export interface dataSendMessage {
     idChat: number | undefined,
     idUser: number | undefined,
     msgText: string,
+}
+
+interface escaneoData {
+    idClaveUnica: number;
+    numGuia: string;
+    consecutivoMostrar: string;
+    idContenedorPrincipal: number;
+    idKardex: number;
+    idDestinoUbicacion: number;
+    destinoUbicacion: string;
+    idSucursalUbicacion: number;
+    sucursalUbicacion: string;
+    idViaje: number;
+    idViajeClave: number;
+    idContenedor: number;
+    notas: string;
+    fechaRegistroKardex: string;
+    fechaDispositivoKardex: string;
+    isScanned: number;
+    diaEscaneo: string;
+}
+
+export interface scanDto {
+    contenedor: number | null,
+    escaneo: escaneoData[] | null,
+    listSucursales: catalogoSucursales[] | null,
+    numItems: number | null
+}
+
+export interface dataEscaneo {
+    status: number,
+    description: string,
+    scanDto: scanDto,
 }

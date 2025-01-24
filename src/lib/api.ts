@@ -1,4 +1,4 @@
-import { dataSendMessage } from "./interfaces";
+import { dataSendMessage, Incidencia } from "./interfaces";
 import { urlServer } from "./url";
 
 export const fetchGet = async (url: string) => {
@@ -101,24 +101,28 @@ export const getEscaneo = async (numGuia: string) => {
       throw new Error('Error en la solicitud');
     }
     const data = await response.json();
-    //console.log("Escaneo", data)
     return data;
   } catch (error) {
     console.error('Error al obtener datos:', error);
   }
 }
 
-export const fetchDataAllCards = async (cardIds: string[] | undefined) => {
-  if(cardIds === undefined) {
-    return {
-      status: 400,
-      message: 'Faltan datos necesarios para obtener el escaneo',
-    };
-  }
-  const requests = cardIds.map(numGuia => 
-    fetch(`${urlServer}/Incidencias/getEscaneo/${numGuia}`)
-     .then(res => res.json())
+export const fetchIncidencias = async (incidencias: Incidencia[]) => {
+  const newIncidencias = await Promise.all(
+    incidencias.map(async (incidencia) => {
+      const dataEscaneo = await getEscaneo(incidencia.numGuia);
+      if (dataEscaneo.status === 200) {
+        return {
+          ...incidencia,
+          dataEscaneo: dataEscaneo,
+        };
+      } else {
+        return {
+          ...incidencia,
+          dataEscaneo: null,
+        };
+      }
+    })
   );
-  const responses = await Promise.all(requests);
-  return responses;
+  return newIncidencias;
 }
