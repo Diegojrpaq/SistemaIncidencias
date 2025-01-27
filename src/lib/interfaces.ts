@@ -95,7 +95,7 @@ export interface dataSendMessage {
     msgText: string,
 }
 
-interface escaneoData {
+export interface escaneoData {
     idClaveUnica: number;
     numGuia: string;
     consecutivoMostrar: string;
