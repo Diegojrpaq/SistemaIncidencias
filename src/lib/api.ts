@@ -1,4 +1,8 @@
-import { dataSendMessage, Incidencia } from "./interfaces";
+import { 
+  dataChangeStatus, 
+  dataSendMessage, 
+  Incidencia 
+} from "./interfaces";
 import { urlServer } from "./url";
 
 export const fetchGet = async (url: string) => {
@@ -125,4 +129,43 @@ export const fetchIncidencias = async (incidencias: Incidencia[]) => {
     })
   );
   return newIncidencias;
+}
+
+export const changeStatus = async (
+  dataChangeStatus: dataChangeStatus
+) => {
+  console.log(dataChangeStatus)
+  if (dataChangeStatus.idUser === 0) {
+    return {
+      status: 400,
+      message: 'Faltan datos necesarios para cambiar el estado de la incidencia',
+    };
+  }
+  try {
+    const response = await fetch(`${urlServer}/Incidencias/changeStatus`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        idIncidencia: dataChangeStatus.idIncidencia,
+        idStatus: dataChangeStatus.idStatus,
+        idUser: dataChangeStatus.idUser,
+      }),
+      cache: 'no-store'
+    });
+    //console.log("res ",response)
+    if (!response.ok) {
+      return {
+        status: response.status,
+        message: 'Error al cambiar el estado de la incidencia',
+      }
+      //throw new Error('Error en la solicitud');
+    }
+    const data = await response.json();
+    console.log(data, "Change")
+    return data;
+  } catch (error) {
+    console.error('Error al obtener datos:', error);
+  }
 }

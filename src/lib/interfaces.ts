@@ -16,6 +16,7 @@ export interface dataResponse {
 
 export interface Incidencia {
     numGuia: string,
+    idIncidencia: number,
     fechaRegistro: string,
     cotizacionPrincipalOrigenId: number,
     origen: string,
@@ -126,4 +127,10 @@ export interface dataEscaneo {
     status: number,
     description: string,
     scanDto: scanDto,
+}
+
+export interface dataChangeStatus {
+    idIncidencia: number,
+    idStatus: number,
+    idUser: number,
 }

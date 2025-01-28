@@ -51,7 +51,9 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
                         <Avatar isBordered radius="full" size="md" src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
                         <p className="text-sm font-bold">NumGuia: {dataCard.numGuia}</p>
                     </div>
-                    <MenuDropdown />
+                    <MenuDropdown
+                        idIncidencia={dataCard.idIncidencia}
+                    />
                 </div>
                 <small className="text-default-500">Destino: {dataCard.destino}</small>
                 <small className="text-default-500">Fecha: {formatDate(dataCard.fechaRegistro)}</small>
