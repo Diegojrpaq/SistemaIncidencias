@@ -66,10 +66,12 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
                                 <Chip
                                     size='sm'
                                     radius='sm'
-                                    classNames={{
-                                        base: "bg-white border-1 border-[#464df2]",
-                                        content: "bg-white",
-                                    }}
+                                    color='primary'
+                                    //variant='bordered'
+                                    // classNames={{
+                                    //     base: "bg-white border-1 border-[#464df2]",
+                                    //     content: "bg-white",
+                                    // }}
                                 >
                                     #{sucursal.sucursal}
                                 </Chip>

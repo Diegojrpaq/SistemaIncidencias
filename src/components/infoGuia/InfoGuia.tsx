@@ -1,4 +1,10 @@
-import { chatData, IncidenciaDataModal, SucursalChat } from "@/lib/interfaces";
+import {
+    chatData,
+    escaneoData,
+    IncidenciaDataModal,
+    scanDto,
+    SucursalChat
+} from "@/lib/interfaces";
 import { formatDate } from "@/lib/utils";
 import {
     Card,
@@ -11,14 +17,26 @@ import {
 import TableSucursales from "../table/TableSucursales";
 import SelectSucursalAsociada from "../select/SelectSucursalAsociada";
 import { useState } from "react";
+import TableDetalleEscaneo from "../table/TableDetalleEscaneo";
 
 interface infoGuiaProps {
     incidencia: IncidenciaDataModal;
     chatData: chatData | undefined;
+    detalleEscaneo: scanDto | undefined;
 }
 
-const InfoGuia = ({ incidencia, chatData }: infoGuiaProps) => {
-    const [listSucursales, setListSucursales] = useState<SucursalChat[] | undefined>(chatData?.listSucursales)
+const InfoGuia = ({
+    incidencia,
+    chatData,
+    detalleEscaneo
+}: infoGuiaProps) => {
+    const [listSucursales, setListSucursales] = useState<SucursalChat[] | undefined>(chatData?.listSucursales);
+    let arrEscaneo: escaneoData[] | undefined;
+    if (detalleEscaneo?.escaneo) {
+        arrEscaneo = detalleEscaneo.escaneo
+    } else {
+        arrEscaneo = []
+    }
     return (
         <div className="flex flex-col gap-3 p-4">
             <Card>
@@ -110,8 +128,8 @@ const InfoGuia = ({ incidencia, chatData }: infoGuiaProps) => {
                 <CardHeader className="flex gap-3">
                     <div className="flex w-full justify-between items-center gap-2 ml-3">
                         <p className="text-lg">Información Sucursales</p>
-                        <SelectSucursalAsociada 
-                            idChat={chatData?.idChat} 
+                        <SelectSucursalAsociada
+                            idChat={chatData?.idChat}
                             sucursalesState={listSucursales}
                             setSucursales={setListSucursales}
                             numGuia={incidencia.numGuia}
@@ -121,6 +139,17 @@ const InfoGuia = ({ incidencia, chatData }: infoGuiaProps) => {
                 <Divider />
                 <CardBody>
                     <TableSucursales sucursales={listSucursales} />
+                </CardBody>
+            </Card>
+
+            <Card>
+                <CardHeader className="flex">
+                    <div className="flex items-center justify-center ml-3">
+                        <p className="text-lg">Detalle Escaneo</p>
+                    </div>
+                </CardHeader>
+                <CardBody>
+                    <TableDetalleEscaneo arrEscaneo={arrEscaneo} />
                 </CardBody>
             </Card>
         </div>
