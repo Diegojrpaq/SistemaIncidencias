@@ -33,7 +33,7 @@ export default function SelectSucursalAsociada({idChat, sucursalesState, setSucu
 
     const addSucursal = async (idSucursal: number, idChat: number | undefined, idUsuario: number | undefined) => {
         if(idSucursal === -1 || idSucursal === 0) {
-            showToast('No se ha seleccionado ninguna sucursal', 'info', 3000)
+            showToast('No se ha seleccionado ninguna sucursal', 'info', 3000, "bottom-center")
             return;
         }
 
@@ -47,14 +47,14 @@ export default function SelectSucursalAsociada({idChat, sucursalesState, setSucu
             //Mandar notificación
             const info: string = response.data.answerinfo;
             if(info.includes("0")) {
-                showToast('Se elimino la sucursal', 'error', 3000)
+                showToast('Se elimino la sucursal', 'error', 3000, "bottom-center")
             } else if(info.includes("1")) {
-                showToast(response.message, 'success', 3000)
+                showToast(response.message, 'success', 3000, "bottom-center")
             }
             
         } else {
              //Mandar notificación
-            showToast(response.message, 'error', 3000)
+            showToast(response.message, 'error', 3000, "bottom-center")
         }
     }
     return (

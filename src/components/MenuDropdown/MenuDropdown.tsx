@@ -9,6 +9,7 @@ import { IoEllipsisHorizontal } from "react-icons/io5";
 import { IncidenciasContext } from '@/context/IncidenciasContext';
 import { changeStatus } from '@/lib/api';
 import { Incidencia } from '@/lib/interfaces';
+import { showToast } from '../toast/showToast';
 
 interface propsMenuDropDown {
     idIncidencia: number;
@@ -31,6 +32,7 @@ const MenuDropdown = ({ idIncidencia }: propsMenuDropDown) => {
         })
 
         if (response.status === 200) {
+            showToast('Se cambio el estatus de la incidencia', "success", 3000, "top-center")
             if (arrActualIncidencias !== undefined) {
                 const newArr = arrActualIncidencias.map(item =>
                     item.idIncidencia === idIncidencia ?
@@ -39,8 +41,7 @@ const MenuDropdown = ({ idIncidencia }: propsMenuDropDown) => {
                 setIncidencias(newArr);
             }
         } else {
-            console.error('Error al cambiar el estado de la incidencia:', response.error);
-            // Manejar el error apropiadamente en caso de que falle la petición.
+            showToast('Error al cambiar el estado de la incidencia', "error", 3000, "top-center")
         }
     }
 

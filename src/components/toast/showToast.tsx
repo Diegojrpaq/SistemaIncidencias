@@ -1,8 +1,13 @@
 import { toast } from 'react-toastify';
 
-export const showToast = (message: string, type: 'success' | 'info' | 'error', timeClose: number) => {
+export const showToast = (
+    message: string, 
+    type: 'success' | 'info' | 'error', 
+    timeClose: number,
+    position: "top-center" | "bottom-center",
+) => {
     toast[type](message, {
-        position: "bottom-center",
+        position: position,
         autoClose: timeClose,
         hideProgressBar: false,
         closeOnClick: true,
