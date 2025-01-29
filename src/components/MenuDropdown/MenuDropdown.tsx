@@ -1,22 +1,27 @@
 import React, { useContext } from 'react'
-import { 
-    Dropdown, 
-    DropdownItem, 
-    DropdownMenu, 
-    DropdownTrigger 
+import {
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownTrigger
 } from '@nextui-org/react'
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { IncidenciasContext } from '@/context/IncidenciasContext';
 import { changeStatus } from '@/lib/api';
+import { Incidencia } from '@/lib/interfaces';
 
 interface propsMenuDropDown {
     idIncidencia: number;
 }
 const MenuDropdown = ({ idIncidencia }: propsMenuDropDown) => {
     const dataUser = useContext(IncidenciasContext);
+    let setIncidencias: ((incidencias: Incidencia[]) => void);
+    const arrActualIncidencias = dataUser?.incidencias
     let idUser = 0;
-    if(dataUser !== undefined) {
+    if (dataUser !== undefined) {
         idUser = dataUser?.userData.id;
+        setIncidencias = dataUser?.setIncidencias;
+
     }
     const changeStatusIncidencia = async (key: number) => {
         const response = await changeStatus({
@@ -24,17 +29,21 @@ const MenuDropdown = ({ idIncidencia }: propsMenuDropDown) => {
             idStatus: key,
             idUser,
         })
-        console.log("RES ", response)
-        if(response.status === 200) {
-            console.log("Status cambiado ", response.incidencia.newStatus)
-            // Actualizar lista de incidencias
-            // const getIncidencias = await getIncidencias();
-            // if(getIncidencias.status === 200) {
-            //     setIncidencias(getIncidencias.data);
-            // }
+
+        if (response.status === 200) {
+            if (arrActualIncidencias !== undefined) {
+                const newArr = arrActualIncidencias.map(item =>
+                    item.idIncidencia === idIncidencia ?
+                        { ...item, resuelto: key } : item
+                );
+                setIncidencias(newArr);
+            }
+        } else {
+            console.error('Error al cambiar el estado de la incidencia:', response.error);
+            // Manejar el error apropiadamente en caso de que falle la petición.
         }
     }
-    
+
     return (
         <div>
             <Dropdown
@@ -46,8 +55,8 @@ const MenuDropdown = ({ idIncidencia }: propsMenuDropDown) => {
                         <IoEllipsisHorizontal size={25} />
                     </div>
                 </DropdownTrigger>
-                <DropdownMenu 
-                    aria-label="Static Actions" 
+                <DropdownMenu
+                    aria-label="Static Actions"
                     onAction={(key) => changeStatusIncidencia(Number(key))}
                 >
                     <DropdownItem key={1}>

@@ -6,6 +6,7 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 interface IncidenciaContextType {
     incidencias: Incidencia[];
     userData: dataUser;
+    setIncidencias: (incidencias: Incidencia[]) => void;
     //loading: boolean;
 }
 
@@ -38,7 +39,8 @@ export const IncidenciaProvider: React.FC<IncidenciaProviderProps> = ({ children
 
       const dataUserAndIncidencia = {
         incidencias,
-        userData
+        userData,
+        setIncidencias,
       }
 
       return (
