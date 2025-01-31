@@ -134,7 +134,6 @@ export const fetchIncidencias = async (incidencias: Incidencia[]) => {
 export const changeStatus = async (
   dataChangeStatus: dataChangeStatus
 ) => {
-  console.log(dataChangeStatus)
   if (dataChangeStatus.idUser === 0) {
     return {
       status: 400,
@@ -154,16 +153,13 @@ export const changeStatus = async (
       }),
       cache: 'no-store'
     });
-    //console.log("res ",response)
     if (!response.ok) {
       return {
         status: response.status,
         message: 'Error al cambiar el estado de la incidencia',
       }
-      //throw new Error('Error en la solicitud');
     }
     const data = await response.json();
-    console.log(data, "Change")
     return data;
   } catch (error) {
     console.error('Error al obtener datos:', error);

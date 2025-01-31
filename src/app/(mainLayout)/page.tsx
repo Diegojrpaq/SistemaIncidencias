@@ -27,8 +27,7 @@ export default function page() {
 
   //Filtrar las incidencias para cada columna
   const incidenciasAbiertas = filteredCards?.filter((item: Incidencia) => item.resuelto === 1);
-  const incidenciasResolucion = filteredCards?.filter((item: Incidencia) => item.resuelto === 2);
-  const incidenciasSolicitudCierre = incidencias?.filter((item: Incidencia) => item.resuelto === 3);
+  const incidenciasResolucion = filteredCards?.filter((item: Incidencia) => item.resuelto === 2 || item.resuelto === 3);
   const incidenciasCerradas = filteredCards?.filter((item: Incidencia) => item.resuelto === 4);
 
   return (

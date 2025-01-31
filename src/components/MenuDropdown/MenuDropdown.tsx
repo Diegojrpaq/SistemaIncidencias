@@ -13,8 +13,9 @@ import { showToast } from '../toast/showToast';
 
 interface propsMenuDropDown {
     idIncidencia: number;
+    idEmpleadoOpenIncidencia: number;
 }
-const MenuDropdown = ({ idIncidencia }: propsMenuDropDown) => {
+const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropDown) => {
     const dataUser = useContext(IncidenciasContext);
     let setIncidencias: ((incidencias: Incidencia[]) => void);
     const arrActualIncidencias = dataUser?.incidencias
@@ -25,6 +26,12 @@ const MenuDropdown = ({ idIncidencia }: propsMenuDropDown) => {
 
     }
     const changeStatusIncidencia = async (key: number) => {
+        let idResuelto;
+        if (idEmpleadoOpenIncidencia !== idUser && key === 4) {
+            idResuelto = 3;
+        } else {
+            idResuelto = key;
+        }
         const response = await changeStatus({
             idIncidencia,
             idStatus: key,
@@ -36,7 +43,7 @@ const MenuDropdown = ({ idIncidencia }: propsMenuDropDown) => {
             if (arrActualIncidencias !== undefined) {
                 const newArr = arrActualIncidencias.map(item =>
                     item.idIncidencia === idIncidencia ?
-                        { ...item, resuelto: key } : item
+                        { ...item, resuelto: idResuelto } : item
                 );
                 setIncidencias(newArr);
             }
