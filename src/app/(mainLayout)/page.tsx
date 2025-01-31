@@ -20,7 +20,10 @@ export default function page() {
     const matchesQuery = 
       incidencia.numGuia.toLowerCase().includes(query.toLowerCase());
 
-    const matchesFilter = filter === -1 || incidencia.idSucursal === filter;
+    const matchesFilter = 
+      filter === -1 ||
+      filter === 0 || 
+      incidencia.idSucursal === filter;
 
     return matchesQuery && matchesFilter;
   })
