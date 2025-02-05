@@ -20,15 +20,17 @@ export default function page() {
     const matchesQuery = 
       incidencia.numGuia.toLowerCase().includes(query.toLowerCase());
 
-    const matchesFilter = filter === -1 || incidencia.idSucursal === filter;
+    const matchesFilter = 
+      filter === -1 ||
+      filter === 0 || 
+      incidencia.idSucursal === filter;
 
     return matchesQuery && matchesFilter;
   })
 
   //Filtrar las incidencias para cada columna
   const incidenciasAbiertas = filteredCards?.filter((item: Incidencia) => item.resuelto === 1);
-  const incidenciasResolucion = filteredCards?.filter((item: Incidencia) => item.resuelto === 2);
-  const incidenciasSolicitudCierre = incidencias?.filter((item: Incidencia) => item.resuelto === 3);
+  const incidenciasResolucion = filteredCards?.filter((item: Incidencia) => item.resuelto === 2 || item.resuelto === 3);
   const incidenciasCerradas = filteredCards?.filter((item: Incidencia) => item.resuelto === 4);
 
   return (

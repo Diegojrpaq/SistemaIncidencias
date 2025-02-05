@@ -1,3 +1,4 @@
+import { fetchIncidencias } from "@/lib/api";
 import { dataUser, Incidencia } from "@/lib/interfaces";
 import { urlServer } from "@/lib/url";
 import { createContext, ReactNode, useEffect, useState } from "react";
@@ -5,6 +6,7 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 interface IncidenciaContextType {
     incidencias: Incidencia[];
     userData: dataUser;
+    setIncidencias: (incidencias: Incidencia[]) => void;
     //loading: boolean;
 }
 
@@ -19,21 +21,17 @@ interface IncidenciaProviderProps {
 //Crear provider
 export const IncidenciaProvider: React.FC<IncidenciaProviderProps> = ({ children, userData }) => {
     const [incidencias, setIncidencias] = useState<Incidencia[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-
     useEffect(() => {
         // Llama a la API para obtener los datos del usuario
         const fetchUser = async () => {
           try {
-            const response = await fetch(`${urlServer}/Incidencias/getListIncidencias/1`); // Cambia la URL según tu configuración
+            const response = await fetch(`${urlServer}/Incidencias/getListIncidencias/${userData.id}`);
             const data = await response.json();
-            console.log("Incidencias: ",data.catalogoIncidencias)
-            setIncidencias(data.catalogoIncidencias);
+            const newIncidencias = await fetchIncidencias(data.catalogoIncidencias);
+            setIncidencias(newIncidencias);
           } catch (error) {
             console.error('Error al cargar los datos del usuario:', error);
-          } finally {
-            setLoading(false);
-          }
+          } 
         };
     
         fetchUser();
@@ -41,7 +39,8 @@ export const IncidenciaProvider: React.FC<IncidenciaProviderProps> = ({ children
 
       const dataUserAndIncidencia = {
         incidencias,
-        userData
+        userData,
+        setIncidencias,
       }
 
       return (

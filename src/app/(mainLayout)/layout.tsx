@@ -27,6 +27,8 @@ import { IncidenciaProvider } from '@/context/IncidenciasContext';
 import { urlServer } from '@/lib/url';
 import { useSearchParams } from 'next/navigation';
 import { SearchProvider } from '@/context/SearchContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 /*Importaciones de funcione dependencias */
 /*----------------------------------------------------------------------------*/
 
@@ -73,6 +75,7 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
             <SearchProvider>
               {/* Navbar */}
               <Navbar user={sessionData?.User} catalogoSucursales={sessionData?.User?.catalogoSucursales} />
+              <ToastContainer position='top-center' autoClose={3000} />
               <IncidenciaProvider userData={sessionData?.User}>
                 {children}
               </IncidenciaProvider>

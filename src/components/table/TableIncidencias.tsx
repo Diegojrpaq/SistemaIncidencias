@@ -423,6 +423,9 @@ const INITIAL_VISIBLE_COLUMNS = ["creador", "numGuia", "fechaRegistro", "origen"
 
 export default function TableIncidencias() {
     const dataUserAndIncidencias = useContext(IncidenciasContext);
+    if(dataUserAndIncidencias?.incidencias === undefined) {
+        return <div>No hay incidencias para mostrar</div>;
+    }
     const incidencias = dataUserAndIncidencias?.incidencias;
     const { query, filter } = useSearch();
     //type User = (typeof users)[0];
