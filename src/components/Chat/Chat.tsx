@@ -14,30 +14,11 @@ interface dataMessage {
 interface propsChat {
     chatData: chatData | undefined;
 }
-const Chat = ({chatData}: propsChat) => {
+const Chat = ({ chatData }: propsChat) => {
     const dataUserAndIncidencias = useContext(IncidenciasContext);
     const userData = dataUserAndIncidencias?.userData;
-    const [messages, setMessages] = useState<dataMessage[]>([
-        // {
-        //     body: 'Falta mercancia',
-        //     from: 'Juan Zaragoza',
-        // },
-        // {
-        //     body: 'Se envio completa',
-        //     from: 'Pedro Serrano',
-        // },
-    ]);
+    const [messages, setMessages] = useState<dataMessage[]>([]);
     const [valueMsg, setValueMsg] = useState("");
-
-    const formatMessages = (arr: Mensaje[]) => {
-        const messages = arr.map(message => {
-            return {
-                body: message.mensaje,
-                from: message.user,
-            }
-        })
-        return messages;
-    }
 
     useEffect(() => {
         setMessages(
@@ -46,7 +27,7 @@ const Chat = ({chatData}: propsChat) => {
                 from: item.user,
                 createdAt: getDateAndTimeFormat(item.fechaRegistro),
             }))
-            : []
+                : []
         )
     }, [chatData])
 
@@ -73,11 +54,11 @@ const Chat = ({chatData}: propsChat) => {
             }
             //Guardar mensaje API
             const sendMsg = await sendMessage(sendDataMsg)
-    
+
             /*Si se guardo correctamente en BD, se renderizara en el chat, 
             si hay error aparecera aviso de error.*/
-            if(sendMsg.status === 200) {
-                if(messages === undefined) {
+            if (sendMsg.status === 200) {
+                if (messages === undefined) {
                     setMessages([newMsg]);
                     setValueMsg("");
                 } else {
@@ -101,7 +82,7 @@ const Chat = ({chatData}: propsChat) => {
         <>
             <div className="w-1/3 max-h-[700px] flex flex-col bg-gray-200 shadow-lg rounded-lg p-2">
                 <div className='w-full pl-3 pb-1 text-lg border-b-1 border-gray-600 break-words'>
-                    <h3>Nombre del chat: {chatData?.nombreChat}</h3>
+                    <h3>Chat: {chatData?.nombreChat}</h3>
                 </div>
                 <div className="overflow-y-auto p-4 overflow-x-hidden scrollbar-hide">
                     <div className="h-screen">
