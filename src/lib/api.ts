@@ -1,7 +1,7 @@
-import { 
-  dataChangeStatus, 
-  dataSendMessage, 
-  Incidencia 
+import {
+  dataChangeStatus,
+  dataSendMessage,
+  Incidencia
 } from "./interfaces";
 import { urlServer } from "./url";
 
@@ -163,5 +163,18 @@ export const changeStatus = async (
     return data;
   } catch (error) {
     console.error('Error al obtener datos:', error);
+  }
+}
+
+export const getAllSucursales = async () => {
+  try {
+    const response = await fetch(`${urlServer}/Incidencias/getSucursales`);
+    if (!response.ok) {
+      throw new Error('Error en la solicitud');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error al obtener las sucursales: ', error);
   }
 }

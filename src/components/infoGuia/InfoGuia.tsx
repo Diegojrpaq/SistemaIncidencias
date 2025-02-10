@@ -16,8 +16,9 @@ import {
 } from "@nextui-org/react";
 import TableSucursales from "../table/TableSucursales";
 import SelectSucursalAsociada from "../select/SelectSucursalAsociada";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TableDetalleEscaneo from "../table/TableDetalleEscaneo";
+import { getAllSucursales } from "@/lib/api";
 
 interface infoGuiaProps {
     incidencia: IncidenciaDataModal;
@@ -31,12 +32,30 @@ const InfoGuia = ({
     detalleEscaneo
 }: infoGuiaProps) => {
     const [listSucursales, setListSucursales] = useState<SucursalChat[] | undefined>(chatData?.listSucursales);
+    const [sucursalesCombo, setSucursalesCombo] = useState<any[]>([])
     let arrEscaneo: escaneoData[] | undefined;
     if (detalleEscaneo?.escaneo) {
         arrEscaneo = detalleEscaneo.escaneo
     } else {
         arrEscaneo = []
     }
+
+    let sucursalesArr: any[];
+    useEffect(() => {
+        const getSucursales = async () => {
+            const sucursales = await getAllSucursales();
+            if (sucursales.status === 200) {
+                sucursalesArr = sucursales.Sucursales.map((suc: any) => ({
+                    key: suc.id,
+                    label: suc.nombre,
+                }));
+                setSucursalesCombo(sucursalesArr)
+            }
+
+        }
+
+        getSucursales();
+    }, []);
     return (
         <div className="flex flex-col gap-3 p-4">
             <Card>
@@ -133,6 +152,7 @@ const InfoGuia = ({
                             sucursalesState={listSucursales}
                             setSucursales={setListSucursales}
                             numGuia={incidencia.numGuia}
+                            sucursalCombo={sucursalesCombo}
                         />
                     </div>
                 </CardHeader>
