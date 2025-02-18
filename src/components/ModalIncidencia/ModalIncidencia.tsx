@@ -10,7 +10,7 @@ import {
     Skeleton,
 } from "@nextui-org/react";
 import { useState } from "react";
-import InfoGuia from "../infoGuia/InfoGuia";
+import ContainerCards from "./cardsModal/ContainerCards";
 import Chat from "../Chat/Chat";
 import SkeletonInfoGuia from "../skeleton/skeletonInfoGuia";
 import { urlServer } from "@/lib/url";
@@ -18,7 +18,6 @@ import { EyeIcon } from "../icons/EyeIcon";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 interface modalProps {
-    //incidencia: Incidencia
     numGuia: string;
     textButton: string;
 }
@@ -70,7 +69,7 @@ const ModalIncidencia = ({ numGuia, textButton }: modalProps) => {
                                     {
                                         inc && statusRes === 200 ?
                                             <div className="w-2/3 max-h-[700px] overflow-y-auto p-4 overflow-x-hidden scrollbar-hide">
-                                                <InfoGuia
+                                                <ContainerCards
                                                     incidencia={inc}
                                                     chatData={chatData}
                                                     detalleEscaneo={detalleEscaneo}
