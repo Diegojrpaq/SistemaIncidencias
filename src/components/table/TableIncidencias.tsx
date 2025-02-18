@@ -94,6 +94,8 @@ export const ChevronDownIcon = ({ strokeWidth = 1.5, ...otherProps }: IconSvgPro
 export const columns = [
     { name: "NumGuia", uid: "numGuia", sortable: true },
     { name: "Creador", uid: "creador", sortable: true },
+    { name: "Destino Registra", uid: "destinoRegistra" },
+    { name: "Sucursal Registra", uid: "sucursalRegistra" },
     { name: "Fecha Registro", uid: "fechaRegistro", sortable: true },
     { name: "Origen", uid: "origen" },
     { name: "Destino", uid: "destino" },
