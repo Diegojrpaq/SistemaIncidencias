@@ -1,10 +1,16 @@
 import { IncidenciasContext } from '@/context/IncidenciasContext';
 import { sendMessage } from '@/lib/api';
-import { chatData, Mensaje } from '@/lib/interfaces';
-import { formatDate, getDateAndTimeFormat } from '@/lib/utils';
+import { chatData } from '@/lib/interfaces';
+import { getDateAndTimeFormat } from '@/lib/utils';
 import { Input } from '@nextui-org/react';
-import React, { useContext, useEffect, useState } from 'react'
+import {
+    useContext,
+    useEffect,
+    useState,
+} from 'react'
 import { IoSendSharp } from "react-icons/io5";
+import UploadFile from '../uploadFile/UploadFile';
+
 interface dataMessage {
     body: string;
     from: string | undefined;
@@ -19,6 +25,7 @@ const Chat = ({ chatData }: propsChat) => {
     const userData = dataUserAndIncidencias?.userData;
     const [messages, setMessages] = useState<dataMessage[]>([]);
     const [valueMsg, setValueMsg] = useState("");
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     useEffect(() => {
         setMessages(
@@ -78,6 +85,32 @@ const Chat = ({ chatData }: propsChat) => {
             handleSend();
         }
     };
+
+    const handleFileSelect = async (file: File) => {
+        setSelectedFile(file);
+        console.log("Archivo seleccionado: ", file.name)
+        // const formData = new FormData();
+        // formData.append("file", file);
+
+        // try {
+        //     const response = await fetch("http://localhost:5000/files/upload", {
+        //         method: "POST",
+        //         body: formData,
+        //     });
+
+        //     if (response.status !== 201) {
+        //         throw new Error("Error al subir el archivo");
+        //     }
+
+        //     const result = await response.json();
+        //     console.log("Archivo subido:", result.url);
+        // } catch (error) {
+        //     console.error("Error:", error);
+        // }
+
+
+        //Cargar la imagen en el chat
+    }
     return (
         <>
             <div className="w-1/3 max-h-[700px] flex flex-col bg-gray-200 shadow-lg rounded-lg p-2">
@@ -118,7 +151,7 @@ const Chat = ({ chatData }: propsChat) => {
 
                     </div>
                 </div>
-                <div className="mt-3">
+                <div className="flex items-center mt-3">
                     <Input
                         value={valueMsg}
                         type="text"
@@ -136,6 +169,8 @@ const Chat = ({ chatData }: propsChat) => {
                         }
                         onKeyDown={handleKeyDown}
                     />
+
+                    <UploadFile onFileSelect={handleFileSelect} />
                 </div>
             </div>
         </>
