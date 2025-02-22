@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Button } from "@nextui-org/react";
-import { MdOutlineDriveFolderUpload } from "react-icons/md";
+import { FaImage } from "react-icons/fa6";
 
 const UploadFile = ({ onFileSelect }: { onFileSelect: (file: File) => void }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -16,7 +16,7 @@ const UploadFile = ({ onFileSelect }: { onFileSelect: (file: File) => void }) =>
     };
 
     return (
-        <div className='ml-2'>
+        <div className='ml-1'>
             <input
                 type="file"
                 ref={fileInputRef}
@@ -24,7 +24,7 @@ const UploadFile = ({ onFileSelect }: { onFileSelect: (file: File) => void }) =>
                 onChange={handleFileChange}
             />
             <Button isIconOnly variant="light" onClick={handleClick}>
-                <MdOutlineDriveFolderUpload size={25} />
+                <FaImage size={22} />
             </Button>
         </div>
     );

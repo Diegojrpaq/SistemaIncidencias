@@ -15,6 +15,7 @@ interface dataMessage {
     body: string;
     from: string | undefined;
     createdAt: string;
+    type: number;
 }
 
 interface propsChat {
@@ -33,6 +34,7 @@ const Chat = ({ chatData }: propsChat) => {
                 body: item.mensaje,
                 from: item.user,
                 createdAt: getDateAndTimeFormat(item.fechaRegistro),
+                type: 1,
             }))
                 : []
         )
@@ -52,6 +54,7 @@ const Chat = ({ chatData }: propsChat) => {
                 body: valueMsg,
                 from: userData?.nombre,
                 createdAt: getDateAndTimeFormat(fechaHoy),
+                type: 1,
             }
 
             const sendDataMsg = {
@@ -108,6 +111,21 @@ const Chat = ({ chatData }: propsChat) => {
         //     console.error("Error:", error);
         // }
 
+        //Inicialmente debe tener type: -1, cuando el
+        //enpoint responda con 200 se cambia a type: 2
+        const newMsgFile = {
+            body: file.name,
+            from: userData?.nombre,
+            createdAt: getDateAndTimeFormat(new Date()),
+            type: 2,
+        }
+        if (messages === undefined) {
+            setMessages([newMsgFile]);
+            setValueMsg("");
+        } else {
+            setMessages([...messages, newMsgFile]);
+            setValueMsg("");
+        }
 
         //Cargar la imagen en el chat
     }
@@ -140,8 +158,20 @@ const Chat = ({ chatData }: propsChat) => {
                                         </span>
 
                                         <div className='message max-w-xs'>
-                                            <p className="break-words">{msg.body}</p>
-                                            <p className='text-right text-xs mt-2'>{msg.createdAt}</p>
+                                            {
+                                                msg.type === 1 ? (
+                                                    <>
+                                                        <p className="break-words">{msg.body}</p>
+                                                        <p className='text-right text-xs mt-2'>{msg.createdAt}</p>
+                                                    </>
+                                                ) : (
+                                                    <img
+                                                        className="w-full rounded-md"
+                                                        src={"http://74.208.214.92:9000/pruebas/1738702723948-galaxy.jpg"}
+                                                        alt="Imagen subida"
+                                                    />
+                                                )
+                                            }
                                         </div>
                                     </li>
                                 ))
