@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import {
     Dropdown,
     DropdownItem,
@@ -10,6 +10,7 @@ import { IncidenciasContext } from '@/context/IncidenciasContext';
 import { changeStatus } from '@/lib/api';
 import { Incidencia } from '@/lib/interfaces';
 import { showToast } from '../toast/showToast';
+import ModalCierre from '../modalCierre/ModalCierre';
 
 interface propsMenuDropDown {
     idIncidencia: number;
@@ -17,6 +18,7 @@ interface propsMenuDropDown {
 }
 const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropDown) => {
     const dataUser = useContext(IncidenciasContext);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     let setIncidencias: ((incidencias: Incidencia[]) => void);
     const arrActualIncidencias = dataUser?.incidencias
     let idUser = 0;
@@ -65,7 +67,7 @@ const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropD
                 </DropdownTrigger>
                 <DropdownMenu
                     aria-label="Static Actions"
-                    onAction={(key) => changeStatusIncidencia(Number(key))}
+                //onAction={(key) => changeStatusIncidencia(Number(key))}
                 >
                     <DropdownItem key={1}>
                         Abierta
@@ -73,11 +75,16 @@ const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropD
                     <DropdownItem key={2}>
                         En Resolución
                     </DropdownItem>
-                    <DropdownItem key={4}>
+                    <DropdownItem key={5} onClick={() => setIsModalOpen(true)}>
                         Cerrada
                     </DropdownItem>
                 </DropdownMenu>
             </Dropdown>
+
+            <ModalCierre
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
         </div>
     )
 }
