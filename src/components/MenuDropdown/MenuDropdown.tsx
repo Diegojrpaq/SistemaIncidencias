@@ -3,7 +3,8 @@ import {
     Dropdown,
     DropdownItem,
     DropdownMenu,
-    DropdownTrigger
+    DropdownTrigger,
+    modal
 } from '@nextui-org/react'
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { IncidenciasContext } from '@/context/IncidenciasContext';
@@ -19,6 +20,7 @@ interface propsMenuDropDown {
 const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropDown) => {
     const dataUser = useContext(IncidenciasContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalData, setModalData] = useState(null);
     let setIncidencias: ((incidencias: Incidencia[]) => void);
     const arrActualIncidencias = dataUser?.incidencias
     let idUser = 0;
@@ -28,12 +30,7 @@ const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropD
 
     }
     const changeStatusIncidencia = async (key: number) => {
-        let idResuelto;
-        if (idEmpleadoOpenIncidencia !== idUser && key === 4) {
-            idResuelto = 3;
-        } else {
-            idResuelto = key;
-        }
+        let idResuelto = key;
         const response = await changeStatus({
             idIncidencia,
             idStatus: key,
@@ -54,6 +51,12 @@ const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropD
         }
     }
 
+    // Función que recibe la información del modal
+    // const handleModalSubmit = (data: any) => {
+    //     setModalData(data);
+    //     console.log("padre data: ", data)
+    // };
+
     return (
         <div>
             <Dropdown
@@ -69,13 +72,16 @@ const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropD
                     aria-label="Static Actions"
                 //onAction={(key) => changeStatusIncidencia(Number(key))}
                 >
-                    <DropdownItem key={1}>
+                    <DropdownItem key={1} onClick={() => changeStatusIncidencia(1)}>
                         Abierta
                     </DropdownItem>
-                    <DropdownItem key={2}>
+                    <DropdownItem key={2} onClick={() => changeStatusIncidencia(2)}>
                         En Resolución
                     </DropdownItem>
-                    <DropdownItem key={5} onClick={() => setIsModalOpen(true)}>
+                    {/* <DropdownItem key={4}>
+                        Cerrada
+                    </DropdownItem> */}
+                    <DropdownItem key={4} onClick={() => setIsModalOpen(true)}>
                         Cerrada
                     </DropdownItem>
                 </DropdownMenu>
@@ -84,6 +90,11 @@ const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropD
             <ModalCierre
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
+                //onSubmit={handleModalSubmit}
+                idUser={idUser}
+                idIncidencia={idIncidencia}
+                idEmpleadoOpenIncidencia={idEmpleadoOpenIncidencia}
+                arrActualIncidencias={arrActualIncidencias}
             />
         </div>
     )
