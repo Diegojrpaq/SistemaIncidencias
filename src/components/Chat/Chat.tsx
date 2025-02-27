@@ -1,8 +1,8 @@
 import { IncidenciasContext } from '@/context/IncidenciasContext';
-import { sendMessage } from '@/lib/api';
+import { sendMessage, uploadImage } from '@/lib/api';
 import { chatData } from '@/lib/interfaces';
-import { getDateAndTimeFormat } from '@/lib/utils';
-import { Input } from '@nextui-org/react';
+import { convertImageToBase64, getDateAndTimeFormat } from '@/lib/utils';
+import { Input, Spinner } from '@nextui-org/react';
 import {
     useContext,
     useEffect,
@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { IoSendSharp } from "react-icons/io5";
 import UploadFile from '../uploadFile/UploadFile';
+import { showToast } from '../toast/showToast';
 
 interface dataMessage {
     body: string;
@@ -26,7 +27,8 @@ const Chat = ({ chatData }: propsChat) => {
     const userData = dataUserAndIncidencias?.userData;
     const [messages, setMessages] = useState<dataMessage[]>([]);
     const [valueMsg, setValueMsg] = useState("");
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [isSending, setIsSending] = useState(false);
+    const [isSendingImg, setIsSendingImg] = useState(false);
 
     useEffect(() => {
         setMessages(
@@ -34,7 +36,7 @@ const Chat = ({ chatData }: propsChat) => {
                 body: item.mensaje,
                 from: item.user,
                 createdAt: getDateAndTimeFormat(item.fechaRegistro),
-                type: 1,
+                type: item.idTipoMensaje,
             }))
                 : []
         )
@@ -48,9 +50,10 @@ const Chat = ({ chatData }: propsChat) => {
     // Manejador de envío
     const handleSend = async () => {
         if (valueMsg.trim()) {
+            setIsSending(true);
             const fechaHoy = new Date();
             //Crear nuevo mensaje
-            const newMsg = {
+            const newMsg: dataMessage = {
                 body: valueMsg,
                 from: userData?.nombre,
                 createdAt: getDateAndTimeFormat(fechaHoy),
@@ -75,8 +78,15 @@ const Chat = ({ chatData }: propsChat) => {
                     setMessages([...messages, newMsg]);
                     setValueMsg("");
                 }
+                setIsSending(false);
             } else {
-                console.log('Error al guardar mensaje')
+                showToast(
+                    'No se pudo enviar el mensaje',
+                    "error",
+                    3000,
+                    "top-center"
+                )
+                setIsSending(false);
             }
         }
     };
@@ -90,44 +100,49 @@ const Chat = ({ chatData }: propsChat) => {
     };
 
     const handleFileSelect = async (file: File) => {
-        setSelectedFile(file);
-        console.log("Archivo seleccionado: ", file.name)
-        // const formData = new FormData();
-        // formData.append("file", file);
-
-        // try {
-        //     const response = await fetch("http://localhost:5000/files/upload", {
-        //         method: "POST",
-        //         body: formData,
-        //     });
-
-        //     if (response.status !== 201) {
-        //         throw new Error("Error al subir el archivo");
-        //     }
-
-        //     const result = await response.json();
-        //     console.log("Archivo subido:", result.url);
-        // } catch (error) {
-        //     console.error("Error:", error);
-        // }
-
-        //Inicialmente debe tener type: -1, cuando el
-        //enpoint responda con 200 se cambia a type: 2
-        const newMsgFile = {
-            body: file.name,
-            from: userData?.nombre,
-            createdAt: getDateAndTimeFormat(new Date()),
-            type: 2,
-        }
-        if (messages === undefined) {
-            setMessages([newMsgFile]);
-            setValueMsg("");
+        if (file && file.type.startsWith("image/")) {
+            try {
+                setIsSendingImg(true);
+                const base64 = await convertImageToBase64(file);
+                if (chatData !== undefined && userData !== undefined) {
+                    const idChat = chatData.idChat
+                    const idUser = userData.id
+                    const sendImage = await uploadImage(base64, idChat, idUser)
+                    if (sendImage.status === 200) {
+                        console.log(sendImage)
+                        const newMsgFile: dataMessage = {
+                            body: sendImage.data.listStatusImgInsertado[0].url,
+                            from: userData?.nombre,
+                            createdAt: getDateAndTimeFormat(new Date()),
+                            type: 2,
+                        }
+                        if (messages === undefined) {
+                            setMessages([newMsgFile]);
+                            setValueMsg("");
+                        } else {
+                            setMessages([...messages, newMsgFile]);
+                            setValueMsg("");
+                        }
+                        setIsSendingImg(false);
+                    }
+                }
+            } catch (error) {
+                showToast(
+                    'Error al subir la imagen',
+                    "error",
+                    3000,
+                    "top-center"
+                )
+                console.log("Error al subir la imagen: ", error)
+            }
         } else {
-            setMessages([...messages, newMsgFile]);
-            setValueMsg("");
+            showToast(
+                'El archivo seleccionado no es una imagen.',
+                "error",
+                3000,
+                "top-center"
+            )
         }
-
-        //Cargar la imagen en el chat
     }
     return (
         <>
@@ -165,11 +180,14 @@ const Chat = ({ chatData }: propsChat) => {
                                                         <p className='text-right text-xs mt-2'>{msg.createdAt}</p>
                                                     </>
                                                 ) : (
-                                                    <img
-                                                        className="w-full rounded-md"
-                                                        src={"http://74.208.214.92:9000/pruebas/1738702723948-galaxy.jpg"}
-                                                        alt="Imagen subida"
-                                                    />
+                                                    <>
+                                                        <img
+                                                            className="w-full rounded-md"
+                                                            src={msg.body}
+                                                            alt="Imagen subida"
+                                                        />
+                                                        <p className='text-right text-xs mt-2'>{msg.createdAt}</p>
+                                                    </>
                                                 )
                                             }
                                         </div>
@@ -191,16 +209,23 @@ const Chat = ({ chatData }: propsChat) => {
                         onChange={handleInputChange}
                         endContent={
                             <div
-                                className={`cursor-pointer`}
-                                onClick={handleSend}
+                                className={`cursor-pointer flex items-center`}
+                                onClick={!isSending ? handleSend : undefined}
                             >
-                                <IoSendSharp />
+                                {
+                                    !isSending ? <IoSendSharp size={18} />
+                                        : <Spinner color='warning' size='md' />
+                                }
                             </div>
                         }
                         onKeyDown={handleKeyDown}
+                        disabled={isSending}
                     />
 
-                    <UploadFile onFileSelect={handleFileSelect} />
+                    <UploadFile
+                        onFileSelect={handleFileSelect}
+                        isSending={isSendingImg}
+                    />
                 </div>
             </div>
         </>

@@ -51,6 +51,9 @@ export const sendMessage = async (dataMessage: dataSendMessage) => {
     return data;
   } catch (error) {
     console.error(`Error, no se pudo enviar el mensaje`, error);
+    return {
+      status: 400
+    }
   }
 }
 
@@ -176,5 +179,43 @@ export const getAllSucursales = async () => {
     return data;
   } catch (error) {
     console.error('Error al obtener las sucursales: ', error);
+  }
+}
+
+export const uploadImage = async (
+  base64String: string,
+  idChat: number,
+  idUser: number
+) => {
+  try {
+    const response = await fetch(`${urlServer}/Incidencias/setImgEvidencia`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        idChat,
+        idUser,
+        msgText: "",
+        vListFiles: [
+          {
+            fileCode: base64String
+          }
+        ]
+      }),
+      cache: 'no-store'
+    });
+
+    const data = await response.json();
+    return {
+      data,
+      status: 200
+    }
+  } catch (error) {
+    console.error("Error al subir la imagen:", error);
+    return {
+      status: 400,
+      message: "Error al subir la imagen"
+    }
   }
 }

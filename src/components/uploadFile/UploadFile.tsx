@@ -1,17 +1,23 @@
 import { useRef } from "react";
-import { Button } from "@nextui-org/react";
+import { Button, Spinner } from "@nextui-org/react";
 import { FaImage } from "react-icons/fa6";
 
-const UploadFile = ({ onFileSelect }: { onFileSelect: (file: File) => void }) => {
+interface uploadFileProps {
+    onFileSelect: (file: File) => void;
+    isSending: boolean;
+}
+
+const UploadFile = ({ onFileSelect, isSending }: uploadFileProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleClick = () => {
         fileInputRef.current?.click();
     };
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
-            onFileSelect(event.target.files[0]);
+            const file = event.target.files[0];
+            onFileSelect(file);
         }
     };
 
@@ -22,9 +28,18 @@ const UploadFile = ({ onFileSelect }: { onFileSelect: (file: File) => void }) =>
                 ref={fileInputRef}
                 className="hidden"
                 onChange={handleFileChange}
+                accept="image/*"
             />
-            <Button isIconOnly variant="light" onClick={handleClick}>
-                <FaImage size={22} />
+            <Button
+                isIconOnly
+                variant="light"
+                onClick={handleClick}
+                disabled={isSending}
+            >
+                {
+                    !isSending ? <FaImage size={22} />
+                        : <Spinner color='warning' size='md' />
+                }
             </Button>
         </div>
     );
