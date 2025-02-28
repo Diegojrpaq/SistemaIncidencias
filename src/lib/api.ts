@@ -153,6 +153,10 @@ export const changeStatus = async (
         idIncidencia: dataChangeStatus.idIncidencia,
         idStatus: dataChangeStatus.idStatus,
         idUser: dataChangeStatus.idUser,
+        idSucursal: dataChangeStatus.idSucursal,
+        idDestino: dataChangeStatus.idDestino,
+        idSucursalResponsable: dataChangeStatus.idSucursalResponsable,
+        idTipoIncidencia: dataChangeStatus.idTipoIncidencia,
       }),
       cache: 'no-store'
     });
@@ -217,5 +221,18 @@ export const uploadImage = async (
       status: 400,
       message: "Error al subir la imagen"
     }
+  }
+}
+
+export const getCatalogoMotivosCierre = async () => {
+  try {
+    const response = await fetch(`${urlServer}/Incidencias/getCatalogoCierre`);
+    if (!response.ok) {
+      throw new Error('Error en la solicitud');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error al obtener el catalogo de cierre: ', error);
   }
 }

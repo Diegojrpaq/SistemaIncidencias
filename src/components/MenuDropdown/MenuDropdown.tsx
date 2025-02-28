@@ -20,7 +20,6 @@ interface propsMenuDropDown {
 const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropDown) => {
     const dataUser = useContext(IncidenciasContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalData, setModalData] = useState(null);
     let setIncidencias: ((incidencias: Incidencia[]) => void);
     const arrActualIncidencias = dataUser?.incidencias
     let idUser = 0;
@@ -35,6 +34,10 @@ const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropD
             idIncidencia,
             idStatus: key,
             idUser,
+            idSucursal: 0,
+            idDestino: 0,
+            idSucursalResponsable: 0,
+            idTipoIncidencia: 0,
         })
 
         if (response.status === 200) {
@@ -51,12 +54,6 @@ const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropD
         }
     }
 
-    // Función que recibe la información del modal
-    // const handleModalSubmit = (data: any) => {
-    //     setModalData(data);
-    //     console.log("padre data: ", data)
-    // };
-
     return (
         <div>
             <Dropdown
@@ -70,7 +67,6 @@ const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropD
                 </DropdownTrigger>
                 <DropdownMenu
                     aria-label="Static Actions"
-                //onAction={(key) => changeStatusIncidencia(Number(key))}
                 >
                     <DropdownItem key={1} onClick={() => changeStatusIncidencia(1)}>
                         Abierta
@@ -78,9 +74,6 @@ const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropD
                     <DropdownItem key={2} onClick={() => changeStatusIncidencia(2)}>
                         En Resolución
                     </DropdownItem>
-                    {/* <DropdownItem key={4}>
-                        Cerrada
-                    </DropdownItem> */}
                     <DropdownItem key={4} onClick={() => setIsModalOpen(true)}>
                         Cerrada
                     </DropdownItem>
@@ -90,8 +83,6 @@ const MenuDropdown = ({ idIncidencia, idEmpleadoOpenIncidencia }: propsMenuDropD
             <ModalCierre
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                //onSubmit={handleModalSubmit}
-                idUser={idUser}
                 idIncidencia={idIncidencia}
                 idEmpleadoOpenIncidencia={idEmpleadoOpenIncidencia}
                 arrActualIncidencias={arrActualIncidencias}

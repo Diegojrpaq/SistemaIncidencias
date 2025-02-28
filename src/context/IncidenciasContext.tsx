@@ -1,5 +1,10 @@
-import { fetchIncidencias } from "@/lib/api";
+import { 
+  fetchIncidencias, 
+  getAllSucursales, 
+  getCatalogoMotivosCierre 
+} from "@/lib/api";
 import {
+  dataSelect,
   dataUser,
   Incidencia
 } from "@/lib/interfaces";
@@ -15,7 +20,8 @@ interface IncidenciaContextType {
   incidencias: Incidencia[];
   userData: dataUser;
   setIncidencias: (incidencias: Incidencia[]) => void;
-  //loading: boolean;
+  catalogoCierreCombo: dataSelect[];
+  sucursalesCombo: dataSelect[];
 }
 
 export const IncidenciasContext = createContext<IncidenciaContextType | undefined>(undefined);
@@ -29,6 +35,34 @@ interface IncidenciaProviderProps {
 //Crear provider
 export const IncidenciaProvider: React.FC<IncidenciaProviderProps> = ({ children, userData }) => {
   const [incidencias, setIncidencias] = useState<Incidencia[]>([]);
+  const [sucursalesCombo, setSucursalesCombo] = useState<any[]>([]);
+  const [catalogoCierreCombo, setCatalogoCierreCombo] = useState<any[]>([]);
+  let sucursalesArr: any[];
+  let catalogoCierreArr: any[];
+  const getCatalgoCierre = async () => {
+    const catalogoCierre = await getCatalogoMotivosCierre();
+    if (catalogoCierre.status === 200) {
+      catalogoCierreArr = catalogoCierre.Catalogo.map((item: any) => ({
+        key: item.id,
+        label: item.nombre,
+      }));
+
+      setCatalogoCierreCombo(catalogoCierreArr)
+    }
+  }
+
+  const getSucursales = async () => {
+    const sucursales = await getAllSucursales();
+    if (sucursales.status === 200) {
+      sucursalesArr = sucursales.Sucursales.map((suc: any) => ({
+        key: suc.id,
+        label: suc.nombre,
+      }));
+
+      setSucursalesCombo(sucursalesArr)
+    }
+  }
+
   useEffect(() => {
     // Llama a la API para obtener los datos del usuario
     const fetchUser = async () => {
@@ -49,12 +83,16 @@ export const IncidenciaProvider: React.FC<IncidenciaProviderProps> = ({ children
     };
 
     fetchUser();
+    getCatalgoCierre();
+    getSucursales();
   }, []);
 
   const dataUserAndIncidencia = {
     incidencias,
     userData,
     setIncidencias,
+    catalogoCierreCombo,
+    sucursalesCombo,
   }
 
   return (

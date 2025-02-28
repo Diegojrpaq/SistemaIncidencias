@@ -4,6 +4,7 @@ export interface dataUser {
     correo_electronico: string,
     id_sucursal: number,
     Sucursal_principal: string,
+    id_destino: number,
     Destino: string,
     permiso: number[],
     catalogoSucursales: catalogoSucursales[],
@@ -133,4 +134,13 @@ export interface dataChangeStatus {
     idIncidencia: number,
     idStatus: number,
     idUser: number,
+    idSucursal: number,
+    idDestino: number,
+    idSucursalResponsable: number,
+    idTipoIncidencia: number,
 }
+
+export interface dataSelect {
+    key: number;
+    label: string;
+  }

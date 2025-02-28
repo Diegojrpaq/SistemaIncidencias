@@ -11,53 +11,44 @@ import {
   Textarea
 } from "@nextui-org/react";
 import { showToast } from "../toast/showToast";
-import { Incidencia } from "@/lib/interfaces";
-import { useContext } from "react";
+import { dataSelect, Incidencia } from "@/lib/interfaces";
+import { useContext, useState } from "react";
 import { IncidenciasContext } from "@/context/IncidenciasContext";
 
-export const animals = [
-  { key: "cat", label: "Cat" },
-  { key: "dog", label: "Dog" },
-  { key: "elephant", label: "Elephant" },
-  { key: "lion", label: "Lion" },
-  { key: "tiger", label: "Tiger" },
-  { key: "giraffe", label: "Giraffe" },
-  { key: "dolphin", label: "Dolphin" },
-  { key: "penguin", label: "Penguin" },
-  { key: "zebra", label: "Zebra" },
-  { key: "shark", label: "Shark" },
-  { key: "whale", label: "Whale" },
-  { key: "otter", label: "Otter" },
-  { key: "crocodile", label: "Crocodile" },
-];
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  //onSubmit: (data: any) => void;
   idIncidencia: number;
   idEmpleadoOpenIncidencia: number;
-  idUser: number;
   arrActualIncidencias: Incidencia[] | undefined;
 }
 
 function ModalCierre({
   isOpen,
   onClose,
-  //onSubmit,
   idIncidencia,
   idEmpleadoOpenIncidencia,
-  idUser,
   arrActualIncidencias,
 }: ModalProps) {
-  //let setIncidencias: ((incidencias: Incidencia[]) => void);
   const dataUser = useContext(IncidenciasContext);
   let setIncidencias: ((incidencias: Incidencia[]) => void);
-  //const arrActualIncidencias = dataUser?.incidencias
-  //let idUser = 0;
+  const [selectMotivo, setSelectMotivo] = useState(0);
+  const [selectSucursal, setSelectSucursal] = useState(0);
+  const [descripcion, setDescripcion] = useState("");
+  const [error, setError] = useState(false);
+
+  let idUser = 0;
+  let idSucursal = 0;
+  let idDestino = 0;
+  let sucursalesCombo: dataSelect[] | [] = [];
+  let catalogoCierreCombo: dataSelect[] | [] = [];
   if (dataUser !== undefined) {
     idUser = dataUser?.userData.id;
+    idSucursal = dataUser?.userData.id_sucursal;
+    idDestino = dataUser?.userData.id_destino;
     setIncidencias = dataUser?.setIncidencias;
-
+    sucursalesCombo = dataUser?.sucursalesCombo;
+    catalogoCierreCombo = dataUser?.catalogoCierreCombo;
   }
 
   const changeStatusIncidencia = async (key: number) => {
@@ -71,6 +62,10 @@ function ModalCierre({
       idIncidencia,
       idStatus: key,
       idUser,
+      idSucursal,
+      idDestino,
+      idSucursalResponsable: Number(selectSucursal),
+      idTipoIncidencia: Number(selectMotivo),
     })
 
     if (response.status === 200) {
@@ -86,14 +81,25 @@ function ModalCierre({
       showToast('Error al cambiar el estado de la incidencia', "error", 3000, "top-center")
     }
   }
+
   const handleConfirm = () => {
-    //Mandar datos de cierre: sucursal responsable, motivo.
-    //Si todo fue correcto actualizar status a 200
-    //onSubmit(200);
+    //Mandar datos de cierre: sucursal responsable, motivo, comentario.
+    if (!selectMotivo || !selectSucursal || !descripcion.trim()) {
+      setError(true);
+      return;
+    }
+
     changeStatusIncidencia(4);
-    //Si no ponemos 404
     onClose();
+    resetForm();
   }
+
+  const resetForm = () => {
+    setSelectMotivo(0);
+    setSelectSucursal(0);
+    setDescripcion("");
+    setError(false);
+  };
   return (
     <Modal isOpen={isOpen} size="md" onClose={onClose}>
       <ModalContent>
@@ -105,15 +111,25 @@ function ModalCierre({
             <div className="flex w-full items-center mb-6">
               <Select
                 className="max-w-md"
+                value={selectMotivo}
+                onChange={(e) => setSelectMotivo(Number(e.target.value))}
                 label="Motivo de Cierre:"
                 placeholder="Selecciono un motivo de cierre"
                 labelPlacement="outside"
                 size="md"
-                isRequired
+                isInvalid={error && !selectMotivo}
+                errorMessage={
+                  error && !selectMotivo ?
+                    "Campo obligatorio" : ""
+                }
               >
-                {animals.map((animal) => (
-                  <SelectItem key={animal.key}>{animal.label}</SelectItem>
-                ))}
+                {
+                  catalogoCierreCombo.map((item) => (
+                    <SelectItem key={item.key}>
+                      {item.label}
+                    </SelectItem>
+                  ))
+                }
               </Select>
 
             </div>
@@ -121,13 +137,22 @@ function ModalCierre({
             <div className="flex w-full items-center mb-6">
               <Select
                 className="max-w-md"
+                value={selectSucursal}
+                onChange={(e) => setSelectSucursal(Number(e.target.value))}
                 label="Sucursal responsable:"
                 placeholder="Seleccione una sucursal"
                 labelPlacement="outside"
                 size="md"
+                isInvalid={error && !selectSucursal}
+                errorMessage={
+                  error && !selectSucursal ?
+                    "Campo obligatorio" : ""
+                }
               >
-                {animals.map((animal) => (
-                  <SelectItem key={animal.key}>{animal.label}</SelectItem>
+                {sucursalesCombo.map((sucursal) => (
+                  <SelectItem key={sucursal.key}>
+                    {sucursal.label}
+                  </SelectItem>
                 ))}
               </Select>
 
@@ -136,9 +161,16 @@ function ModalCierre({
             <div>
               <Textarea
                 className="max-w-md"
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
                 label="Comentarios"
                 placeholder="Escribe un comentario"
                 labelPlacement="outside"
+                isInvalid={error && !descripcion}
+                errorMessage={
+                  error && !descripcion.trim() ?
+                    "Campo obligatorio" : ""
+                }
               />
             </div>
 
