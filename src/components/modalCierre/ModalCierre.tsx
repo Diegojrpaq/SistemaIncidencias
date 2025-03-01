@@ -1,4 +1,4 @@
-import { changeStatus } from "@/lib/api";
+import { changeStatus, sendMessage } from "@/lib/api";
 import {
   Button,
   Modal,
@@ -21,6 +21,7 @@ interface ModalProps {
   idIncidencia: number;
   idEmpleadoOpenIncidencia: number;
   arrActualIncidencias: Incidencia[] | undefined;
+  idChat: number;
 }
 
 function ModalCierre({
@@ -29,6 +30,7 @@ function ModalCierre({
   idIncidencia,
   idEmpleadoOpenIncidencia,
   arrActualIncidencias,
+  idChat,
 }: ModalProps) {
   const dataUser = useContext(IncidenciasContext);
   let setIncidencias: ((incidencias: Incidencia[]) => void);
@@ -68,7 +70,15 @@ function ModalCierre({
       idTipoIncidencia: Number(selectMotivo),
     })
 
-    if (response.status === 200) {
+    const sendDataMsg = {
+      idChat,
+      idUser,
+      msgText: descripcion,
+    }
+    //Guardar mensaje API
+    const sendMsg = await sendMessage(sendDataMsg)
+
+    if (response.status === 200 && sendMsg.status === 200) {
       showToast('Se cambio el estatus de la incidencia', "success", 3000, "top-center")
       if (arrActualIncidencias !== undefined) {
         const newArr = arrActualIncidencias.map(item =>
