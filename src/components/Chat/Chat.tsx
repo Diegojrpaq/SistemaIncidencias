@@ -1,43 +1,34 @@
 import { IncidenciasContext } from '@/context/IncidenciasContext';
-import { sendMessage } from '@/lib/api';
-import { chatData, Mensaje } from '@/lib/interfaces';
-import { formatDate, getDateAndTimeFormat } from '@/lib/utils';
-import { Input } from '@nextui-org/react';
-import React, { useContext, useEffect, useState } from 'react'
+import { sendMessage, uploadImage } from '@/lib/api';
+import { chatData } from '@/lib/interfaces';
+import { convertImageToBase64, getDateAndTimeFormat } from '@/lib/utils';
+import { Input, Spinner } from '@nextui-org/react';
+import {
+    useContext,
+    useEffect,
+    useState,
+} from 'react'
 import { IoSendSharp } from "react-icons/io5";
+import UploadFile from '../uploadFile/UploadFile';
+import { showToast } from '../toast/showToast';
+
 interface dataMessage {
     body: string;
     from: string | undefined;
     createdAt: string;
+    type: number;
 }
 
 interface propsChat {
     chatData: chatData | undefined;
 }
-const Chat = ({chatData}: propsChat) => {
+const Chat = ({ chatData }: propsChat) => {
     const dataUserAndIncidencias = useContext(IncidenciasContext);
     const userData = dataUserAndIncidencias?.userData;
-    const [messages, setMessages] = useState<dataMessage[]>([
-        // {
-        //     body: 'Falta mercancia',
-        //     from: 'Juan Zaragoza',
-        // },
-        // {
-        //     body: 'Se envio completa',
-        //     from: 'Pedro Serrano',
-        // },
-    ]);
+    const [messages, setMessages] = useState<dataMessage[]>([]);
     const [valueMsg, setValueMsg] = useState("");
-
-    const formatMessages = (arr: Mensaje[]) => {
-        const messages = arr.map(message => {
-            return {
-                body: message.mensaje,
-                from: message.user,
-            }
-        })
-        return messages;
-    }
+    const [isSending, setIsSending] = useState(false);
+    const [isSendingImg, setIsSendingImg] = useState(false);
 
     useEffect(() => {
         setMessages(
@@ -45,8 +36,9 @@ const Chat = ({chatData}: propsChat) => {
                 body: item.mensaje,
                 from: item.user,
                 createdAt: getDateAndTimeFormat(item.fechaRegistro),
+                type: item.idTipoMensaje,
             }))
-            : []
+                : []
         )
     }, [chatData])
 
@@ -58,12 +50,14 @@ const Chat = ({chatData}: propsChat) => {
     // Manejador de envío
     const handleSend = async () => {
         if (valueMsg.trim()) {
+            setIsSending(true);
             const fechaHoy = new Date();
             //Crear nuevo mensaje
-            const newMsg = {
+            const newMsg: dataMessage = {
                 body: valueMsg,
                 from: userData?.nombre,
                 createdAt: getDateAndTimeFormat(fechaHoy),
+                type: 1,
             }
 
             const sendDataMsg = {
@@ -73,19 +67,26 @@ const Chat = ({chatData}: propsChat) => {
             }
             //Guardar mensaje API
             const sendMsg = await sendMessage(sendDataMsg)
-    
+
             /*Si se guardo correctamente en BD, se renderizara en el chat, 
             si hay error aparecera aviso de error.*/
-            if(sendMsg.status === 200) {
-                if(messages === undefined) {
+            if (sendMsg.status === 200) {
+                if (messages === undefined) {
                     setMessages([newMsg]);
                     setValueMsg("");
                 } else {
                     setMessages([...messages, newMsg]);
                     setValueMsg("");
                 }
+                setIsSending(false);
             } else {
-                console.log('Error al guardar mensaje')
+                showToast(
+                    'No se pudo enviar el mensaje',
+                    "error",
+                    3000,
+                    "top-center"
+                )
+                setIsSending(false);
             }
         }
     };
@@ -97,11 +98,57 @@ const Chat = ({chatData}: propsChat) => {
             handleSend();
         }
     };
+
+    const handleFileSelect = async (file: File) => {
+        if (file && file.type.startsWith("image/")) {
+            try {
+                setIsSendingImg(true);
+                const base64 = await convertImageToBase64(file);
+                if (chatData !== undefined && userData !== undefined) {
+                    const idChat = chatData.idChat
+                    const idUser = userData.id
+                    const sendImage = await uploadImage(base64, idChat, idUser)
+                    if (sendImage.status === 200) {
+                        console.log(sendImage)
+                        const newMsgFile: dataMessage = {
+                            body: sendImage.data.listStatusImgInsertado[0].url,
+                            from: userData?.nombre,
+                            createdAt: getDateAndTimeFormat(new Date()),
+                            type: 2,
+                        }
+                        if (messages === undefined) {
+                            setMessages([newMsgFile]);
+                            setValueMsg("");
+                        } else {
+                            setMessages([...messages, newMsgFile]);
+                            setValueMsg("");
+                        }
+                        setIsSendingImg(false);
+                    }
+                }
+            } catch (error) {
+                showToast(
+                    'Error al subir la imagen',
+                    "error",
+                    3000,
+                    "top-center"
+                )
+                console.log("Error al subir la imagen: ", error)
+            }
+        } else {
+            showToast(
+                'El archivo seleccionado no es una imagen.',
+                "error",
+                3000,
+                "top-center"
+            )
+        }
+    }
     return (
         <>
             <div className="w-1/3 max-h-[700px] flex flex-col bg-gray-200 shadow-lg rounded-lg p-2">
                 <div className='w-full pl-3 pb-1 text-lg border-b-1 border-gray-600 break-words'>
-                    <h3>Nombre del chat: {chatData?.nombreChat}</h3>
+                    <h3>Chat: {chatData?.nombreChat}</h3>
                 </div>
                 <div className="overflow-y-auto p-4 overflow-x-hidden scrollbar-hide">
                     <div className="h-screen">
@@ -126,8 +173,23 @@ const Chat = ({chatData}: propsChat) => {
                                         </span>
 
                                         <div className='message max-w-xs'>
-                                            <p className="break-words">{msg.body}</p>
-                                            <p className='text-right text-xs mt-2'>{msg.createdAt}</p>
+                                            {
+                                                msg.type === 1 ? (
+                                                    <>
+                                                        <p className="break-words">{msg.body}</p>
+                                                        <p className='text-right text-xs mt-2'>{msg.createdAt}</p>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <img
+                                                            className="w-full rounded-md"
+                                                            src={msg.body}
+                                                            alt="Imagen subida"
+                                                        />
+                                                        <p className='text-right text-xs mt-2'>{msg.createdAt}</p>
+                                                    </>
+                                                )
+                                            }
                                         </div>
                                     </li>
                                 ))
@@ -137,7 +199,7 @@ const Chat = ({chatData}: propsChat) => {
 
                     </div>
                 </div>
-                <div className="mt-3">
+                <div className="flex items-center mt-3">
                     <Input
                         value={valueMsg}
                         type="text"
@@ -147,13 +209,22 @@ const Chat = ({chatData}: propsChat) => {
                         onChange={handleInputChange}
                         endContent={
                             <div
-                                className={`cursor-pointer`}
-                                onClick={handleSend}
+                                className={`cursor-pointer flex items-center`}
+                                onClick={!isSending ? handleSend : undefined}
                             >
-                                <IoSendSharp />
+                                {
+                                    !isSending ? <IoSendSharp size={18} />
+                                        : <Spinner color='warning' size='md' />
+                                }
                             </div>
                         }
                         onKeyDown={handleKeyDown}
+                        disabled={isSending}
+                    />
+
+                    <UploadFile
+                        onFileSelect={handleFileSelect}
+                        isSending={isSendingImg}
                     />
                 </div>
             </div>

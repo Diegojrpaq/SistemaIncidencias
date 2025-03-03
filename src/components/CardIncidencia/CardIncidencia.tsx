@@ -63,6 +63,7 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
                     <MenuDropdown
                         idIncidencia={dataCard.idIncidencia}
                         idEmpleadoOpenIncidencia={dataCard.empleadoId}
+                        numGuia={dataCard.numGuia}
                     />
                 </div>
                 <small className="text-default-500">Destino: {dataCard.destino}</small>

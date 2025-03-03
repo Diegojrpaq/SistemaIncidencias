@@ -1,7 +1,7 @@
-import { 
-  dataChangeStatus, 
-  dataSendMessage, 
-  Incidencia 
+import {
+  dataChangeStatus,
+  dataSendMessage,
+  Incidencia
 } from "./interfaces";
 import { urlServer } from "./url";
 
@@ -51,6 +51,9 @@ export const sendMessage = async (dataMessage: dataSendMessage) => {
     return data;
   } catch (error) {
     console.error(`Error, no se pudo enviar el mensaje`, error);
+    return {
+      status: 400
+    }
   }
 }
 
@@ -150,6 +153,10 @@ export const changeStatus = async (
         idIncidencia: dataChangeStatus.idIncidencia,
         idStatus: dataChangeStatus.idStatus,
         idUser: dataChangeStatus.idUser,
+        idSucursal: dataChangeStatus.idSucursal,
+        idDestino: dataChangeStatus.idDestino,
+        idSucursalResponsable: dataChangeStatus.idSucursalResponsable,
+        idTipoIncidencia: dataChangeStatus.idTipoIncidencia,
       }),
       cache: 'no-store'
     });
@@ -163,5 +170,69 @@ export const changeStatus = async (
     return data;
   } catch (error) {
     console.error('Error al obtener datos:', error);
+  }
+}
+
+export const getAllSucursales = async () => {
+  try {
+    const response = await fetch(`${urlServer}/Incidencias/getSucursales`);
+    if (!response.ok) {
+      throw new Error('Error en la solicitud');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error al obtener las sucursales: ', error);
+  }
+}
+
+export const uploadImage = async (
+  base64String: string,
+  idChat: number,
+  idUser: number
+) => {
+  try {
+    const response = await fetch(`${urlServer}/Incidencias/setImgEvidencia`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        idChat,
+        idUser,
+        msgText: "",
+        vListFiles: [
+          {
+            fileCode: base64String
+          }
+        ]
+      }),
+      cache: 'no-store'
+    });
+
+    const data = await response.json();
+    return {
+      data,
+      status: 200
+    }
+  } catch (error) {
+    console.error("Error al subir la imagen:", error);
+    return {
+      status: 400,
+      message: "Error al subir la imagen"
+    }
+  }
+}
+
+export const getCatalogoMotivosCierre = async () => {
+  try {
+    const response = await fetch(`${urlServer}/Incidencias/getCatalogoCierre`);
+    if (!response.ok) {
+      throw new Error('Error en la solicitud');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error al obtener el catalogo de cierre: ', error);
   }
 }
