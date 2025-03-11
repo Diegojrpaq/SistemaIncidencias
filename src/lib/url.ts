@@ -1,1 +1,1 @@
-export const urlServer = `http://192.168.10.228`;
+export const urlServer = `http://192.168.10.160`;
