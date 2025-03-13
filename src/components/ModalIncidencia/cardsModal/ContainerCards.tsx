@@ -5,7 +5,6 @@ import {
 } from "@/lib/interfaces";
 import InformacionDeGuia from "./InformacionDeGuia";
 import InformacionDeIncidencia from "./InformacionDeIncidencia";
-import Evidencia from "./Evidencia";
 import InformacionSucursales from "./InformacionSucursales";
 import DetalleEscaneo from "./DetalleEscaneo";
 
@@ -29,8 +28,6 @@ const ContainerCards = ({
             <InformacionDeIncidencia
                 incidencia={incidencia}
             />
-
-            <Evidencia />
 
             <InformacionSucursales
                 chatData={chatData}

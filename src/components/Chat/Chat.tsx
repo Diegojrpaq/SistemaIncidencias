@@ -8,6 +8,7 @@ import { IoSendSharp } from 'react-icons/io5';
 import UploadFile from '../uploadFile/UploadFile';
 import { showToast } from '../toast/showToast';
 import ImageGalleryModal from '../ImagenesChat/Galeria';
+import MenuDropdown from '../ImagenesChat/DropdownMenu';
 
 interface dataMessage {
     body: string;
@@ -21,8 +22,6 @@ interface propsChat {
 }
 
 const Chat = ({ chatData }: propsChat) => {
-    const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-    const [currentImage, setCurrentImage] = useState(0);
     const images = chatData?.listMensajes?.filter(msg => msg.idTipoMensaje === 2).map(msg => msg.mensaje) || [];
     const dataUserAndIncidencias = useContext(IncidenciasContext);
     const userData = dataUserAndIncidencias?.userData;
@@ -131,12 +130,8 @@ const Chat = ({ chatData }: propsChat) => {
             <div className="w-1/3 max-h-[700px] flex flex-col bg-gray-200 shadow-lg rounded-lg p-2">
                 <div className="w-full pl-3 pb-1 text-lg border-b-1 border-gray-600 break-words flex justify-between items-center">
                     <h3>Chat: {chatData?.nombreChat}</h3>
-                    <button
-                        className="px-2 py-1 bg-blue-500 text-white rounded"
-                        onClick={() => setIsGalleryOpen(true)}
-                    >
-                        📷 Galería
-                    </button>
+                    <MenuDropdown images={images}
+                    />
                 </div>
                 <div className="overflow-y-auto p-4 overflow-x-hidden scrollbar-hide">
                     <div className="h-screen">
@@ -208,13 +203,6 @@ const Chat = ({ chatData }: propsChat) => {
                     <UploadFile onFileSelect={handleFileSelect} isSending={isSendingImg} />
                 </div>
             </div>
-            <ImageGalleryModal
-                isOpen={isGalleryOpen}
-                onClose={() => setIsGalleryOpen(false)}
-                images={images}
-                currentImage={currentImage}
-                setCurrentImage={setCurrentImage}
-            />
         </>
     );
 };
