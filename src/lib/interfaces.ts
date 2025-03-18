@@ -32,6 +32,7 @@ export interface Incidencia {
     clienteDestinoNombre: string,
     incidencia: number,
     resuelto: number,
+    descripcion: string,
     nota: string,
     empleadoId: number,
     empleadoNombre: string,
