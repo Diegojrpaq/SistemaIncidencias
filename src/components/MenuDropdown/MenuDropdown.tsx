@@ -1,16 +1,17 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState } from 'react';
 import {
     Dropdown,
     DropdownItem,
     DropdownMenu,
     DropdownTrigger,
-} from '@nextui-org/react'
+} from '@nextui-org/react';
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { IncidenciasContext } from '@/context/IncidenciasContext';
 import { changeStatus, getDataByGuia } from '@/lib/api';
 import { Incidencia } from '@/lib/interfaces';
 import { showToast } from '../toast/showToast';
 import ModalCierre from '../modalCierre/ModalCierre';
+import ModalCalificacion from '../modalCierreCalificacion/modalcierreCalificacion';
 import { urlServer } from '@/lib/url';
 
 interface propsMenuDropDown {
@@ -18,6 +19,7 @@ interface propsMenuDropDown {
     idEmpleadoOpenIncidencia: number;
     numGuia: string;
 }
+
 const MenuDropdown = ({
     idIncidencia,
     idEmpleadoOpenIncidencia,
@@ -26,14 +28,18 @@ const MenuDropdown = ({
     const dataUser = useContext(IncidenciasContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [chatDataId, setChatDataId] = useState(0);
+    const arrActualIncidencias = dataUser?.incidencias;
     let setIncidencias: ((incidencias: Incidencia[]) => void);
-    const arrActualIncidencias = dataUser?.incidencias
     let idUser = 0;
+
     if (dataUser !== undefined) {
         idUser = dataUser?.userData.id;
         setIncidencias = dataUser?.setIncidencias;
-
     }
+
+    // Solo los usuarios con id 44 y 43 pueden abrir el ModalCalificacion
+    let isAdmin = idUser === 1 
+
     const changeStatusIncidencia = async (key: number) => {
         let idResuelto = key;
         const response = await changeStatus({
@@ -48,7 +54,7 @@ const MenuDropdown = ({
 
         if (response.status === 200) {
             showToast(
-                'Se cambio el estatus de la incidencia',
+                'Se cambió el estatus de la incidencia',
                 "success",
                 3000,
                 "top-center"
@@ -68,7 +74,7 @@ const MenuDropdown = ({
                 "top-center"
             );
         }
-    }
+    };
 
     const getDataChat = async () => {
         const { status, ...dataIncidencia } = await getDataByGuia(
@@ -76,35 +82,26 @@ const MenuDropdown = ({
             `${numGuia}`
         );
         setChatDataId(dataIncidencia.chatData.idChat);
-    }
+    };
 
     return (
         <div>
-            <Dropdown
-                className=''
-                size='sm'
-            >
+            <Dropdown size='sm'>
                 <DropdownTrigger>
                     <div className='flex'>
                         <IoEllipsisHorizontal size={25} />
                     </div>
                 </DropdownTrigger>
-                <DropdownMenu
-                    aria-label="Static Actions"
-                >
+                <DropdownMenu aria-label="Acciones">
                     <DropdownItem
                         key={1}
-                        onClick={
-                            () => changeStatusIncidencia(1)
-                        }
+                        onClick={() => changeStatusIncidencia(1)}
                     >
                         Abierta
                     </DropdownItem>
                     <DropdownItem
                         key={2}
-                        onClick={
-                            () => changeStatusIncidencia(2)
-                        }
+                        onClick={() => changeStatusIncidencia(2)}
                     >
                         En Resolución
                     </DropdownItem>
@@ -120,16 +117,28 @@ const MenuDropdown = ({
                 </DropdownMenu>
             </Dropdown>
 
-            <ModalCierre
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                idIncidencia={idIncidencia}
-                idEmpleadoOpenIncidencia={idEmpleadoOpenIncidencia}
-                arrActualIncidencias={arrActualIncidencias}
-                idChat={chatDataId}
-            />
+            {/* Modal de Calificación o Cierre según el rol del usuario */}
+            {isAdmin ? (
+                <ModalCalificacion
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    idIncidencia={idIncidencia}
+                    idEmpleadoOpenIncidencia={idEmpleadoOpenIncidencia}
+                    arrActualIncidencias={arrActualIncidencias}
+                    idChat={chatDataId}
+                />
+            ) : (
+                <ModalCierre
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    idIncidencia={idIncidencia}
+                    idEmpleadoOpenIncidencia={idEmpleadoOpenIncidencia}
+                    arrActualIncidencias={arrActualIncidencias}
+                    idChat={chatDataId}
+                />
+            )}
         </div>
-    )
+    );
 }
 
-export default MenuDropdown
+export default MenuDropdown;

@@ -94,7 +94,7 @@ function ModalCierre({
 
   const handleConfirm = () => {
     //Mandar datos de cierre: sucursal responsable, motivo, comentario.
-    if (!selectMotivo || !selectSucursal || !descripcion.trim()) {
+    if (!selectMotivo || !descripcion.trim()) {
       setError(true);
       return;
     }
@@ -106,7 +106,6 @@ function ModalCierre({
 
   const resetForm = () => {
     setSelectMotivo(0);
-    setSelectSucursal(0);
     setDescripcion("");
     setError(false);
   };
@@ -141,31 +140,6 @@ function ModalCierre({
                   ))
                 }
               </Select>
-
-            </div>
-
-            <div className="flex w-full items-center mb-6">
-              <Select
-                className="max-w-md"
-                value={selectSucursal}
-                onChange={(e) => setSelectSucursal(Number(e.target.value))}
-                label="Sucursal responsable:"
-                placeholder="Seleccione una sucursal"
-                labelPlacement="outside"
-                size="md"
-                isInvalid={error && !selectSucursal}
-                errorMessage={
-                  error && !selectSucursal ?
-                    "Campo obligatorio" : ""
-                }
-              >
-                {sucursalesCombo.map((sucursal) => (
-                  <SelectItem key={sucursal.key}>
-                    {sucursal.label}
-                  </SelectItem>
-                ))}
-              </Select>
-
             </div>
 
             <div>
