@@ -59,7 +59,7 @@ function ModalCalificacion({
     const sucursalSeleccionada = sucursalesCombo.find((s) => s.key === sucursal)?.label;
     if (sucursalSeleccionada && !sucursalesSeleccionadas.includes(sucursalSeleccionada)) {
       setSucursalesSeleccionadas((prev) => [...prev, sucursalSeleccionada]);
-      setCalificaciones((prev) => ({ ...prev, [sucursalSeleccionada]: 3 })); // Valor por defecto 3
+      setCalificaciones((prev) => ({ ...prev, [sucursalSeleccionada]: 0 })); // Valor por defecto 0
     }
   };
 
@@ -95,7 +95,7 @@ function ModalCalificacion({
     } else {
       showToast("Error al cambiar el estado de la incidencia", "error", 3000, "top-center");
     }
-  };
+  }; 
 
   const handleCalificacionChange = (sucursal: string, value: number) => {
     setCalificaciones((prev) => ({
@@ -155,36 +155,43 @@ function ModalCalificacion({
               </SelectItem>
             ))}
           </Select>
-
-          {Object.keys(calificaciones).map((sucursal) => (
-            <div key={sucursal}>
-              <label>Calificación para {sucursal}:</label>
-              <Select value={calificaciones[sucursal] || ""} onChange={(e) => handleCalificacionChange(sucursal, Number(e.target.value))}>
-                {[1, 2, 3, 4, 5].map((num) => (
-                  <SelectItem key={num} value={num}>
-                    {num}
-                  </SelectItem>
-                ))}
-              </Select>
-              <Button color="danger" variant="light" onPress={() => handleSucursalRemove(sucursal)}>
-                Eliminar
-              </Button>
-            </div>
-          ))}
-
-          {/* PREVIEW DE CALIFICACIONES */}
+          {/* Box con scroll SOLO para los select de calificaciones */}
           {Object.keys(calificaciones).length > 0 && (
-            <div className="border p-2 rounded-lg bg-gray-100">
-              <h4 className="font-semibold">Preview de Calificaciones:</h4>
-              <ul>
-                {Object.entries(calificaciones).map(([sucursal, calificacion]) => (
-                  <li key={sucursal}>
-                    {sucursal}: <strong>{calificacion}</strong>
-                  </li>
-                ))}
-              </ul>
+            <div className="border p-2 rounded-lg bg-gray-100 max-h-40 overflow-y-auto">
+              {Object.keys(calificaciones).map((sucursal) => (
+                <div key={sucursal} className="mb-2">
+                  <label className="block text-sm font-medium">{`Calificación para ${sucursal}:`}</label>
+                  <Select
+                    value={calificaciones[sucursal] || ""}
+                    onChange={(e) => handleCalificacionChange(sucursal, Number(e.target.value))}
+                  >
+                    {[1, 2, 3, 4, 5].map((num) => (
+                      <SelectItem key={num} value={num}>
+                        {num}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  <Button color="danger" variant="light" size="sm" onPress={() => handleSucursalRemove(sucursal)} className="mt-1">
+                    Eliminar
+                  </Button>
+                </div>
+              ))}
             </div>
           )}
+
+        {/* Lista de calificaciones */}
+        {Object.keys(calificaciones).length > 0 && (
+          <div className="mt-2">
+            <h4 className="font-semibold">Calificaciones:</h4>
+            <ul>
+              {Object.entries(calificaciones).map(([sucursal, calificacion]) => (
+                <li key={sucursal}>
+                  {sucursal}: <strong>{calificacion}</strong>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
           <Textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} label="Comentarios" placeholder="Escribe un comentario" />
         </ModalBody>
