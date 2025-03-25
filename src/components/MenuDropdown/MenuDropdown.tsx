@@ -37,7 +37,6 @@ const MenuDropdown = ({
         setIncidencias = dataUser?.setIncidencias;
     }
 
-    // Solo los usuarios con id 44 y 43 pueden abrir el ModalCalificacion
     let isAdmin = idUser === 1 
 
     const changeStatusIncidencia = async (key: number) => {
