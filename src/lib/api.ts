@@ -186,6 +186,19 @@ export const getAllSucursales = async () => {
   }
 }
 
+export const getSucursalesInvolucradas = async (idChat : number) => {
+  try {
+    const response = await fetch(`${urlServer}/Incidencias/getSucursalesInvolucradas/${idChat}`);
+    if (!response.ok) {
+      throw new Error('Error en la solicitud');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error al obtener las sucursales: ', error);
+  }
+}
+
 export const uploadImage = async (
   base64String: string,
   idChat: number,

@@ -1,4 +1,4 @@
-import { changeStatus, sendMessage } from "@/lib/api";
+import { changeStatus, sendMessage, getSucursalesInvolucradas } from "@/lib/api";
 import {
   Button,
   Modal,
@@ -9,6 +9,8 @@ import {
   Select,
   SelectItem,
   Textarea,
+  Skeleton,
+  Card
 } from "@nextui-org/react";
 import { showToast } from "../toast/showToast";
 import { dataSelect, Incidencia } from "@/lib/interfaces";
@@ -40,26 +42,43 @@ function ModalCalificacion({
   const [descripcion, setDescripcion] = useState("");
   const [error, setError] = useState(false);
   const [selectSucursal, setSelectSucursal] = useState(0);
+  const [sucursalesInvolucradas, setSucursalesInvolucradas] = useState<dataSelect[]>([]);
+  const [loading, setLoading] = useState(true);
 
   let idUser = 0;
   let idSucursal = 0;
   let idDestino = 0;
-  let sucursalesCombo: dataSelect[] = [];
   let catalogoCierreCombo: dataSelect[] = [];
   if (dataUser !== undefined) {
     idUser = dataUser?.userData.id;
     idSucursal = dataUser?.userData.id_sucursal;
     idDestino = dataUser?.userData.id_destino;
     setIncidencias = dataUser?.setIncidencias;
-    sucursalesCombo = dataUser?.sucursalesCombo;
     catalogoCierreCombo = dataUser?.catalogoCierreCombo;
   }
 
+  useEffect(() => {
+    if (idChat) {
+      getSucursalesInvolucradas(idChat)
+        .then((data) => {
+          if (data && data.listSucursales) {
+            const sucursalesMapeadas = data.listSucursales.map((sucursal: any) => ({
+              key: sucursal.idSucursal,
+              label: sucursal.sucursal
+            }));
+            setSucursalesInvolucradas(sucursalesMapeadas);
+          }
+        })
+        .catch((error) => console.error("Error al obtener sucursales:", error))
+        .finally(() => setLoading(false));
+    }
+  }, [idChat]);
+
   const handleSucursalChange = (sucursal: number) => {
-    const sucursalSeleccionada = sucursalesCombo.find((s) => s.key === sucursal)?.label;
+    const sucursalSeleccionada = sucursalesInvolucradas.find((s) => s.key === sucursal)?.label;
     if (sucursalSeleccionada && !sucursalesSeleccionadas.includes(sucursalSeleccionada)) {
       setSucursalesSeleccionadas((prev) => [...prev, sucursalSeleccionada]);
-      setCalificaciones((prev) => ({ ...prev, [sucursalSeleccionada]: 0 })); // Valor por defecto 0
+      setCalificaciones((prev) => ({ ...prev, [sucursalSeleccionada]: 0 }));
     }
   };
 
@@ -136,64 +155,104 @@ function ModalCalificacion({
   }, [calificaciones]);
 
   return (
-    <Modal isOpen={isOpen} size="md" onClose={onClose}>
+    <Modal 
+      isOpen={isOpen} 
+      size="md" 
+      onClose={onClose}
+      scrollBehavior="inside" // Habilitar scroll interno del modal
+      className="max-h-[90vh]" // Altura máxima del modal
+    >
       <ModalContent>
         <ModalHeader>Para cerrar, llena los siguientes campos</ModalHeader>
         <ModalBody>
-          <Select value={selectMotivo} onChange={(e) => setSelectMotivo(Number(e.target.value))} label="Motivo de Cierre">
-            {catalogoCierreCombo.map((item) => (
-              <SelectItem key={item.key} value={item.key}>
-                {item.label}
-              </SelectItem>
-            ))}
-          </Select>
+          {loading ? (
+            <Card className="p-4 shadow-lg rounded-lg">
+              <Skeleton className="h-10 w-full rounded-md mb-4" />
+              <Skeleton className="h-10 w-full rounded-md mb-4" />
+              <Skeleton className="h-24 w-full rounded-md mb-4" />
+            </Card>
+          ) : (
+            <>
+              <Select 
+                value={selectMotivo} 
+                onChange={(e) => setSelectMotivo(Number(e.target.value))} 
+                label="Motivo de Cierre"
+              >
+                {catalogoCierreCombo.map((item) => (
+                  <SelectItem key={item.key} value={item.key}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </Select>
 
-          <Select label="Sucursales Involucradas" onChange={(e) => handleSucursalChange(Number(e.target.value))}>
-            {sucursalesCombo.map((sucursal) => (
-              <SelectItem key={sucursal.key} value={sucursal.key}>
-                {sucursal.label}
-              </SelectItem>
-            ))}
-          </Select>
-          {/* Box con scroll SOLO para los select de calificaciones */}
-          {Object.keys(calificaciones).length > 0 && (
-            <div className="border p-2 rounded-lg bg-gray-100 max-h-40 overflow-y-auto">
-              {Object.keys(calificaciones).map((sucursal) => (
-                <div key={sucursal} className="mb-2">
-                  <label className="block text-sm font-medium">{`Calificación para ${sucursal}:`}</label>
-                  <Select
-                    value={calificaciones[sucursal] || ""}
-                    onChange={(e) => handleCalificacionChange(sucursal, Number(e.target.value))}
-                  >
-                    {[1, 2, 3, 4, 5].map((num) => (
-                      <SelectItem key={num} value={num}>
-                        {num}
-                      </SelectItem>
+              <Select 
+                label="Sucursales Involucradas" 
+                onChange={(e) => handleSucursalChange(Number(e.target.value))}
+              >
+                {sucursalesInvolucradas.map((sucursal) => (
+                  <SelectItem key={sucursal.key} value={sucursal.key}>
+                    {sucursal.label}
+                  </SelectItem>
+                ))}
+              </Select>
+
+              {/* Lista de calificaciones */}
+              <div className="border p-4 rounded-lg bg-gray-50">
+                <h4 className="font-semibold mb-2">Calificaciones:</h4>
+                {sucursalesSeleccionadas.length === 0 ? (
+                  <p className="text-gray-500">Sin calificaciones</p>
+                ) : (
+                  <div className="space-y-3">
+                    {sucursalesSeleccionadas.map((sucursal) => (
+                      <div key={sucursal} className="flex items-center justify-between gap-2">
+                        <span className="w-1/3 truncate">{sucursal}</span>
+                        <div className="flex items-center gap-2 w-2/3">
+                        <Select
+                        className="w-full"
+                        selectedKeys={calificaciones[sucursal] ? [String(calificaciones[sucursal])] : []}
+                        onChange={(e) => handleCalificacionChange(sucursal, Number(e.target.value))}
+                        placeholder={calificaciones[sucursal] ? String(calificaciones[sucursal]) : "Sin calificación"}
+                        size="sm"
+                        renderValue={() => (
+                          calificaciones[sucursal] ? (
+                            <span className="font-medium">{calificaciones[sucursal]}</span>
+                          ) : (
+                            <span className="text-white bg-gray-1000 px-3 py-1 rounded-md shadow-md border border-gray-600">
+                              Sin calificación
+                            </span>
+                          )
+                        )}
+                      >
+                        {[1, 2, 3, 4, 5].map((num) => (
+                          <SelectItem key={num} value={num}>
+                            {num}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                          <Button 
+                            color="danger" 
+                            variant="light" 
+                            size="sm" 
+                            onPress={() => handleSucursalRemove(sucursal)}
+                            isIconOnly
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      </div>
                     ))}
-                  </Select>
-                  <Button color="danger" variant="light" size="sm" onPress={() => handleSucursalRemove(sucursal)} className="mt-1">
-                    Eliminar
-                  </Button>
-                </div>
-              ))}
-            </div>
+                  </div>
+                )}
+              </div>
+
+              <Textarea 
+                value={descripcion} 
+                onChange={(e) => setDescripcion(e.target.value)} 
+                label="Comentarios" 
+                placeholder="Escribe un comentario" 
+              />
+            </>
           )}
-
-        {/* Lista de calificaciones */}
-        {Object.keys(calificaciones).length > 0 && (
-          <div className="mt-2">
-            <h4 className="font-semibold">Calificaciones:</h4>
-            <ul>
-              {Object.entries(calificaciones).map(([sucursal, calificacion]) => (
-                <li key={sucursal}>
-                  {sucursal}: <strong>{calificacion}</strong>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-          <Textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} label="Comentarios" placeholder="Escribe un comentario" />
         </ModalBody>
         <ModalFooter>
           <Button color="danger" variant="light" onPress={onClose}>
