@@ -71,7 +71,8 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
                 <small className="text-default-500">Creado por: {dataCard.empleadoNombre}</small>
             </CardHeader>
             <CardBody className="overflow-visible py-2">
-                <h4 className="font-bold text-md">Motivo: {dataCard.nota}</h4>
+                <h4 className="font-bold text-md">Descripcion: {dataCard.descripcion}</h4>
+                <h4 className="font-bold text-md">Nota: {dataCard.nota}</h4>
                 {
                     arregloFinal !== undefined ?
                         arregloFinal.map((sucursal) => (
