@@ -249,3 +249,16 @@ export const getCatalogoMotivosCierre = async () => {
     console.error('Error al obtener el catalogo de cierre: ', error);
   }
 }
+
+export const getUserSession = async () => {
+  try {
+      const response = await fetch(`${urlServer}/Incidencias/getSession/`);
+      if (!response.ok) throw new Error('Error al obtener la sesión');
+
+      const data = await response.json();
+      return data.User; // Devuelve solo el objeto User que contiene los permisos
+  } catch (error) {
+      console.error('Error en getUserSession:', error);
+      return null;
+  }
+};

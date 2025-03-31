@@ -132,13 +132,14 @@ export interface dataEscaneo {
 }
 
 export interface dataChangeStatus {
-    idIncidencia: number,
-    idStatus: number,
-    idUser: number,
-    idSucursal: number,
-    idDestino: number,
-    idSucursalResponsable: number,
-    idTipoIncidencia: number,
+    idIncidencia: number;
+    idStatus: number;
+    idUser: number;
+    idSucursal: number;
+    idDestino: number;
+    idSucursalResponsable?: number; // Opcional porque en el otro modal no se usa
+    idTipoIncidencia: number;
+    ListSucursales?: { id: number; calificacion: number }[]; // Nueva propiedad opcional
 }
 
 export interface dataSelect {

@@ -78,41 +78,35 @@ function ModalCierre({
   }, [idChat]);
 
   const changeStatusIncidencia = async (key: number) => {
-    let idResuelto;
-    if (idEmpleadoOpenIncidencia !== idUser && key === 4) {
-      idResuelto = 3;
-    } else {
-      idResuelto = key;
-    }
-
+    let idResuelto = idEmpleadoOpenIncidencia !== idUser && key === 4 ? 3 : key;
+  
     const response = await changeStatus({
       idIncidencia,
       idStatus: key,
       idUser,
       idSucursal,
       idDestino,
-      idSucursalResponsable: Number(selectSucursal),
       idTipoIncidencia: Number(selectMotivo),
     });
-
+  
     const sendDataMsg = {
       idChat,
       idUser,
       msgText: descripcion,
     };
-
+  
     const sendMsg = await sendMessage(sendDataMsg);
-
+  
     if (response.status === 200 && sendMsg.status === 200) {
-      showToast('Se cambió el estatus de la incidencia', "success", 3000, "top-center");
+      showToast("Se cambió el estatus de la incidencia", "success", 3000, "top-center");
       if (arrActualIncidencias !== undefined) {
-        const newArr = arrActualIncidencias.map(item =>
+        const newArr = arrActualIncidencias.map((item) =>
           item.idIncidencia === idIncidencia ? { ...item, resuelto: idResuelto } : item
         );
         setIncidencias(newArr);
       }
     } else {
-      showToast('Error al cambiar el estado de la incidencia', "error", 3000, "top-center");
+      showToast("Error al cambiar el estado de la incidencia", "error", 3000, "top-center");
     }
   };
 

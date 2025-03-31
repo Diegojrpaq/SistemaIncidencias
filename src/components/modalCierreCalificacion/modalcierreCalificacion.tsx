@@ -88,25 +88,30 @@ function ModalCalificacion({
 
   const changeStatusIncidencia = async (key: number) => {
     let idResuelto = idEmpleadoOpenIncidencia !== idUser && key === 4 ? 3 : key;
-
+  
+    const listSucursales = sucursalesSeleccionadas.map((sucursal) => ({
+      id: sucursalesInvolucradas.find((s) => s.label === sucursal)?.key || 0,
+      calificacion: calificaciones[sucursal] || 0,
+    }));
+  
     const response = await changeStatus({
       idIncidencia,
       idStatus: key,
       idUser,
       idSucursal,
       idDestino,
-      idSucursalResponsable: Number(selectSucursal),
+      ListSucursales: listSucursales,
       idTipoIncidencia: Number(selectMotivo),
     });
-
+  
     const sendDataMsg = {
       idChat,
       idUser,
       msgText: descripcion,
     };
-
+  
     const sendMsg = await sendMessage(sendDataMsg);
-
+  
     if (response.status === 200 && sendMsg.status === 200) {
       showToast("Se cambió el estatus de la incidencia", "success", 3000, "top-center");
       if (arrActualIncidencias !== undefined) {

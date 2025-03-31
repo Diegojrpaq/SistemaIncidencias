@@ -7,7 +7,7 @@ import {
 } from '@nextui-org/react';
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { IncidenciasContext } from '@/context/IncidenciasContext';
-import { changeStatus, getDataByGuia } from '@/lib/api';
+import { changeStatus, getDataByGuia, getUserSession } from '@/lib/api';
 import { Incidencia } from '@/lib/interfaces';
 import { showToast } from '../toast/showToast';
 import ModalCierre from '../modalCierre/ModalCierre';
@@ -37,7 +37,8 @@ const MenuDropdown = ({
         setIncidencias = dataUser?.setIncidencias;
     }
 
-    let isAdmin = idUser === 1 
+    const hasPermission = dataUser?.userData?.permiso?.some(permiso => permiso=== 43 || permiso === 44);
+
 
     const changeStatusIncidencia = async (key: number) => {
         let idResuelto = key;
@@ -117,7 +118,7 @@ const MenuDropdown = ({
             </Dropdown>
 
             {/* Modal de Calificación o Cierre según el rol del usuario */}
-            {isAdmin ? (
+            {hasPermission ? (
                 <ModalCalificacion
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
