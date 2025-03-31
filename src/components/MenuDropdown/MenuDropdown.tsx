@@ -37,7 +37,13 @@ const MenuDropdown = ({
         setIncidencias = dataUser?.setIncidencias;
     }
 
-    const hasPermission = dataUser?.userData?.permiso?.some(permiso => permiso=== 43 || permiso === 44);
+    const hasPermission = dataUser?.userData?.permiso
+    ? dataUser.userData.permiso.includes(43) || dataUser.userData.permiso.includes(47)
+    : false;
+    console.log("Contexto completo de dataUser:", dataUser);
+    console.log("Permisos del usuario:", dataUser?.userData?.permiso);
+    console.log("Tiene permisos 43 o 44:", hasPermission);
+
 
 
     const changeStatusIncidencia = async (key: number) => {

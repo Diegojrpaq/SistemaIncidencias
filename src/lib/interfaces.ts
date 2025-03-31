@@ -6,7 +6,7 @@ export interface dataUser {
     Sucursal_principal: string,
     id_destino: number,
     Destino: string,
-    permiso: number[],
+    permisoS: number[],
     catalogoSucursales: catalogoSucursales[],
 }
 
