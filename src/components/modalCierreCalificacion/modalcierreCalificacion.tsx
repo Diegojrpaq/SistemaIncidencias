@@ -44,6 +44,7 @@ function ModalCalificacion({
   const [selectSucursal, setSelectSucursal] = useState(0);
   const [sucursalesInvolucradas, setSucursalesInvolucradas] = useState<dataSelect[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false); 
 
   let idUser = 0;
   let idSucursal = 0;
@@ -58,7 +59,8 @@ function ModalCalificacion({
   }
 
   useEffect(() => {
-    if (idChat) {
+    if (isOpen && idChat) { // Solo ejecuta si el modal está abierto
+      setLoading(true);
       getSucursalesInvolucradas(idChat)
         .then((data) => {
           if (data && data.listSucursales) {
@@ -72,15 +74,17 @@ function ModalCalificacion({
         .catch((error) => console.error("Error al obtener sucursales:", error))
         .finally(() => setLoading(false));
     }
-  }, [idChat]);
+  }, [isOpen, idChat]);
 
   const handleSucursalChange = (sucursal: number) => {
     const sucursalSeleccionada = sucursalesInvolucradas.find((s) => s.key === sucursal)?.label;
     if (sucursalSeleccionada && !sucursalesSeleccionadas.includes(sucursalSeleccionada)) {
       setSucursalesSeleccionadas((prev) => [...prev, sucursalSeleccionada]);
       setCalificaciones((prev) => ({ ...prev, [sucursalSeleccionada]: 0 }));
+      setRefresh((prev) => !prev); // ⚡ Forzar actualización
     }
   };
+  
 
   const changeStatusIncidencia = async (key: number) => {
     let idResuelto = idEmpleadoOpenIncidencia !== idUser && key === 4 ? 3 : key;
@@ -151,8 +155,23 @@ function ModalCalificacion({
   };
 
   useEffect(() => {
-    console.log("Estado de calificaciones actualizado:", calificaciones);
-  }, [calificaciones]);
+    if (idChat) {
+      getSucursalesInvolucradas(idChat)
+        .then((data) => {
+          if (data && data.listSucursales) {
+            const sucursalesMapeadas = data.listSucursales.map((sucursal: any) => ({
+              key: sucursal.idSucursal,
+              label: sucursal.sucursal
+            }));
+  
+            setSucursalesInvolucradas(sucursalesMapeadas);
+            setRefresh(prev => !prev); // Forzar actualización
+          }
+        })
+        .catch((error) => console.error("Error al obtener sucursales:", error))
+        .finally(() => setLoading(false));
+    }
+  }, [idChat, refresh]); // Agregar refresh como dependencia
 
   return (
     <Modal 
