@@ -40,11 +40,13 @@ const MenuDropdown = ({
         userPermisos = dataUser?.userData?.permisos
     }
 
+
     const hasPermission = userPermisos?.some(p => p.id === 43 || p.id === 44)
     /* let isAdmin : Permiso[] | undefined
     isAdmin= userPermisos.find(objeto => objeto.id === 43); */
 
   console.log(userPermisos)
+
 
 
     const changeStatusIncidencia = async (key: number) => {

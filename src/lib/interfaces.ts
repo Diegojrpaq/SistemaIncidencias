@@ -10,7 +10,11 @@ export interface dataUser {
     Sucursal_principal: string,
     id_destino: number,
     Destino: string,
+<<<<<<< HEAD
     permisos: Permiso[],
+=======
+    permisoS: number[],
+>>>>>>> cc129f84cf6f7fdb84050a8d0ca258295ec73153
     catalogoSucursales: catalogoSucursales[],
 }
 
