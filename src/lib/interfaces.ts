@@ -1,3 +1,8 @@
+
+export interface Permiso {
+    id: number;
+}
+
 export interface dataUser {
     id: number,
     nombre: string,
@@ -6,7 +11,7 @@ export interface dataUser {
     Sucursal_principal: string,
     id_destino: number,
     Destino: string,
-    permisoS: number[],
+    permisos: Permiso [],
     catalogoSucursales: catalogoSucursales[],
 }
 

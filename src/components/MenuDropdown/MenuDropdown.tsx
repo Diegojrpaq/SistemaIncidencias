@@ -31,18 +31,20 @@ const MenuDropdown = ({
     const arrActualIncidencias = dataUser?.incidencias;
     let setIncidencias: ((incidencias: Incidencia[]) => void);
     let idUser = 0;
+    let userPermisos;
 
     if (dataUser !== undefined) {
         idUser = dataUser?.userData.id;
         setIncidencias = dataUser?.setIncidencias;
+        userPermisos = dataUser?.userData?.permisos
     }
 
-    const hasPermission = dataUser?.userData?.permiso
-    ? dataUser.userData.permiso.includes(43) || dataUser.userData.permiso.includes(47)
-    : false;
-    console.log("Contexto completo de dataUser:", dataUser);
-    console.log("Permisos del usuario:", dataUser?.userData?.permiso);
-    console.log("Tiene permisos 43 o 44:", hasPermission);
+
+    const hasPermission = userPermisos?.some(p => p.id === 43 || p.id === 44)
+    /* let isAdmin : Permiso[] | undefined
+    isAdmin= userPermisos.find(objeto => objeto.id === 43); */
+
+  console.log(userPermisos)
 
 
 
