@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import {
+    dataFocusVisibleClasses,
     Dropdown,
     DropdownItem,
     DropdownMenu,
@@ -8,7 +9,7 @@ import {
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { IncidenciasContext } from '@/context/IncidenciasContext';
 import { changeStatus, getDataByGuia, getUserSession } from '@/lib/api';
-import { Incidencia } from '@/lib/interfaces';
+import { Incidencia, Permiso } from '@/lib/interfaces';
 import { showToast } from '../toast/showToast';
 import ModalCierre from '../modalCierre/ModalCierre';
 import ModalCalificacion from '../modalCierreCalificacion/modalcierreCalificacion';
