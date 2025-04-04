@@ -79,7 +79,7 @@ function ModalCierre({
 
   const changeStatusIncidencia = async (key: number) => {
     let idResuelto = idEmpleadoOpenIncidencia !== idUser && key === 4 ? 3 : key;
-  
+ 
     const response = await changeStatus({
       idIncidencia,
       idStatus: key,

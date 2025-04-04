@@ -9,7 +9,7 @@ import ImageGalleryModal from './Galeria';
 import { useState } from 'react';
 
 interface propsMenuDropDown {
-    images: string[];
+    images: string[]; // Lista de imágenes que vienen del chat
 }
 
 const MenuDropdown = ({ images }: propsMenuDropDown) => {
@@ -31,21 +31,22 @@ const MenuDropdown = ({ images }: propsMenuDropDown) => {
         aria-label='Opciones'
         >
             <DropdownItem
-            key= "galeria"
-            onClick={() => setIsGalleryOpen(true)                
-                }   
+            key="galeria"
+            onClick={() => setIsGalleryOpen(true)} // Al hacer clic en el item "Galería", abrir el modal
             >
                 Galeria
             </DropdownItem>
         </DropdownMenu>
     </Dropdown>
+    
+    {/* El modal para la galería, pasa las imágenes y maneja su apertura */}
     <ImageGalleryModal
-                isOpen={isGalleryOpen}
-                onClose={() => setIsGalleryOpen(false)}
-                images={images}
-                currentImage={currentImage} 
-                setCurrentImage={setCurrentImage} // Se debe manejar en el componente padre
-            />
+        isOpen={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)} // Cierra el modal
+        images={images} // Pasa las imágenes al modal
+        currentImage={currentImage} // Imagen actual seleccionada
+        setCurrentImage={setCurrentImage} // Actualiza la imagen seleccionada
+    />
     </div>
     )
 }
