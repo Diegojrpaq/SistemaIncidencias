@@ -66,9 +66,9 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
                         numGuia={dataCard.numGuia}
                     />
                 </div>
-                <small className="text-default-500">Destino: {dataCard.destino}</small>
                 <small className="text-default-500">Fecha: {formatDate(dataCard.fechaRegistro)}</small>
                 <small className="text-default-500">Creado por: {dataCard.empleadoNombre}</small>
+                <small className="text-default-500">Destino Incidencia: {dataCard.destino}</small>
             </CardHeader>
             <CardBody className="overflow-visible py-2">
                 <h4 className="font-bold text-md">Descripcion: {dataCard.descripcion}</h4>

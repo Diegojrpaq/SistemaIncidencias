@@ -22,25 +22,35 @@ interface propsChat {
 }
 
 const Chat = ({ chatData }: propsChat) => {
-    const images = chatData?.listMensajes?.filter(msg => msg.idTipoMensaje === 2).map(msg => msg.mensaje) || [];
+    // Filtra las imágenes de los mensajes (tipo 2)
+    const [images, setImages] = useState<string[]>([]);
+
+    // Datos de usuario e incidencia
     const dataUserAndIncidencias = useContext(IncidenciasContext);
     const userData = dataUserAndIncidencias?.userData;
+
+    // Estado de mensajes
     const [messages, setMessages] = useState<dataMessage[]>([]);
     const [valueMsg, setValueMsg] = useState('');
     const [isSending, setIsSending] = useState(false);
     const [isSendingImg, setIsSendingImg] = useState(false);
 
+    // Actualiza los mensajes y las imágenes
     useEffect(() => {
-        setMessages(
-            chatData !== undefined
-                ? chatData?.listMensajes?.map(item => ({
-                      body: item.mensaje,
-                      from: item.user,
-                      createdAt: getDateAndTimeFormat(item.fechaRegistro),
-                      type: item.idTipoMensaje,
-                  }))
-                : []
-        );
+        if (chatData) {
+            const updatedMessages = chatData.listMensajes?.map(item => ({
+                body: item.mensaje,
+                from: item.user,
+                createdAt: getDateAndTimeFormat(item.fechaRegistro),
+                type: item.idTipoMensaje,
+            })) || [];
+
+            setMessages(updatedMessages);
+
+            // Filtra las imágenes y actualiza el estado
+            const updatedImages = chatData.listMensajes?.filter(msg => msg.idTipoMensaje === 2).map(msg => msg.mensaje) || [];
+            setImages(updatedImages);
+        }
     }, [chatData]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,13 +78,8 @@ const Chat = ({ chatData }: propsChat) => {
             const sendMsg = await sendMessage(sendDataMsg);
 
             if (sendMsg.status === 200) {
-                if (messages === undefined) {
-                    setMessages([newMsg]);
-                    setValueMsg('');
-                } else {
-                    setMessages([...messages, newMsg]);
-                    setValueMsg('');
-                }
+                setMessages([...messages, newMsg]);
+                setValueMsg('');
                 setIsSending(false);
             } else {
                 showToast('No se pudo enviar el mensaje', 'error', 3000, 'top-center');
@@ -95,7 +100,7 @@ const Chat = ({ chatData }: propsChat) => {
             try {
                 setIsSendingImg(true);
                 const base64 = await convertImageToBase64(file);
-                if (chatData !== undefined && userData !== undefined) {
+                if (chatData && userData) {
                     const idChat = chatData.idChat;
                     const idUser = userData.id;
                     const sendImage = await uploadImage(base64, idChat, idUser);
@@ -106,13 +111,11 @@ const Chat = ({ chatData }: propsChat) => {
                             createdAt: getDateAndTimeFormat(new Date()),
                             type: 2,
                         };
-                        if (messages === undefined) {
-                            setMessages([newMsgFile]);
-                            setValueMsg('');
-                        } else {
-                            setMessages([...messages, newMsgFile]);
-                            setValueMsg('');
-                        }
+
+                        // Actualiza las imágenes y los mensajes
+                        setMessages([...messages, newMsgFile]);
+                        setImages([...images, newMsgFile.body]);
+                        setValueMsg('');
                         setIsSendingImg(false);
                     }
                 }
@@ -130,50 +133,36 @@ const Chat = ({ chatData }: propsChat) => {
             <div className="w-1/3 max-h-[700px] flex flex-col bg-gray-200 shadow-lg rounded-lg p-2">
                 <div className="w-full pl-3 pb-1 text-lg border-b-1 border-gray-600 break-words flex justify-between items-center">
                     <h3>Chat: {chatData?.nombreChat}</h3>
-                    <MenuDropdown images={images}
-                    />
+                    <MenuDropdown images={images} />
                 </div>
                 <div className="overflow-y-auto p-4 overflow-x-hidden scrollbar-hide">
                     <div className="h-screen">
                         <ul>
-                            {messages &&
-                                messages.map((msg, index) => (
-                                    <li
-                                        key={index}
-                                        className={`message max-w-xs my-2 p-3 table text-sm rounded-md block ${
-                                            msg.from === userData?.nombre
-                                                ? 'bg-gray-300 ml-auto'
-                                                : 'bg-zinc-600 text-white'
-                                        }`}
-                                    >
-                                        <span
-                                            className={`block mb-1 ${
-                                                msg.from === userData?.nombre
-                                                    ? 'text-green-600'
-                                                    : 'text-orange-300'
-                                            }`}
-                                        >
-                                            {msg.from}
-                                        </span>
-                                        <div className="message max-w-xs">
-                                            {msg.type === 1 ? (
-                                                <>
-                                                    <p className="break-words">{msg.body}</p>
-                                                    <p className="text-right text-xs mt-2">{msg.createdAt}</p>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <img
-                                                        className="w-full rounded-md"
-                                                        src={msg.body}
-                                                        alt="Imagen subida"
-                                                    />
-                                                    <p className="text-right text-xs mt-2">{msg.createdAt}</p>
-                                                </>
-                                            )}
-                                        </div>
-                                    </li>
-                                ))}
+                            {messages.map((msg, index) => (
+                                <li
+                                    key={index}
+                                    className={`message max-w-xs my-2 p-3 table text-sm rounded-md block ${
+                                        msg.from === userData?.nombre ? 'bg-gray-300 ml-auto' : 'bg-zinc-600 text-white'
+                                    }`}
+                                >
+                                    <span className={`block mb-1 ${msg.from === userData?.nombre ? 'text-green-600' : 'text-orange-300'}`}>
+                                        {msg.from}
+                                    </span>
+                                    <div className="message max-w-xs">
+                                        {msg.type === 1 ? (
+                                            <>
+                                                <p className="break-words">{msg.body}</p>
+                                                <p className="text-right text-xs mt-2">{msg.createdAt}</p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <img className="w-full rounded-md" src={msg.body} alt="Imagen subida" />
+                                                <p className="text-right text-xs mt-2">{msg.createdAt}</p>
+                                            </>
+                                        )}
+                                    </div>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 </div>
@@ -182,19 +171,11 @@ const Chat = ({ chatData }: propsChat) => {
                         value={valueMsg}
                         type="text"
                         placeholder="Escribe un comentario..."
-                        className=""
                         size="lg"
                         onChange={handleInputChange}
                         endContent={
-                            <div
-                                className={`cursor-pointer flex items-center`}
-                                onClick={!isSending ? handleSend : undefined}
-                            >
-                                {!isSending ? (
-                                    <IoSendSharp size={18} />
-                                ) : (
-                                    <Spinner color="warning" size="md" />
-                                )}
+                            <div className="cursor-pointer flex items-center" onClick={!isSending ? handleSend : undefined}>
+                                {!isSending ? <IoSendSharp size={18} /> : <Spinner color="warning" size="md" />}
                             </div>
                         }
                         onKeyDown={handleKeyDown}

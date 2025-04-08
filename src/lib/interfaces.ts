@@ -1,3 +1,8 @@
+
+export interface Permiso {
+    id: number;
+}
+
 export interface dataUser {
     id: number,
     nombre: string,
@@ -6,7 +11,8 @@ export interface dataUser {
     Sucursal_principal: string,
     id_destino: number,
     Destino: string,
-    permiso: number[],
+    permisos: Permiso[],
+    permisoS: number[],
     catalogoSucursales: catalogoSucursales[],
 }
 
@@ -132,13 +138,14 @@ export interface dataEscaneo {
 }
 
 export interface dataChangeStatus {
-    idIncidencia: number,
-    idStatus: number,
-    idUser: number,
-    idSucursal: number,
-    idDestino: number,
-    idSucursalResponsable: number,
-    idTipoIncidencia: number,
+    idIncidencia: number;
+    idStatus: number;
+    idUser: number;
+    idSucursal: number;
+    idDestino: number;
+    idSucursalResponsable?: number; // Opcional porque en el otro modal no se usa
+    idTipoIncidencia: number;
+    ListSucursales?: { id: number; calificacion: number }[]; // Nueva propiedad opcional
 }
 
 export interface dataSelect {

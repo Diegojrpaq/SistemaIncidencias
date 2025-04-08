@@ -44,6 +44,7 @@ function ModalCalificacion({
   const [selectSucursal, setSelectSucursal] = useState(0);
   const [sucursalesInvolucradas, setSucursalesInvolucradas] = useState<dataSelect[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false); 
 
   let idUser = 0;
   let idSucursal = 0;
@@ -58,7 +59,8 @@ function ModalCalificacion({
   }
 
   useEffect(() => {
-    if (idChat) {
+    if (isOpen && idChat) { // Solo ejecuta si el modal está abierto
+      setLoading(true);
       getSucursalesInvolucradas(idChat)
         .then((data) => {
           if (data && data.listSucursales) {
@@ -72,37 +74,44 @@ function ModalCalificacion({
         .catch((error) => console.error("Error al obtener sucursales:", error))
         .finally(() => setLoading(false));
     }
-  }, [idChat]);
+  }, [isOpen, idChat]);
 
   const handleSucursalChange = (sucursal: number) => {
     const sucursalSeleccionada = sucursalesInvolucradas.find((s) => s.key === sucursal)?.label;
     if (sucursalSeleccionada && !sucursalesSeleccionadas.includes(sucursalSeleccionada)) {
       setSucursalesSeleccionadas((prev) => [...prev, sucursalSeleccionada]);
       setCalificaciones((prev) => ({ ...prev, [sucursalSeleccionada]: 0 }));
+      setRefresh((prev) => !prev); // ⚡ Forzar actualización
     }
   };
+  
 
   const changeStatusIncidencia = async (key: number) => {
     let idResuelto = idEmpleadoOpenIncidencia !== idUser && key === 4 ? 3 : key;
-
+  
+    const listSucursales = sucursalesSeleccionadas.map((sucursal) => ({
+      id: sucursalesInvolucradas.find((s) => s.label === sucursal)?.key || 0,
+      calificacion: calificaciones[sucursal] || 0,
+    }));
+  
     const response = await changeStatus({
       idIncidencia,
       idStatus: key,
       idUser,
       idSucursal,
       idDestino,
-      idSucursalResponsable: Number(selectSucursal),
+      ListSucursales: listSucursales,
       idTipoIncidencia: Number(selectMotivo),
     });
-
+  
     const sendDataMsg = {
       idChat,
       idUser,
       msgText: descripcion,
     };
-
+  
     const sendMsg = await sendMessage(sendDataMsg);
-
+  
     if (response.status === 200 && sendMsg.status === 200) {
       showToast("Se cambió el estatus de la incidencia", "success", 3000, "top-center");
       if (arrActualIncidencias !== undefined) {
@@ -151,8 +160,23 @@ function ModalCalificacion({
   };
 
   useEffect(() => {
-    console.log("Estado de calificaciones actualizado:", calificaciones);
-  }, [calificaciones]);
+    if (idChat) {
+      getSucursalesInvolucradas(idChat)
+        .then((data) => {
+          if (data && data.listSucursales) {
+            const sucursalesMapeadas = data.listSucursales.map((sucursal: any) => ({
+              key: sucursal.idSucursal,
+              label: sucursal.sucursal
+            }));
+  
+            setSucursalesInvolucradas(sucursalesMapeadas);
+            setRefresh(prev => !prev); // Forzar actualización
+          }
+        })
+        .catch((error) => console.error("Error al obtener sucursales:", error))
+        .finally(() => setLoading(false));
+    }
+  }, [idChat, refresh]); // Agregar refresh como dependencia
 
   return (
     <Modal 

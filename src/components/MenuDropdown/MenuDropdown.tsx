@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import {
+    dataFocusVisibleClasses,
     Dropdown,
     DropdownItem,
     DropdownMenu,
@@ -7,8 +8,8 @@ import {
 } from '@nextui-org/react';
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { IncidenciasContext } from '@/context/IncidenciasContext';
-import { changeStatus, getDataByGuia } from '@/lib/api';
-import { Incidencia } from '@/lib/interfaces';
+import { changeStatus, getDataByGuia, getUserSession } from '@/lib/api';
+import { Incidencia, Permiso } from '@/lib/interfaces';
 import { showToast } from '../toast/showToast';
 import ModalCierre from '../modalCierre/ModalCierre';
 import ModalCalificacion from '../modalCierreCalificacion/modalcierreCalificacion';
@@ -31,13 +32,22 @@ const MenuDropdown = ({
     const arrActualIncidencias = dataUser?.incidencias;
     let setIncidencias: ((incidencias: Incidencia[]) => void);
     let idUser = 0;
+    let userPermisos;
 
     if (dataUser !== undefined) {
         idUser = dataUser?.userData.id;
         setIncidencias = dataUser?.setIncidencias;
+        userPermisos = dataUser?.userData?.permisos
     }
 
-    let isAdmin = idUser === 1 
+
+    const hasPermission = userPermisos?.some(p => p.id === 43 || p.id === 44)
+    /* let isAdmin : Permiso[] | undefined
+    isAdmin= userPermisos.find(objeto => objeto.id === 43); */
+
+  console.log(userPermisos)
+
+
 
     const changeStatusIncidencia = async (key: number) => {
         let idResuelto = key;
@@ -117,7 +127,7 @@ const MenuDropdown = ({
             </Dropdown>
 
             {/* Modal de Calificación o Cierre según el rol del usuario */}
-            {isAdmin ? (
+            {hasPermission ? (
                 <ModalCalificacion
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
