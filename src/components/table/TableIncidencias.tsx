@@ -94,6 +94,8 @@ export const ChevronDownIcon = ({ strokeWidth = 1.5, ...otherProps }: IconSvgPro
 export const columns = [
     { name: "NumGuia", uid: "numGuia", sortable: true },
     { name: "Creador", uid: "creador", sortable: true },
+    { name: "Destino Registra", uid: "destinoRegistra" },
+    { name: "Sucursal Registra", uid: "sucursalRegistra" },
     { name: "Fecha Registro", uid: "fechaRegistro", sortable: true },
     { name: "Origen", uid: "origen" },
     { name: "Destino", uid: "destino" },
@@ -423,18 +425,19 @@ const INITIAL_VISIBLE_COLUMNS = ["creador", "numGuia", "fechaRegistro", "origen"
 
 export default function TableIncidencias() {
     const dataUserAndIncidencias = useContext(IncidenciasContext);
-    if(dataUserAndIncidencias?.incidencias === undefined) {
+    if (dataUserAndIncidencias?.incidencias === undefined) {
         return <div>No hay incidencias para mostrar</div>;
     }
     const incidencias = dataUserAndIncidencias?.incidencias;
     const { query, filter } = useSearch();
-    //type User = (typeof users)[0];
 
     const filteredCards = incidencias?.filter((incidencia) => {
         const matchesQuery =
             incidencia.numGuia.toLowerCase().includes(query.toLowerCase());
 
-        const matchesFilter = filter === -1 || incidencia.idSucursal === filter;
+        const matchesFilter = filter === -1 ||
+            filter === 0 ||
+            incidencia.idSucursal === filter;
 
         return matchesQuery && matchesFilter;
     });
@@ -504,15 +507,13 @@ export default function TableIncidencias() {
             case "numGuia":
                 return (
                     <div className="flex justify-start items-center">
-                        <p className="">{cellValue}</p>
+                        <p>{incidencia.numGuia}</p>
                     </div>
                 );
             case "creador":
                 return (
                     <User
-                        // avatarProps={{ radius: "lg", src: incidencia.empleadoNombre }}
-                        description={incidencia.empleadoNombre}
-                        name={cellValue}
+                        name={incidencia.empleadoNombre}
                     >
                         {incidencia.empleadoId}
                     </User>
@@ -520,7 +521,6 @@ export default function TableIncidencias() {
             case "descripcion":
                 return (
                     <div className="flex flex-col">
-                        {/* <p className="text-bold text-sm capitalize">{cellValue}</p> */}
                         <p className="text-bold text-sm capitalize text-default-400">{incidencia.nota}</p>
                     </div>
                 );
@@ -540,7 +540,6 @@ export default function TableIncidencias() {
                 return (
                     <div className="relative flex justify-center items-center gap-2">
                         <Tooltip content="Detalles">
-                            {/* Agregar modal */}
                             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                                 <ModalIncidencia
                                     numGuia={incidencia.numGuia}
@@ -548,16 +547,6 @@ export default function TableIncidencias() {
                                 />
                             </span>
                         </Tooltip>
-                        {/* <Tooltip content="Edit user">
-                            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                                <EditIcon />
-                            </span>
-                        </Tooltip>
-                        <Tooltip color="danger" content="Delete user">
-                            <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                                <DeleteIcon />
-                            </span>
-                        </Tooltip> */}
                     </div>
                 );
             case "fechaRegistro":
@@ -565,12 +554,22 @@ export default function TableIncidencias() {
                     <div className="flex justify-center">
                         {
                             typeof cellValue === "number" ?
-                                "" : formatDate(cellValue)
+                                "" : formatDate(incidencia.fechaRegistro) // Formatea las fechas si no son números
                         }
                     </div>
-                )
+                );
             default:
-                return cellValue;
+                // Aquí manejamos los valores que no son específicamente tratados en el switch
+                // Si cellValue es null o undefined, lo tratamos como tal
+                if (cellValue == null) {
+                    return null;
+                }
+                // Si es de tipo `dataEscaneo`, transformamos en una cadena o mostramos una propiedad específica
+                if (typeof cellValue === "object" && "descripcion" in cellValue) {
+                    return <span>{(cellValue as any).descripcion}</span>; // Accede a una propiedad del objeto dataEscaneo
+                }
+                // Para cualquier otro tipo de valor, lo convertimos a cadena
+                return cellValue.toString();
         }
     }, []);
 
@@ -715,40 +714,5 @@ export default function TableIncidencias() {
                 )}
             </TableBody>
         </Table>
-
-        // <Table
-        //     isHeaderSticky
-        //     className='max-h-[720px] overflow-scroll-x'
-        //     aria-label="Example table with custom cells, pagination and sorting"
-        //     bottomContent={bottomContent}
-        //     bottomContentPlacement="outside"
-        //     classNames={{
-        //         wrapper: "max-h-[720px] ",
-        //     }}
-        //     sortDescriptor={sortDescriptor}
-        //     topContent={topContent}
-        //     topContentPlacement="outside"
-        //     onSelectionChange={setSelectedKeys}
-        //     onSortChange={setSortDescriptor}
-        // >
-        //     <TableHeader columns={headerColumns}>
-        //         {(column) => (
-        //             <TableColumn
-        //                 key={column.uid}
-        //                 align={column.uid === "actions" ? "center" : "start"}
-        //                 allowsSorting={column.sortable}
-        //             >
-        //                 {column.name}
-        //             </TableColumn>
-        //         )}
-        //     </TableHeader>
-        //     <TableBody emptyContent={"No se encontraron incidencias"} items={sortedItems}>
-        //         {(item) => (
-        //             <TableRow key={item.numGuia}>
-        //                 {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-        //             </TableRow>
-        //         )}
-        //     </TableBody>
-        // </Table>
     );
 }

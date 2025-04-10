@@ -71,14 +71,16 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
                     <MenuDropdown
                         idIncidencia={dataCard.idIncidencia}
                         idEmpleadoOpenIncidencia={dataCard.empleadoId}
+                        numGuia={dataCard.numGuia}
                     />
                 </div>
-                <small className="text-default-500">Destino: {dataCard.destino}</small>
                 <small className="text-default-500">Fecha: {formatDate(dataCard.fechaRegistro)}</small>
                 <small className="text-default-500">Creado por: {dataCard.empleadoNombre}</small>
+                <small className="text-default-500">Destino Incidencia: {dataCard.destino}</small>
             </CardHeader>
             <CardBody className="overflow-visible py-2">
-                <h4 className="font-bold text-md">Motivo: {dataCard.nota}</h4>
+                <h4 className="font-bold text-md">Descripcion: {dataCard.descripcion}</h4>
+                <h4 className="font-bold text-md">Nota: {dataCard.nota}</h4>
                 {
                     arregloFinal !== undefined ?
                         arregloFinal.map((sucursal) => (
