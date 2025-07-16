@@ -5,12 +5,18 @@ export function formatDate(dateStr: string): string {
   const month = parseInt(dateStr.slice(4, 6)) - 1;  // mes (restar 1 porque los meses en JavaScript empiezan en 0)
   const day = parseInt(dateStr.slice(6, 8));  // día
 
-  const date = new Date(year, month, day);
+   const date = new Date(dateStr);
 
   // Formatear fecha 'DD/MM/YYYY'
   const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
 
-  return formattedDate;
+    return date.toLocaleDateString('es-MX', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'America/Mexico_City', // asegura que no haya desfase
+  });
+
 }
 
 export function getDateAndTimeFormat(dateTime: Date | string): string {
