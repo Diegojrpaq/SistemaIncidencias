@@ -33,6 +33,7 @@ interface PropsTable {
 }
 
 export default function TableDetalleEscaneo({ arrEscaneo }: PropsTable) {
+    console.log(arrEscaneo)
     return (
         <Table aria-label="Tabla Detalle Escaneo">
             <TableHeader columns={columns}>
@@ -44,7 +45,7 @@ export default function TableDetalleEscaneo({ arrEscaneo }: PropsTable) {
             </TableHeader>
             <TableBody items={arrEscaneo}>
                 {(item: escaneoData) => (
-                    <TableRow key={item.idClaveUnica}>
+                    <TableRow key={item.idClaveUnica + item.fechaRegistroKardex}>
                         {(columnKey) => 
                             <TableCell>
                                 {getKeyValue(item, columnKey)}

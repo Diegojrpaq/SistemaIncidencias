@@ -158,3 +158,18 @@ ADD CONSTRAINT fk_id_sucursal
 FOREIGN KEY (id_sucursal) REFERENCES sucursal_principal(id)
 ON DELETE CASCADE ON UPDATE CASCADE;
 /*tablas para permisos*/
+
+CREATE TABLE calificacion_susursal (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id_sucursal BIGINT NOT NULL,
+    calificacion bigint not null,
+    id_user_califica bigint not null,
+    id_chat BIGINT NOT NULL,
+    id_incidencia bigint not null,
+    id_comentario_cierre bigint not null,
+    fecha_registro timestamp default CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_user_califica) REFERENCES empleado_principal(id),
+    FOREIGN KEY (id_chat) REFERENCES chat_incidencias(id),
+    FOREIGN KEY (id_sucursal) REFERENCES sucursal_principal(id)
+    FOREIGN KEY (id_comentario_cierre) REFERENCES (id)
+);/*virificada en Capacitacion*/
