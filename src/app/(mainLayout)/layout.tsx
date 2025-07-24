@@ -41,7 +41,16 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
   useEffect(() => {
     const getDataUser = async () => {
       try {
-        const responseData = await fetchGet(`${urlServer}/Incidencias/getSession/${idUser}`);
+        if (idUser !== null) {
+          localStorage.setItem("idUser", idUser);
+        }
+        let id;
+        if (idUser !== null) {
+          id = idUser;
+        } else {
+          id = localStorage.getItem("idUser");
+        }
+        const responseData = await fetchGet(`${urlServer}/Incidencias/getSession/${id}`);
         if (responseData.status !== 200) {
           throw new Error('Error al obtener los datos');
         }
@@ -65,17 +74,40 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
       <>
         <div className='flex h-screen'>
           <Sidebar dataUser={sessionData?.User}>
-            <SidebarItem icon={<LuListTodo size={27} />} text={"Incidencias"} link={"/"} />
-            <SidebarItem icon={<LuFileBarChart2 size={27} />} text={"Tablero de Incidencias"} link={"/table"} />
-            <SidebarItem icon={<LuLayoutDashboard size={27} />} text={"Dashboard"} alert={undefined} link={"/"} />
-            <SidebarItem icon={<LuSettings size={27} />} active text={"Configuraciones"} link={"/about"} />
+            <SidebarItem
+              icon={<LuListTodo size={27} />}
+              text={"Incidencias"}
+              link={"/"}
+            />
+            <SidebarItem
+              icon={<LuFileBarChart2 size={27} />}
+              text={"Tablero de Incidencias"}
+              link={"/table"}
+            />
+            <SidebarItem
+              icon={<LuLayoutDashboard size={27} />}
+              text={"Dashboard"}
+              alert={undefined}
+              link={"/"}
+            />
+            <SidebarItem
+              icon={<LuSettings size={27} />}
+              active text={"Configuraciones"}
+              link={"/about"}
+            />
           </Sidebar>
 
           <div className="flex-1 flex flex-col z-10">
             <SearchProvider>
               {/* Navbar */}
-              <Navbar user={sessionData?.User} catalogoSucursales={sessionData?.User?.catalogoSucursales} />
-              <ToastContainer position='top-center' autoClose={3000} />
+              <Navbar
+                user={sessionData?.User}
+                catalogoSucursales={sessionData?.User?.catalogoSucursales}
+              />
+              <ToastContainer
+                position='top-center'
+                autoClose={3000}
+              />
               <IncidenciaProvider userData={sessionData?.User}>
                 {children}
               </IncidenciaProvider>

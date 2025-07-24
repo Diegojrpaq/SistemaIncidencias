@@ -25,7 +25,6 @@ const Sidebar: React.FC<SidebarProps> = ({ children, dataUser }) => {
   const [expanded, setExpanded] = useState(true)
   const [active, setActive] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  console.log('Sidebar: ', dataUser)
   useEffect(() => {
     // Detectar tamaño de pantalla
     const handleResize = () => {
