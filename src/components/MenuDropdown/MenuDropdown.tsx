@@ -19,12 +19,14 @@ interface propsMenuDropDown {
     idIncidencia: number;
     idEmpleadoOpenIncidencia: number;
     numGuia: string;
+    estadoIncidencia: number;
 }
 
 const MenuDropdown = ({
     idIncidencia,
     idEmpleadoOpenIncidencia,
-    numGuia
+    numGuia,
+    estadoIncidencia
 }: propsMenuDropDown) => {
     const dataUser = useContext(IncidenciasContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,9 +46,6 @@ const MenuDropdown = ({
     const hasPermission = userPermisos?.some(p => p.id === 43 || p.id === 44)
     /* let isAdmin : Permiso[] | undefined
     isAdmin= userPermisos.find(objeto => objeto.id === 43); */
-
-  console.log(userPermisos)
-
 
 
     const changeStatusIncidencia = async (key: number) => {
@@ -104,25 +103,28 @@ const MenuDropdown = ({
                 <DropdownMenu aria-label="Acciones">
                     <DropdownItem
                         key={1}
-                        onClick={() => changeStatusIncidencia(1)}
+                        onPress={() => changeStatusIncidencia(1)}
                     >
                         Abierta
                     </DropdownItem>
                     <DropdownItem
                         key={2}
-                        onClick={() => changeStatusIncidencia(2)}
+                        onPress={() => changeStatusIncidencia(2)}
                     >
                         En Resolución
                     </DropdownItem>
-                    <DropdownItem
-                        key={4}
-                        onClick={() => {
-                            setIsModalOpen(true);
-                            getDataChat();
-                        }}
-                    >
-                        Cerrada
-                    </DropdownItem>
+                    {estadoIncidencia !== 4 ? (
+                        <DropdownItem
+                            key={4}
+                            onPress={() => {
+                                setIsModalOpen(true);
+                                getDataChat();
+                            }}
+                        >
+                            Cerrada
+                        </DropdownItem>
+                    ) : null}
+
                 </DropdownMenu>
             </Dropdown>
 

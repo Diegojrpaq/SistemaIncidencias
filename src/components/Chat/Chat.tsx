@@ -141,9 +141,8 @@ const Chat = ({ chatData }: propsChat) => {
                             {messages.map((msg, index) => (
                                 <li
                                     key={index}
-                                    className={`message max-w-xs my-2 p-3 table text-sm rounded-md block ${
-                                        msg.from === userData?.nombre ? 'bg-gray-300 ml-auto' : 'bg-zinc-600 text-white'
-                                    }`}
+                                    className={`message max-w-xs my-2 p-3 table text-sm rounded-md block ${msg.from === userData?.nombre ? 'bg-gray-300 ml-auto' : 'bg-zinc-600 text-white'
+                                        }`}
                                 >
                                     <span className={`block mb-1 ${msg.from === userData?.nombre ? 'text-green-600' : 'text-orange-300'}`}>
                                         {msg.from}

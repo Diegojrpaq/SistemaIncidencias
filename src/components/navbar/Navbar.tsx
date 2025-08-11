@@ -1,27 +1,122 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import { Select, SelectItem, Input } from "@nextui-org/react";
-import { catalogoSucursales, dataUser } from '@/lib/interfaces';
+import { usePathname } from 'next/navigation';
+import { catalogoSucursales, dataUser, Incidencia } from '@/lib/interfaces';
 import { useSearch } from '@/context/SearchContext';
+import { getDataByGuia } from "@/lib/api";
+import { urlServer } from "@/lib/url";
+
 interface navbarProps {
   user?: dataUser;
   catalogoSucursales: catalogoSucursales[];
 }
+
 const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
-  const { query, setQuery, filter, setFilter } = useSearch();
+  const {
+    query,
+    setQuery,
+    filter,
+    setFilter,
+    searchResults,
+    setSearchResults,
+    isSearching,
+    setIsSearching,
+    hasSearched,
+    setHasSearched
+  } = useSearch();
+
   const [value, setValue] = React.useState<string>(`${user?.Sucursal_principal}`);
+  const [filterValue, setFilterValue] = useState("");
+  const pathname = usePathname();
+
+  // Verificar si estamos en la ruta /historial
+  const isHistorialRoute = pathname === '/historial';
 
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setValue(e.target.value);
     setFilter(Number(e.target.value))
   };
-  const sucursales = catalogoSucursales.map((suc) => ({
-    key: suc.id,
-    label: suc.sucursal,
-  }))
+
+  // Función para hacer la petición API (solo para /historial)
+  const searchIncidencia = useCallback(async (numGuia: string) => {
+    if (!numGuia.trim()) {
+      setSearchResults([]);
+      setHasSearched(false);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const data = await getDataByGuia(`${urlServer}/Incidencias/validacionGuia`, numGuia);
+
+      if (data) {
+        const results = Array.isArray(data) ? data : [data];
+        setSearchResults(results);
+      } else {
+        setSearchResults([]);
+      }
+
+      setHasSearched(true);
+    } catch (error) {
+      console.error("Error al buscar incidencia:", error);
+      setSearchResults([]);
+      setHasSearched(true);
+    } finally {
+      setIsSearching(false);
+    }
+  }, [setSearchResults, setHasSearched, setIsSearching]);
+
+  // Función para manejar cambios en el input (solo actualiza el valor, no busca)
+  const onSearchChange = useCallback((value: string) => {
+    if (isHistorialRoute) {
+      // Solo actualizar el valor del input, no buscar aún
+      setFilterValue(value);
+    } else {
+      // Para otras rutas, actualizar query
+      setQuery(value);
+    }
+  }, [isHistorialRoute, setQuery]);
+
+  // Función para manejar la búsqueda al presionar Enter
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const value = isHistorialRoute ? filterValue : query;
+
+      if (isHistorialRoute) {
+        setQuery(value); // Actualizar query para que la tabla lo vea
+        if (value.trim()) {
+          searchIncidencia(value);
+        } else {
+          setSearchResults([]);
+          setHasSearched(false);
+        }
+      }
+      // Para otras rutas, el valor ya está en query, no necesita hacer nada más
+    }
+  }, [isHistorialRoute, filterValue, query, searchIncidencia, setQuery, setSearchResults, setHasSearched]);
+
+  // Función para limpiar el input
+  const onClear = useCallback(() => {
+    if (isHistorialRoute) {
+      setFilterValue("");
+      setQuery("");
+      setSearchResults([]);
+      setHasSearched(false);
+    } else {
+      setQuery("");
+    }
+  }, [isHistorialRoute, setQuery, setSearchResults, setHasSearched]);
+
+  const sucursales = catalogoSucursales?.map((suc) => ({
+    key: suc.id?.toString() || '', // Asegurar que sea string y no undefined
+    label: suc.sucursal || 'Sin nombre',
+  })) || []
+
   sucursales.push({
-    key: -1,
+    key: '-1', // Cambiar a string
     label: 'Todas sucursales',
   })
+
   return (
     <nav className={
       `
@@ -36,15 +131,15 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
 
       <div className='w-full flex justify-end pr-4'>
         <Select
-          value={filter}
+          value={filter.toString()}
           label="Selecciona una sucursal"
           className="max-w-xs"
           size='sm'
-          defaultSelectedKeys={[`${-1}`]}
+          defaultSelectedKeys={["-1"]}
           onChange={handleSelectionChange}
         >
           {sucursales?.map((item) => (
-            <SelectItem key={item.key}>
+            <SelectItem key={item.key} value={item.key}>
               {item.label}
             </SelectItem>
           ))}
@@ -54,8 +149,12 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
       <div>
         <div className="w-[310px] rounded-md flex justify-center items-center">
           <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            isClearable={isHistorialRoute}
+            value={isHistorialRoute ? filterValue : query}
+            onChange={(e) => onSearchChange(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onClear={isHistorialRoute ? onClear : undefined}
+            isDisabled={isHistorialRoute ? isSearching : false}
             size='sm'
             classNames={{
               input: [
@@ -65,13 +164,22 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
               ],
             }}
             label="Num. Guía"
-            placeholder="Buscar por número de guía"
+            placeholder={isHistorialRoute ? "Buscar por número de guía... (Presiona Enter)" : "Buscar por número de guía"}
             radius="sm"
             startContent={
               <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
             }
           />
         </div>
+
+        {/* Mostrar estado de búsqueda solo en /historial */}
+        {isHistorialRoute && (
+          <div className="text-xs text-default-400 mt-1 text-center">
+            {isSearching && "Buscando..."}
+            {hasSearched && !isSearching && searchResults.length === 0 && "No se encontraron resultados"}
+            {hasSearched && !isSearching && searchResults.length > 0 && `${searchResults.length} resultado(s) encontrado(s)`}
+          </div>
+        )}
       </div>
     </nav>
   )

@@ -12,7 +12,7 @@ import {
   Textarea,
   Skeleton,
   Card
-} from "@nextui-org/react"; // Importando Skeleton y Card de NextUI
+} from "@nextui-org/react";
 import { showToast } from "../toast/showToast";
 import { dataSelect, Incidencia } from "@/lib/interfaces";
 import { IncidenciasContext } from "@/context/IncidenciasContext";
@@ -36,11 +36,10 @@ function ModalCierre({
 }: ModalProps) {
   const dataUser = useContext(IncidenciasContext);
   const [selectMotivo, setSelectMotivo] = useState(0);
-  const [selectSucursal, setSelectSucursal] = useState(0);
   const [descripcion, setDescripcion] = useState("");
   const [error, setError] = useState(false);
   const [sucursalesInvolucradas, setSucursalesInvolucradas] = useState<dataSelect[]>([]);
-  const [loading, setLoading] = useState(true); // Estado de carga global
+  const [loading, setLoading] = useState(true);
 
   let idUser = 0;
   let idSucursal = 0;
@@ -65,7 +64,6 @@ function ModalCierre({
               key: sucursal.idSucursal,
               label: sucursal.sucursal
             }));
-  
             setSucursalesInvolucradas(sucursalesMapeadas);
           } else {
             console.warn("La API devolvió una lista vacía de sucursales");
@@ -73,30 +71,35 @@ function ModalCierre({
           }
         })
         .catch((error) => console.error("Error al obtener sucursales:", error))
-        .finally(() => setLoading(false)); // Termina la carga
+        .finally(() => setLoading(false));
     }
   }, [idChat]);
 
   const changeStatusIncidencia = async (key: number) => {
-    let idResuelto = idEmpleadoOpenIncidencia !== idUser && key === 4 ? 3 : key;
- 
+    const isCreador = idEmpleadoOpenIncidencia === idUser;
+    const idResuelto = !isCreador && key === 4 ? 3 : key; // Si no es el creador, se manda solicitud de cierre (3)
+
     const response = await changeStatus({
       idIncidencia,
-      idStatus: key,
+      idStatus: idResuelto,
       idUser,
       idSucursal,
       idDestino,
       idTipoIncidencia: Number(selectMotivo),
     });
-  
+
+    console.log("🔁 Respuesta changeStatus:", response); // <--- añade esto
+
     const sendDataMsg = {
       idChat,
       idUser,
       msgText: descripcion,
     };
-  
+
     const sendMsg = await sendMessage(sendDataMsg);
-  
+
+    console.log("📨 Respuesta sendMessage:", sendMsg); // <--- y esto
+
     if (response.status === 200 && sendMsg.status === 200) {
       showToast("Se cambió el estatus de la incidencia", "success", 3000, "top-center");
       if (arrActualIncidencias !== undefined) {
@@ -116,7 +119,7 @@ function ModalCierre({
       return;
     }
 
-    changeStatusIncidencia(4);
+    changeStatusIncidencia(4); // ← 4 siempre, internamente decide si es 3 o 4
     onClose();
     resetForm();
   };
@@ -127,17 +130,25 @@ function ModalCierre({
     setError(false);
   };
 
+  const isCreador = idEmpleadoOpenIncidencia === idUser;
+
   return (
     <Modal isOpen={isOpen} size="md" onClose={onClose}>
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
-          Para cerrar llena los siguientes campos
+          {isCreador ? "Cerrar incidencia" : "Solicitar cierre de incidencia"}
         </ModalHeader>
         <ModalBody>
           <div className="flex flex-col">
+            {!isCreador && (
+              <p className="text-warning text-sm mb-2">
+                Solo el creador puede cerrar la incidencia. Se enviará una solicitud de cierre.
+              </p>
+            )}
+
             {loading ? (
               <Card className="p-4 shadow-lg rounded-lg">
-                <Skeleton className="h-10 w-full rounded-md mb-4" /> 
+                <Skeleton className="h-10 w-full rounded-md mb-4" />
                 <Skeleton className="h-24 w-full rounded-md mb-4" />
               </Card>
             ) : (
@@ -181,7 +192,7 @@ function ModalCierre({
             Cancelar
           </Button>
           <Button color="primary" onPress={handleConfirm}>
-            Enviar cierre
+            {isCreador ? "Cerrar incidencia" : "Solicitar cierre"}
           </Button>
         </ModalFooter>
       </ModalContent>
