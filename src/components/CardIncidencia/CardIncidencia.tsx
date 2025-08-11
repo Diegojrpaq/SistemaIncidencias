@@ -49,6 +49,7 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
             })
             : [];
     }
+    console.log("CardIncidencia render: ", dataCard.idIncidencia, "resuelto:", dataCard.resuelto);
 
     return (
         <Card className={`
@@ -72,6 +73,7 @@ const CardIncidencia = ({ dataCard }: propsCard) => {
                         idIncidencia={dataCard.idIncidencia}
                         idEmpleadoOpenIncidencia={dataCard.empleadoId}
                         numGuia={dataCard.numGuia}
+                        estadoIncidencia={dataCard.resuelto}
                     />
                 </div>
                 <small className="text-default-500">Fecha: {formatDate(dataCard.fechaRegistro)}</small>

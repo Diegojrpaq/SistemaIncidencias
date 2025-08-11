@@ -44,7 +44,7 @@ function ModalCalificacion({
   const [selectSucursal, setSelectSucursal] = useState(0);
   const [sucursalesInvolucradas, setSucursalesInvolucradas] = useState<dataSelect[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refresh, setRefresh] = useState(false); 
+  const [refresh, setRefresh] = useState(false);
 
   let idUser = 0;
   let idSucursal = 0;
@@ -84,16 +84,18 @@ function ModalCalificacion({
       setRefresh((prev) => !prev); // ⚡ Forzar actualización
     }
   };
-  
+
 
   const changeStatusIncidencia = async (key: number) => {
-    let idResuelto = idEmpleadoOpenIncidencia !== idUser && key === 4 ? 3 : key;
-  
+    let idResuelto = key;
+    console.log("Confirmando nuevo resuelto:", idResuelto);
+
+
     const listSucursales = sucursalesSeleccionadas.map((sucursal) => ({
       id: sucursalesInvolucradas.find((s) => s.label === sucursal)?.key || 0,
       calificacion: calificaciones[sucursal] || 0,
     }));
-  
+
     const response = await changeStatus({
       idIncidencia,
       idStatus: key,
@@ -103,15 +105,15 @@ function ModalCalificacion({
       ListSucursales: listSucursales,
       idTipoIncidencia: Number(selectMotivo),
     });
-  
+
     const sendDataMsg = {
       idChat,
       idUser,
       msgText: descripcion,
     };
-  
+
     const sendMsg = await sendMessage(sendDataMsg);
-  
+
     if (response.status === 200 && sendMsg.status === 200) {
       showToast("Se cambió el estatus de la incidencia", "success", 3000, "top-center");
       if (arrActualIncidencias !== undefined) {
@@ -123,7 +125,7 @@ function ModalCalificacion({
     } else {
       showToast("Error al cambiar el estado de la incidencia", "error", 3000, "top-center");
     }
-  }; 
+  };
 
   const handleCalificacionChange = (sucursal: string, value: number) => {
     setCalificaciones((prev) => ({
@@ -168,7 +170,7 @@ function ModalCalificacion({
               key: sucursal.idSucursal,
               label: sucursal.sucursal
             }));
-  
+
             setSucursalesInvolucradas(sucursalesMapeadas);
             setRefresh(prev => !prev); // Forzar actualización
           }
@@ -179,9 +181,9 @@ function ModalCalificacion({
   }, [idChat, refresh]); // Agregar refresh como dependencia
 
   return (
-    <Modal 
-      isOpen={isOpen} 
-      size="md" 
+    <Modal
+      isOpen={isOpen}
+      size="md"
       onClose={onClose}
       scrollBehavior="inside" // Habilitar scroll interno del modal
       className="max-h-[90vh]" // Altura máxima del modal
@@ -197,9 +199,9 @@ function ModalCalificacion({
             </Card>
           ) : (
             <>
-              <Select 
-                value={selectMotivo} 
-                onChange={(e) => setSelectMotivo(Number(e.target.value))} 
+              <Select
+                value={selectMotivo}
+                onChange={(e) => setSelectMotivo(Number(e.target.value))}
                 label="Motivo de Cierre"
               >
                 {catalogoCierreCombo.map((item) => (
@@ -209,8 +211,8 @@ function ModalCalificacion({
                 ))}
               </Select>
 
-              <Select 
-                label="Sucursales Involucradas" 
+              <Select
+                label="Sucursales Involucradas"
                 onChange={(e) => handleSucursalChange(Number(e.target.value))}
               >
                 {sucursalesInvolucradas.map((sucursal) => (
@@ -231,32 +233,32 @@ function ModalCalificacion({
                       <div key={sucursal} className="flex items-center justify-between gap-2">
                         <span className="w-1/3 truncate">{sucursal}</span>
                         <div className="flex items-center gap-2 w-2/3">
-                        <Select
-                        className="w-full"
-                        selectedKeys={calificaciones[sucursal] ? [String(calificaciones[sucursal])] : []}
-                        onChange={(e) => handleCalificacionChange(sucursal, Number(e.target.value))}
-                        placeholder={calificaciones[sucursal] ? String(calificaciones[sucursal]) : "Sin calificación"}
-                        size="sm"
-                        renderValue={() => (
-                          calificaciones[sucursal] ? (
-                            <span className="font-medium">{calificaciones[sucursal]}</span>
-                          ) : (
-                            <span className="text-white bg-gray-1000 px-3 py-1 rounded-md shadow-md border border-gray-600">
-                              Sin calificación
-                            </span>
-                          )
-                        )}
-                      >
-                        {[1, 2, 3, 4, 5].map((num) => (
-                          <SelectItem key={num} value={num}>
-                            {num}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                          <Button 
-                            color="danger" 
-                            variant="light" 
-                            size="sm" 
+                          <Select
+                            className="w-full"
+                            selectedKeys={calificaciones[sucursal] ? [String(calificaciones[sucursal])] : []}
+                            onChange={(e) => handleCalificacionChange(sucursal, Number(e.target.value))}
+                            placeholder={calificaciones[sucursal] ? String(calificaciones[sucursal]) : "Sin calificación"}
+                            size="sm"
+                            renderValue={() => (
+                              calificaciones[sucursal] ? (
+                                <span className="font-medium">{calificaciones[sucursal]}</span>
+                              ) : (
+                                <span className="text-white bg-gray-1000 px-3 py-1 rounded-md shadow-md border border-gray-600">
+                                  Sin calificación
+                                </span>
+                              )
+                            )}
+                          >
+                            {[1, 2, 3, 4, 5].map((num) => (
+                              <SelectItem key={num} value={num}>
+                                {num}
+                              </SelectItem>
+                            ))}
+                          </Select>
+                          <Button
+                            color="danger"
+                            variant="light"
+                            size="sm"
                             onPress={() => handleSucursalRemove(sucursal)}
                             isIconOnly
                           >
@@ -269,11 +271,11 @@ function ModalCalificacion({
                 )}
               </div>
 
-              <Textarea 
-                value={descripcion} 
-                onChange={(e) => setDescripcion(e.target.value)} 
-                label="Comentarios" 
-                placeholder="Escribe un comentario" 
+              <Textarea
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
+                label="Comentarios"
+                placeholder="Escribe un comentario"
               />
             </>
           )}

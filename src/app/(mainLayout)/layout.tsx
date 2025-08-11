@@ -29,6 +29,8 @@ import { useSearchParams } from 'next/navigation';
 import { SearchProvider } from '@/context/SearchContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { TbHistoryToggle } from "react-icons/tb";
+
 /*Importaciones de funcione dependencias */
 /*----------------------------------------------------------------------------*/
 
@@ -83,6 +85,11 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
               icon={<LuFileBarChart2 size={27} />}
               text={"Tablero de Incidencias"}
               link={"/table"}
+            />
+            <SidebarItem
+              icon={<span className="text-xl"><TbHistoryToggle /></span>}
+              text={"Validador de Guía"}
+              link={"/historial"}
             />
             <SidebarItem
               icon={<LuLayoutDashboard size={27} />}
