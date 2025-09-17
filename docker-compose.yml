@@ -1,23 +1,54 @@
-# this file is used to run a nextjs app with a mysql database
-
+# docker-compose.yml
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-
-     # - "90:3000"
-
+    container_name: incidencias-app
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    # (Opcional dev puertos respaldo) 
+    # ports:
+     # - "90:3000
     #puerto de exposicion en desarrollo
      # - "82:3000" 
-    #puerto de exposicion en produccion
-      - "80:3000" 
-
+    #puerto de exposicion en produccion --ya no se utilizará en PROD
+    #  - "80:3000" 
     volumes:
       - .:/app
       - /app/node_modules
-  
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:3000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.next-http.rule=Host(`incidencias.jrpaqueteria.mx`)  # ej. nextapp.jrpaqueteria.mx
+      - traefik.http.routers.next-http.entrypoints=web
+      - traefik.http.routers.next-http.service=next-svc
+      - traefik.http.services.next-svc.loadbalancer.server.port=3000
 
+      # Middleware: forzar redirección a HTTP
+      - traefik.http.middlewares.redirect-to-http.redirectscheme.scheme=http
+      - traefik.http.middlewares.redirect-to-http.redirectscheme.permanent=true
 
+      # Router HTTPS que solo redirige a HTTP
+      - traefik.http.routers.next-https.rule=Host(`incidencias.jrpaqueteria.mx`)
+      - traefik.http.routers.next-https.entrypoints=websecure
+      - traefik.http.routers.next-https.tls=true
+      - traefik.http.routers.next-https.middlewares=redirect-to-http
+      - traefik.http.routers.next-https.service=noop@internal  # router “solo-middleware”
 
+    networks:
+      - proxy
+      - default
+
+networks:
+  proxy:
+    external: true
