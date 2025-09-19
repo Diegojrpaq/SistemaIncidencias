@@ -94,15 +94,16 @@ export const ChevronDownIcon = ({ strokeWidth = 1.5, ...otherProps }: IconSvgPro
 export const columns = [
     { name: "NumGuia", uid: "numGuia", sortable: true },
     { name: "Creador", uid: "creador", sortable: true },
-    { name: "Destino Registra", uid: "destinoRegistra" },
-    { name: "Sucursal Registra", uid: "sucursalRegistra" },
+    { name: "Destino Registra", uid: "destinoRegistra", sortable: true },
+    { name: "Sucursal Registra", uid: "sucursalRegistra", sortable: true },
     { name: "Fecha Registro", uid: "fechaRegistro", sortable: true },
-    { name: "Origen", uid: "origen" },
-    { name: "Destino", uid: "destino" },
-    { name: "Descripción", uid: "descripcion" },
+    { name: "Origen", uid: "origen", sortable: true },
+    { name: "Destino", uid: "destino", sortable: true },
+    { name: "Notas", uid: "descripcion", sortable: true },
     { name: "Status", uid: "status", sortable: true },
-    { name: "Actions", uid: "actions" },
+    { name: "Actions", uid: "actions" }
 ];
+
 
 export const statusOptions = [
     { name: "Abiertas", uid: 1 },
@@ -413,6 +414,7 @@ export const EditIcon = (props: IconSvgProps) => {
         </svg>
     );
 };
+
 const statusColorMap: Record<string, ChipProps["color"]> = {
     4: "success",
     1: "danger",
@@ -448,7 +450,7 @@ export default function TableIncidencias() {
         new Set(INITIAL_VISIBLE_COLUMNS),
     );
     const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
         column: "numGuia",
         direction: "ascending",
@@ -465,7 +467,7 @@ export default function TableIncidencias() {
     }, [visibleColumns]);
 
     const filteredItems = React.useMemo(() => {
-        let filteredIncidencias: Incidencia[] = [...(incidencias ?? [])];
+        let filteredIncidencias: Incidencia[] = [...(filteredCards ?? [])]; // ← Usar filteredCards
 
         if (hasSearchFilter) {
             filteredIncidencias = filteredIncidencias.filter((incidencia) =>
@@ -474,12 +476,12 @@ export default function TableIncidencias() {
         }
         if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
             filteredIncidencias = filteredIncidencias.filter((incidencia) =>
-                Array.from(statusFilter).includes(incidencia.incidencia),
+                Array.from(statusFilter).includes(incidencia.resuelto.toString()), // ← Corregido: usar resuelto
             );
         }
 
         return filteredIncidencias;
-    }, [incidencias, filterValue, statusFilter]);
+    }, [filteredCards, filterValue, statusFilter]);
 
     const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -491,14 +493,54 @@ export default function TableIncidencias() {
     }, [page, filteredItems, rowsPerPage]);
 
     const sortedItems = React.useMemo(() => {
-        return [...items].sort((a: Incidencia, b: Incidencia) => {
-            const first = a[sortDescriptor.column as keyof Incidencia] as number;
-            const second = b[sortDescriptor.column as keyof Incidencia] as number;
-            const cmp = first < second ? -1 : first > second ? 1 : 0;
+        return [...filteredItems].sort((a: Incidencia, b: Incidencia) => {
+            let first: any;
+            let second: any;
 
+            switch (sortDescriptor.column) {
+                case "numGuia":
+                    first = a.numGuia;
+                    second = b.numGuia;
+                    break;
+                case "creador":
+                    first = a.empleadoNombre || "";
+                    second = b.empleadoNombre || "";
+                    break;
+                case "fechaRegistro":
+                    first = new Date(a.fechaRegistro);
+                    second = new Date(b.fechaRegistro);
+                    break;
+                case "status":
+                    first = a.resuelto;
+                    second = b.resuelto;
+                    break;
+                default:
+                    first = a[sortDescriptor.column as keyof Incidencia] || "";
+                    second = b[sortDescriptor.column as keyof Incidencia] || "";
+            }
+
+            if (typeof first === "string" && typeof second === "string") {
+                const cmp = first.localeCompare(second);
+                return sortDescriptor.direction === "descending" ? -cmp : cmp;
+            }
+
+            if (first instanceof Date && second instanceof Date) {
+                const cmp = first.getTime() - second.getTime();
+                return sortDescriptor.direction === "descending" ? -cmp : cmp;
+            }
+
+            const cmp = first < second ? -1 : first > second ? 1 : 0;
             return sortDescriptor.direction === "descending" ? -cmp : cmp;
         });
-    }, [sortDescriptor, items]);
+    }, [sortDescriptor, filteredItems]);
+
+    // aplicar paginación después de ordenar
+    const paginatedItems = React.useMemo(() => {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        return sortedItems.slice(start, end);
+    }, [page, rowsPerPage, sortedItems]);
+
 
     const renderCell = React.useCallback((incidencia: Incidencia, columnKey: React.Key) => {
         const cellValue = incidencia[columnKey as keyof Incidencia];
@@ -595,86 +637,14 @@ export default function TableIncidencias() {
     const topContent = React.useMemo(() => {
         return (
             <div className="flex flex-col gap-4">
-                <div className="flex justify-between gap-3 items-end">
-                    <Input
-                        isClearable
-                        className="w-full sm:max-w-[44%]"
-                        placeholder="Buscar por número de guía..."
-                        startContent={<SearchIcon />}
-                        value={filterValue}
-                        onClear={() => onClear()}
-                        onValueChange={onSearchChange}
-                    />
-                    <div className="flex gap-3">
-                        <Dropdown>
-                            <DropdownTrigger className="hidden sm:flex">
-                                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                                    Status
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Table Columns"
-                                closeOnSelect={false}
-                                selectedKeys={statusFilter}
-                                selectionMode="multiple"
-                                onSelectionChange={setStatusFilter}
-                            >
-                                {statusOptions.map((status) => (
-                                    <DropdownItem key={status.uid} className="capitalize">
-                                        {capitalize(status.name)}
-                                    </DropdownItem>
-                                ))}
-                            </DropdownMenu>
-                        </Dropdown>
-                        <Dropdown>
-                            <DropdownTrigger className="hidden sm:flex">
-                                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                                    Columns
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Table Columns"
-                                closeOnSelect={false}
-                                selectedKeys={visibleColumns}
-                                selectionMode="multiple"
-                                onSelectionChange={setVisibleColumns}
-                            >
-                                {columns.map((column) => (
-                                    <DropdownItem key={column.uid} className="capitalize">
-                                        {capitalize(column.name)}
-                                    </DropdownItem>
-                                ))}
-                            </DropdownMenu>
-                        </Dropdown>
-                    </div>
-                </div>
                 <div className="flex justify-between items-center">
-                    {/* <span className="text-default-400 text-small">Total {users.length} users</span> */}
-                    <label className="flex items-center text-default-400 text-small">
-                        Filas por página:
-                        <select
-                            className="bg-transparent outline-none text-default-400 text-small"
-                            onChange={onRowsPerPageChange}
-                        >
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                        </select>
-                    </label>
+                    <span className="text-default-400 text-small">
+                        Total {sortedItems.length} incidencias
+                    </span>
                 </div>
             </div>
         );
-    }, [
-        filterValue,
-        statusFilter,
-        visibleColumns,
-        onSearchChange,
-        onRowsPerPageChange,
-        incidencias?.length,
-        hasSearchFilter,
-    ]);
+    }, [filterValue, statusFilter, visibleColumns, onSearchChange, sortedItems.length, hasSearchFilter]);
 
     const bottomContent = React.useMemo(() => {
         return (
@@ -695,20 +665,31 @@ export default function TableIncidencias() {
 
     return (
         <Table
-            aria-label="Example table with custom cells"
+            aria-label="Tabla de incidencias con sorting"
             isHeaderSticky
-            className='max-h-[720px] overflow-scroll-x'
+            className='max-h-[720px] overflow-auto'
+            sortDescriptor={sortDescriptor}
+            onSortChange={setSortDescriptor}
+            topContent={topContent}
+            topContentPlacement="outside"
         >
-            <TableHeader columns={columns}>
+            <TableHeader columns={headerColumns}>
                 {(column) => (
-                    <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
+                    <TableColumn
+                        key={column.uid}
+                        align={column.uid === "actions" ? "center" : "start"}
+                        allowsSorting={column.sortable}
+                    >
                         {column.name}
                     </TableColumn>
                 )}
             </TableHeader>
-            <TableBody items={filteredCards}>
+            <TableBody
+                emptyContent={"No se encontraron incidencias"}
+                items={sortedItems}
+            >
                 {(item) => (
-                    <TableRow key={item.numGuia}>
+                    <TableRow key={item.idIncidencia}>
                         {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                     </TableRow>
                 )}
