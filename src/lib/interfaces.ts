@@ -34,6 +34,7 @@ export interface Incidencia {
     cantidad: number,
     clienteOrigenId: number,
     clienteOrigenNombre: string,
+    fechaVenta: string,
     clienteDestinoId: number,
     clienteDestinoNombre: string,
     incidencia: number,

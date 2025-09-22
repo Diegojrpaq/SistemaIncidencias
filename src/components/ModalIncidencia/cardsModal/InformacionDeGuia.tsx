@@ -11,6 +11,15 @@ interface infoGuiaProps {
     incidencia: IncidenciaDataModal;
 }
 
+// función para formatear la fecha
+function formatFecha(fecha: string) {
+    if (!fecha || fecha.length !== 8) return fecha; // validación
+    const anio = fecha.slice(0, 4);
+    const mes = fecha.slice(4, 6);
+    const dia = fecha.slice(6, 8);
+    return `${dia}/${mes}/${anio}`;
+}
+
 function InformacionDeGuia({ incidencia }: infoGuiaProps) {
     return (
         <Card>
@@ -27,6 +36,7 @@ function InformacionDeGuia({ incidencia }: infoGuiaProps) {
                         <div><Chip size="lg" radius="sm">Origen:</Chip> {incidencia.origen}</div>
                         <div><Chip size="lg" radius="sm">Destino:</Chip> {incidencia.destino}</div>
                         <div><Chip size="lg" radius="sm">Cliente Origen:</Chip> {incidencia.clienteOrigenNombre}</div>
+                        <div><Chip size="lg" radius="sm">Fecha Venta:</Chip> {formatFecha(incidencia.fechaVenta)}</div>
                     </div>
                     <div className="flex flex-col gap-2 ">
                         <div><Chip size="lg" radius="sm">Volumen:</Chip> {incidencia.volumen} mt3</div>
@@ -40,4 +50,4 @@ function InformacionDeGuia({ incidencia }: infoGuiaProps) {
     )
 }
 
-export default InformacionDeGuia
+export default InformacionDeGuia;
