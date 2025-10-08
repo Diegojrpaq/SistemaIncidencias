@@ -91,17 +91,17 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
               text={"Validador de Guía"}
               link={"/historial"}
             />
-            <SidebarItem
+            {/* <SidebarItem
               icon={<LuLayoutDashboard size={27} />}
               text={"Dashboard"}
               alert={undefined}
-              link={"/"}
-            />
-            <SidebarItem
+              link={"/dashboard"}
+            /> */}
+            {/* <SidebarItem
               icon={<LuSettings size={27} />}
               active text={"Configuraciones"}
               link={"/about"}
-            />
+            /> */}
           </Sidebar>
 
           <div className="flex-1 flex flex-col z-10">

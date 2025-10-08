@@ -433,6 +433,8 @@ export default function TableIncidencias() {
     const incidencias = dataUserAndIncidencias?.incidencias;
     const { query, filter } = useSearch();
 
+    console.log("🔎 [CONTEXT] Incidencias crudas:", incidencias);
+
     const filteredCards = incidencias?.filter((incidencia) => {
         const matchesQuery =
             incidencia.numGuia.toLowerCase().includes(query.toLowerCase());
@@ -443,6 +445,8 @@ export default function TableIncidencias() {
 
         return matchesQuery && matchesFilter;
     });
+
+    console.log("🟡 [FILTERED] Incidencias después de aplicar query y filter:", filteredCards);
 
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
