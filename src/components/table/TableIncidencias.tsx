@@ -1,6 +1,6 @@
 'use client'
 
-import React, { SVGProps, useContext } from "react";
+import React, { SVGProps, useContext, useEffect } from "react";
 import {
     Table,
     TableHeader,
@@ -24,7 +24,7 @@ import {
 } from "@nextui-org/react";
 import { IncidenciasContext } from "@/context/IncidenciasContext";
 import { Incidencia } from "@/lib/interfaces";
-import { formatDate } from "@/lib/utils";
+import { formatDate, normalizeOrigenName } from "@/lib/utils";
 import ModalIncidencia from "../ModalIncidencia/ModalIncidencia";
 import { useSearch } from "@/context/SearchContext";
 
@@ -90,238 +90,25 @@ export const ChevronDownIcon = ({ strokeWidth = 1.5, ...otherProps }: IconSvgPro
     );
 };
 
-
+// Actualizar las columnas con las nuevas
 export const columns = [
     { name: "NumGuia", uid: "numGuia", sortable: true },
     { name: "Creador", uid: "creador", sortable: true },
-    { name: "Destino Registra", uid: "destinoRegistra", sortable: true },
-    { name: "Sucursal Registra", uid: "sucursalRegistra", sortable: true },
     { name: "Fecha Registro", uid: "fechaRegistro", sortable: true },
+    { name: "Fecha Venta", uid: "fechaVenta", sortable: true }, // Nueva columna
     { name: "Origen", uid: "origen", sortable: true },
     { name: "Destino", uid: "destino", sortable: true },
+    { name: "Días Aperturado", uid: "diasAperturado", sortable: true }, // Nueva columna
+    { name: "Días Retraso", uid: "diasRetraso", sortable: true }, // Nueva columna
     { name: "Notas", uid: "descripcion", sortable: true },
     { name: "Status", uid: "status", sortable: true },
     { name: "Actions", uid: "actions" }
 ];
 
-
 export const statusOptions = [
     { name: "Abiertas", uid: 1 },
     { name: "En resolución", uid: 2 },
-    { name: "Cerradas", uid: 0 },
-];
-
-export const users = [
-    {
-        id: 1,
-        creador: "Tony Reichert",
-        numGuia: "1",
-        fechaRegistro: "2022-01-20",
-        origen: "Guadalajara",
-        destino: "Monterrey",
-        role: "CEO",
-        team: "Management",
-        status: "active",
-        age: "29",
-        avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-        email: "tony.reichert@example.com",
-    },
-    {
-        id: 2,
-        creador: "Zoey Lang",
-        numGuia: "2",
-        fechaRegistro: "2022-01-15",
-        origen: "Monterrey",
-        destino: "Puebla",
-        role: "Technical Lead",
-        team: "Development",
-        status: "paused",
-        age: "25",
-        avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-        email: "zoey.lang@example.com",
-    },
-    {
-        id: 3,
-        creador: "Jane Fisher",
-        numGuia: "3",
-        fechaRegistro: "2022-01-10",
-        origen: "Puebla",
-        destino: "Guadalajara",
-        role: "Senior Developer",
-        team: "Development",
-        status: "active",
-        age: "22",
-        avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-        email: "jane.fisher@example.com",
-    },
-    {
-        id: 4,
-        creador: "William Howard",
-        numGuia: "4",
-        fechaRegistro: "2022-01-05",
-        origen: "Guadalajara",
-        destino: "Monterrey",
-        role: "Community Manager",
-        team: "Marketing",
-        status: "vacation",
-        age: "28",
-        avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
-        email: "william.howard@example.com",
-    },
-    {
-        id: 5,
-        creador: "Kristen Copper",
-        numGuia: "5",
-        fechaRegistro: "2022-01-01",
-        origen: "Monterrey",
-        destino: "Guadalajara",
-        role: "Sales Manager",
-        team: "Sales",
-        status: "active",
-        age: "24",
-        avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
-        email: "kristen.cooper@example.com",
-    },
-    {
-        id: 6,
-        creador: "Sophia Lynch",
-        numGuia: "6",
-        fechaRegistro: "2021-12-30",
-        origen: "Guadalajara",
-        destino: "Monterrey",
-        role: "Product Manager",
-        team: "Product",
-        status: "active",
-        age: "26",
-        avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026701d",
-        email: "sophia.lynch@example.com",
-    },
-    {
-        id: 7,
-        creador: "Nathaniel Thompson",
-        numGuia: "7",
-        fechaRegistro: "2021-12-25",
-        origen: "Guadalajara",
-        destino: "Monterrey",
-        role: "Frontend Developer",
-        team: "Development",
-        status: "active",
-        age: "27",
-        avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026701d",
-        email: "nathaniel.thompson@example.com",
-    },
-    {
-        id: 8,
-        creador: "Emma Watson",
-        numGuia: "8",
-        fechaRegistro: "2021-12-20",
-        origen: "Monterrey",
-        destino: "Guadalajara",
-        role: "Backend Developer",
-        team: "Development",
-        status: "active",
-        age: "29",
-        avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026701d",
-        email: "emma.watson@example.com",
-    },
-    {
-        id: 9,
-        creador: "Jacob Brown",
-        numGuia: "9",
-        fechaRegistro: "2021-12-15",
-        origen: "Monterrey",
-        destino: "Guadalajara",
-        role: "UX/UI Designer",
-        team: "Design",
-        status: "active",
-        age: "31",
-        avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026701d",
-        email: "jacob.brown@example.com",
-    },
-    {
-        id: 10,
-        creador: "Alfred Wilson",
-        numGuia: "10",
-        fechaRegistro: "2021-12-10",
-        origen: "Monterrey",
-        destino: "Guadalajara",
-        role: "QA Engineer",
-        team: "Testing",
-        status: "active",
-        age: "30",
-        avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026701d",
-        email: "alfred.wilson@example.com",
-    },
-    {
-        id: 11,
-        creador: "Olivia Davis",
-        numGuia: "11",
-        fechaRegistro: "2021-12-05",
-        origen: "Monterrey",
-        destino: "Guadalajara",
-        role: "Project Manager",
-        team: "Management",
-        status: "active",
-        age: "28",
-        avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026701d",
-        email: "olivia.davis@example.com",
-    },
-    {
-        id: 12,
-        creador: "Emily Thompson",
-        numGuia: "12",
-        fechaRegistro: "2021-12-01",
-        origen: "Monterrey",
-        destino: "Guadalajara",
-        role: "HR Manager",
-        team: "Human Resources",
-        status: "active",
-        age: "27",
-        avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026701d",
-        email: "emily.thompson@example.com",
-    },
-    {
-        id: 13,
-        creador: "Michael Johnson",
-        numGuia: "13",
-        fechaRegistro: "2021-11-30",
-        origen: "Monterrey",
-        destino: "Guadalajara",
-        role: "Finance Manager",
-        team: "Finance",
-        status: "active",
-        age: "29",
-        avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026701d",
-        email: "michael.johnson@example.com",
-    },
-    {
-        id: 14,
-        creador: "Sarah Wilson",
-        numGuia: "14",
-        fechaRegistro: "2021-11-25",
-        origen: "Monterrey",
-        destino: "Guadalajara",
-        role: "Marketing Manager",
-        team: "Marketing",
-        status: "active",
-        age: "26",
-        avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026701d",
-        email: "sarah.wilson@example.com",
-    },
-    {
-        id: 15,
-        creador: "Daniel Williams",
-        numGuia: "15",
-        fechaRegistro: "2021-11-20",
-        origen: "Monterrey",
-        destino: "Guadalajara",
-        role: "Developer",
-        team: "Development",
-        status: "active",
-        age: "28",
-        avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026701d",
-        email: "daniel.williams@example.com",
-    }
+    { name: "Cerradas", uid: 4 },
 ];
 
 export const DeleteIcon = (props: IconSvgProps) => {
@@ -416,13 +203,74 @@ export const EditIcon = (props: IconSvgProps) => {
 };
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
-    4: "success",
-    1: "danger",
-    2: "warning",
+    "4": "success",
+    "1": "danger",
+    "2": "warning",
+    "3": "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["creador", "numGuia", "fechaRegistro", "origen", "destino", "descripcion", "status", "actions"];
+// Actualizar columnas visibles por defecto
+const INITIAL_VISIBLE_COLUMNS = [
+    "creador",
+    "numGuia",
+    "fechaRegistro",
+    "fechaVenta",
+    "origen",
+    "destino",
+    "diasAperturado",
+    "diasRetraso",
+    "descripcion",
+    "status",
+    "actions"
+];
 
+// Interfaz para el multiordenamiento
+interface MultiSortDescriptor {
+    column: string;
+    direction: "ascending" | "descending";
+}
+
+// Función para calcular días entre dos fechas
+const calcularDiasEntreFechas = (fechaInicio: string, fechaFin?: string): number => {
+    if (!fechaInicio) return 0;
+
+    const inicio = new Date(fechaInicio);
+    const fin = fechaFin ? new Date(fechaFin) : new Date();
+
+
+    // Validar que las fechas sean válidas
+    if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) return 0;
+
+    const diferenciaTiempo = fin.getTime() - inicio.getTime();
+    const diferenciaDias = Math.floor(diferenciaTiempo / (1000 * 60 * 60 * 24));
+
+
+    return Math.max(0, diferenciaDias);
+};
+
+// Función para calcular días de retraso correctamente
+const calcularDiasRetraso = (fechaVenta: string): number => {
+    if (!fechaVenta || fechaVenta.length !== 8) return 0;
+
+    // Extraer año, mes y día del formato "YYYYMMDD"
+    const year = parseInt(fechaVenta.slice(0, 4), 10);
+    const month = parseInt(fechaVenta.slice(4, 6), 10) - 1; // los meses van de 0-11
+    const day = parseInt(fechaVenta.slice(6, 8), 10);
+
+    const fechaVentaDate = new Date(year, month, day);
+    const fechaActual = new Date();
+
+    // Validar fecha
+    if (isNaN(fechaVentaDate.getTime())) return 0;
+
+    // Calcular diferencia en milisegundos
+    const diferenciaTiempo = fechaActual.getTime() - fechaVentaDate.getTime();
+
+    // Convertir a días completos
+    const diferenciaDias = Math.floor(diferenciaTiempo / (1000 * 60 * 60 * 24));
+
+    return Math.max(0, diferenciaDias);
+};
 
 
 export default function TableIncidencias() {
@@ -431,36 +279,47 @@ export default function TableIncidencias() {
         return <div>No hay incidencias para mostrar</div>;
     }
     const incidencias = dataUserAndIncidencias?.incidencias;
-    const { query, filter } = useSearch();
-
-    console.log("🔎 [CONTEXT] Incidencias crudas:", incidencias);
+    const { query, filter, statusFilter, origenFilter } = useSearch();
 
     const filteredCards = incidencias?.filter((incidencia) => {
         const matchesQuery =
             incidencia.numGuia.toLowerCase().includes(query.toLowerCase());
 
-        const matchesFilter = filter === -1 ||
+        const matchesSucursalFilter =
+            filter === -1 ||
             filter === 0 ||
             incidencia.idSucursal === filter;
 
-        return matchesQuery && matchesFilter;
-    });
+        const matchesStatusFilter =
+            statusFilter.length === 0 ||
+            statusFilter.includes(incidencia.resuelto);
 
-    console.log("🟡 [FILTERED] Incidencias después de aplicar query y filter:", filteredCards);
+        // Filtro de origen mejorado
+        const matchesOrigenFilter =
+            origenFilter.length === 0 ||
+            origenFilter.some(origenFiltro => {
+                const origenIncidenteNormalizado = normalizeOrigenName(incidencia.origen || '');
+                const origenFiltroNormalizado = normalizeOrigenName(origenFiltro);
+
+                // Debug para ver qué está comparando
+                if (origenFilter.length > 0) {
+                    console.log(`🔍 Comparando: "${incidencia.origen}" -> "${origenIncidenteNormalizado}" vs "${origenFiltro}" -> "${origenFiltroNormalizado}"`);
+                }
+
+                return origenIncidenteNormalizado === origenFiltroNormalizado;
+            });
+
+        return matchesQuery && matchesSucursalFilter && matchesStatusFilter && matchesOrigenFilter;
+    });
 
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
     const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
         new Set(INITIAL_VISIBLE_COLUMNS),
     );
-    const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
-        column: "numGuia",
-        direction: "ascending",
-    });
 
-    const [page, setPage] = React.useState(1);
+    // Estado para multiordenamiento
+    const [sortDescriptors, setSortDescriptors] = React.useState<MultiSortDescriptor[]>([]);
 
     const hasSearchFilter = Boolean(filterValue);
 
@@ -471,84 +330,135 @@ export default function TableIncidencias() {
     }, [visibleColumns]);
 
     const filteredItems = React.useMemo(() => {
-        let filteredIncidencias: Incidencia[] = [...(filteredCards ?? [])]; // ← Usar filteredCards
+        let filteredIncidencias: Incidencia[] = [...(filteredCards ?? [])];
 
         if (hasSearchFilter) {
             filteredIncidencias = filteredIncidencias.filter((incidencia) =>
                 incidencia.numGuia.toLowerCase().includes(filterValue.toLowerCase()),
             );
         }
-        if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-            filteredIncidencias = filteredIncidencias.filter((incidencia) =>
-                Array.from(statusFilter).includes(incidencia.resuelto.toString()), // ← Corregido: usar resuelto
-            );
-        }
 
         return filteredIncidencias;
-    }, [filteredCards, filterValue, statusFilter]);
+    }, [filteredCards, filterValue, hasSearchFilter]);
 
-    const pages = Math.ceil(filteredItems.length / rowsPerPage);
+    // Función de comparación mejorada para multiordenamiento
+    const compareValues = (a: any, b: any, direction: "ascending" | "descending"): number => {
+        // Manejar valores nulos o undefined
+        if (a === null || a === undefined || a === "") {
+            return direction === "ascending" ? 1 : -1;
+        }
+        if (b === null || b === undefined || b === "") {
+            return direction === "ascending" ? -1 : 1;
+        }
 
-    const items = React.useMemo(() => {
-        const start = (page - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
+        // Comparación de strings
+        if (typeof a === "string" && typeof b === "string") {
+            const cmp = a.localeCompare(b, 'es', { sensitivity: 'base' });
+            return direction === "descending" ? -cmp : cmp;
+        }
 
-        return filteredItems.slice(start, end);
-    }, [page, filteredItems, rowsPerPage]);
+        // Comparación de números
+        if (typeof a === "number" && typeof b === "number") {
+            const cmp = a - b;
+            return direction === "descending" ? -cmp : cmp;
+        }
 
+        // Comparación de fechas
+        if (a instanceof Date && b instanceof Date) {
+            const cmp = a.getTime() - b.getTime();
+            return direction === "descending" ? -cmp : cmp;
+        }
+
+        // Fallback para otros tipos
+        const cmp = a < b ? -1 : a > b ? 1 : 0;
+        return direction === "descending" ? -cmp : cmp;
+    };
+
+    // Función para obtener el valor de una columna según los datos reales
+    const getColumnValue = (incidencia: Incidencia, column: string): any => {
+        switch (column) {
+            case "numGuia":
+                return incidencia.numGuia || "";
+            case "creador":
+                return incidencia.empleadoNombre || "";
+            case "fechaRegistro":
+                // Convertir string a Date para comparación correcta
+                return incidencia.fechaRegistro ? new Date(incidencia.fechaRegistro) : new Date(0);
+            case "fechaVenta":
+                // Convertir string a Date para comparación correcta
+                return incidencia.fechaVenta ? new Date(incidencia.fechaVenta) : new Date(0);
+            case "origen":
+                return incidencia.origen || "";
+            case "destino":
+                return incidencia.destino || "";
+            case "diasAperturado":
+                // Calcular días aperturado (desde fechaRegistro hasta hoy)
+                return calcularDiasEntreFechas(incidencia.fechaRegistro);
+            case "diasRetraso":
+                // Calcular días de retraso (desde fechaVenta hasta hoy)
+                return calcularDiasRetraso(incidencia.fechaVenta);
+            case "descripcion":
+                return incidencia.nota || "";
+            case "status":
+                return incidencia.resuelto || 0;
+            default:
+                return "";
+        }
+    };
+
+    // Multiordenamiento aplicado
     const sortedItems = React.useMemo(() => {
-        return [...filteredItems].sort((a: Incidencia, b: Incidencia) => {
-            let first: any;
-            let second: any;
 
-            switch (sortDescriptor.column) {
-                case "numGuia":
-                    first = a.numGuia;
-                    second = b.numGuia;
-                    break;
-                case "creador":
-                    first = a.empleadoNombre || "";
-                    second = b.empleadoNombre || "";
-                    break;
-                case "fechaRegistro":
-                    first = new Date(a.fechaRegistro);
-                    second = new Date(b.fechaRegistro);
-                    break;
-                case "status":
-                    first = a.resuelto;
-                    second = b.resuelto;
-                    break;
-                default:
-                    first = a[sortDescriptor.column as keyof Incidencia] || "";
-                    second = b[sortDescriptor.column as keyof Incidencia] || "";
+        if (sortDescriptors.length === 0) {
+            console.log("📋 Sin ordenamiento, retornando items filtrados");
+            return filteredItems;
+        }
+
+        const sorted = [...filteredItems].sort((a: Incidencia, b: Incidencia) => {
+            for (const descriptor of sortDescriptors) {
+                const first = getColumnValue(a, descriptor.column);
+                const second = getColumnValue(b, descriptor.column);
+
+                const cmp = compareValues(first, second, descriptor.direction);
+
+                if (cmp !== 0) {
+                    return cmp;
+                }
             }
-
-            if (typeof first === "string" && typeof second === "string") {
-                const cmp = first.localeCompare(second);
-                return sortDescriptor.direction === "descending" ? -cmp : cmp;
-            }
-
-            if (first instanceof Date && second instanceof Date) {
-                const cmp = first.getTime() - second.getTime();
-                return sortDescriptor.direction === "descending" ? -cmp : cmp;
-            }
-
-            const cmp = first < second ? -1 : first > second ? 1 : 0;
-            return sortDescriptor.direction === "descending" ? -cmp : cmp;
+            return 0;
         });
-    }, [sortDescriptor, filteredItems]);
+        return sorted;
+    }, [filteredItems, sortDescriptors]);
 
-    // aplicar paginación después de ordenar
-    const paginatedItems = React.useMemo(() => {
-        const start = (page - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-        return sortedItems.slice(start, end);
-    }, [page, rowsPerPage, sortedItems]);
+    // Manejador de cambio de ordenamiento
+    const handleSortChange = (descriptor: SortDescriptor) => {
+        if (!descriptor.column) return;
 
+        setSortDescriptors((prev) => {
+            const columnExists = prev.findIndex(d => d.column === descriptor.column);
+
+            // Si la columna ya existe en el array
+            if (columnExists !== -1) {
+                const newDescriptors = [...prev];
+                const currentDescriptor = newDescriptors[columnExists];
+
+                // Cambiar dirección o remover
+                if (currentDescriptor.direction === "ascending") {
+                    newDescriptors[columnExists] = { ...currentDescriptor, direction: "descending" };
+                    console.log("➡️ Cambiando a descendente");
+                } else {
+                    // Remover esta columna del ordenamiento
+                    newDescriptors.splice(columnExists, 1);
+                }
+
+                return newDescriptors;
+            } else {
+                return [...prev, { column: descriptor.column as string, direction: descriptor.direction }];
+            }
+        });
+    };
 
     const renderCell = React.useCallback((incidencia: Incidencia, columnKey: React.Key) => {
-        const cellValue = incidencia[columnKey as keyof Incidencia];
-
         switch (columnKey) {
             case "numGuia":
                 return (
@@ -558,11 +468,41 @@ export default function TableIncidencias() {
                 );
             case "creador":
                 return (
-                    <User
-                        name={incidencia.empleadoNombre}
-                    >
-                        {incidencia.empleadoId}
+                    <User name={incidencia.empleadoNombre}>
+                        {incidencia.empleadoNombre}
                     </User>
+                );
+            case "fechaVenta":
+                return (
+                    <div className="flex justify-center">
+                        {incidencia.fechaVenta ? formatDate(incidencia.fechaVenta) : "N/A"}
+                    </div>
+                );
+            case "diasAperturado":
+                const diasAperturado = calcularDiasEntreFechas(incidencia.fechaRegistro);
+                return (
+                    <div className="flex justify-center">
+                        <Chip
+                            size="sm"
+                            variant="flat"
+                            color={diasAperturado > 30 ? "danger" : diasAperturado > 15 ? "warning" : "success"}
+                        >
+                            {diasAperturado} días
+                        </Chip>
+                    </div>
+                );
+            case "diasRetraso":
+                const diasRetraso = calcularDiasRetraso(incidencia.fechaVenta);
+                return (
+                    <div className="flex justify-center">
+                        <Chip
+                            size="sm"
+                            variant="flat"
+                            color={diasRetraso > 30 ? "danger" : diasRetraso > 15 ? "warning" : "success"}
+                        >
+                            {diasRetraso} días
+                        </Chip>
+                    </div>
                 );
             case "descripcion":
                 return (
@@ -572,13 +512,18 @@ export default function TableIncidencias() {
                 );
             case "status":
                 return (
-                    <Chip className="capitalize" color={statusColorMap[incidencia.resuelto]} size="sm" variant="flat">
+                    <Chip
+                        className="capitalize"
+                        color={statusColorMap[incidencia.resuelto.toString()]}
+                        size="sm"
+                        variant="flat"
+                    >
                         {
                             incidencia.resuelto === 1 ? "Abierta" :
                                 incidencia.resuelto === 2 ? "En resolución" :
                                     incidencia.resuelto === 3 ? "Solicitud de Cierre" :
                                         incidencia.resuelto === 4 ? "Cerrada" :
-                                            ""
+                                            "Sin estado"
                         }
                     </Chip>
                 );
@@ -598,82 +543,110 @@ export default function TableIncidencias() {
             case "fechaRegistro":
                 return (
                     <div className="flex justify-center">
-                        {
-                            typeof cellValue === "number" ?
-                                "" : formatDate(incidencia.fechaRegistro) // Formatea las fechas si no son números
-                        }
+                        {formatDate(incidencia.fechaRegistro)}
                     </div>
                 );
+            case "origen":
+                return <div>{incidencia.origen}</div>;
+            case "destino":
+                return <div>{incidencia.destino}</div>;
             default:
-                // Aquí manejamos los valores que no son específicamente tratados en el switch
-                // Si cellValue es null o undefined, lo tratamos como tal
-                if (cellValue == null) {
-                    return null;
-                }
-                // Si es de tipo `dataEscaneo`, transformamos en una cadena o mostramos una propiedad específica
-                if (typeof cellValue === "object" && "descripcion" in cellValue) {
-                    return <span>{(cellValue as any).descripcion}</span>; // Accede a una propiedad del objeto dataEscaneo
-                }
-                // Para cualquier otro tipo de valor, lo convertimos a cadena
-                return cellValue.toString();
+                return null;
         }
-    }, []);
-
-    const onRowsPerPageChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-        setRowsPerPage(Number(e.target.value));
-        setPage(1);
-    }, []);
-
-    const onSearchChange = React.useCallback((value?: string) => {
-        if (value) {
-            setFilterValue(value);
-            setPage(1);
-        } else {
-            setFilterValue("");
-        }
-    }, []);
-
-    const onClear = React.useCallback(() => {
-        setFilterValue("");
-        setPage(1);
     }, []);
 
     const topContent = React.useMemo(() => {
+        // Obtener nombres de los estatus seleccionados
+        const getSelectedStatusNames = () => {
+            if (statusFilter.length === 0) return ["Todos los estatus"];
+
+            return statusFilter.map(status => {
+                const option = statusOptions.find(opt => opt.uid === status);
+                return option ? option.name : `Estatus ${status}`;
+            });
+        };
+
+        // Nuevo: obtener nombres de los orígenes seleccionados
+        const getSelectedOrigenNames = () => {
+            if (origenFilter.length === 0) return ["Todos los orígenes"];
+            return origenFilter;
+        };
+
+        const statusNames = getSelectedStatusNames();
+        const origenNames = getSelectedOrigenNames();
+
         return (
             <div className="flex flex-col gap-4">
                 <div className="flex justify-between items-center">
                     <span className="text-default-400 text-small">
                         Total {sortedItems.length} incidencias
                     </span>
+                    <div className="flex gap-4 items-center">
+                        {/* Mostrar filtros activos */}
+                        <div className="flex flex-col text-right">
+                            {statusNames.length > 0 && (
+                                <span className="text-small text-default-400">
+                                    Estatus: {statusNames.join(', ')}
+                                </span>
+                            )}
+                            {origenNames.length > 0 && (
+                                <span className="text-small text-default-400">
+                                    Origen: {origenNames.join(', ')}
+                                </span>
+                            )}
+                            {filter !== -1 && (
+                                <span className="text-small text-default-400">
+                                    Sucursal filtrada
+                                </span>
+                            )}
+                        </div>
+
+                        {sortDescriptors.length > 0 && (
+                            <div className="flex gap-2 items-center">
+                                <span className="text-small text-default-400">
+                                    Ordenando por: {sortDescriptors.map((d, i) =>
+                                        `${i > 0 ? ', ' : ''}${columns.find(c => c.uid === d.column)?.name} (${d.direction === 'ascending' ? '↑' : '↓'})`
+                                    ).join('')}
+                                </span>
+                                <Button
+                                    size="sm"
+                                    variant="flat"
+                                    color="danger"
+                                    onClick={() => setSortDescriptors([])}
+                                >
+                                    Limpiar ordenamiento
+                                </Button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         );
-    }, [filterValue, statusFilter, visibleColumns, onSearchChange, sortedItems.length, hasSearchFilter]);
+    }, [sortDescriptors, sortedItems.length, statusFilter, origenFilter, filter]);
 
-    const bottomContent = React.useMemo(() => {
-        return (
-            <div className="py-2 px-2 flex justify-center items-center">
-                <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    color="primary"
-                    page={page}
-                    total={pages}
-                    onChange={setPage}
-                />
-            </div>
-        );
-    }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+    // En TableIncidencias, antes del return
+    useEffect(() => {
+        if (incidencias && incidencias.length > 0) {
+            const origenesUnicos = Array.from(
+                new Set(incidencias.map(inc => inc.origen).filter(Boolean))
+            ).sort();
 
+            // También mostrar cómo se normalizan
+            const origenesNormalizados = origenesUnicos.map(origen => ({
+                original: origen,
+                normalizado: normalizeOrigenName(origen)
+            }));
+
+        }
+    }, [incidencias]);
 
     return (
         <Table
-            aria-label="Tabla de incidencias con sorting"
+            aria-label="Tabla de incidencias con multiordenamiento"
             isHeaderSticky
             className='max-h-[720px] overflow-auto'
-            sortDescriptor={sortDescriptor}
-            onSortChange={setSortDescriptor}
+            sortDescriptor={sortDescriptors.length > 0 ? sortDescriptors[0] : undefined}
+            onSortChange={handleSortChange}
             topContent={topContent}
             topContentPlacement="outside"
         >
@@ -685,6 +658,11 @@ export default function TableIncidencias() {
                         allowsSorting={column.sortable}
                     >
                         {column.name}
+                        {sortDescriptors.find(d => d.column === column.uid) && (
+                            <span className="ml-1 text-xs text-primary font-bold">
+                                ({sortDescriptors.findIndex(d => d.column === column.uid) + 1})
+                            </span>
+                        )}
                     </TableColumn>
                 )}
             </TableHeader>

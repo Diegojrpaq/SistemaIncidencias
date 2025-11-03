@@ -18,6 +18,27 @@ export const fetchGet = async (url: string) => {
   }
 }
 
+// lib/api.ts
+export async function getOrigenesFromAPI(): Promise<{id: number, nombre: string}[]> {
+    try {
+        const response = await fetch(`${urlServer}/trafico/get_destinos`);
+        if (!response.ok) {
+            throw new Error('Error al obtener orígenes');
+        }
+        const data = await response.json();
+        
+        // La respuesta tiene la estructura { status: 200, descripcion: "ok", Destinos: [...] }
+        if (data.status === 200 && data.Destinos) {
+            return data.Destinos;
+        } else {
+            throw new Error('Formato de respuesta inválido');
+        }
+    } catch (error) {
+        console.error('Error fetching origenes:', error);
+        return [];
+    }
+}
+
 export const getDataByGuia = async (url: string, numGuia: string) => {
   try {
     const response = await fetch(url, {

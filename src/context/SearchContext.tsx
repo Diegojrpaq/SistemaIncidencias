@@ -6,7 +6,10 @@ interface SearchContextType {
     setQuery: (query: string) => void;
     filter: number;
     setFilter: (filter: number) => void;
-    // Estados para la búsqueda API (navbar)
+    statusFilter: number[];
+    setStatusFilter: (statusFilter: number[]) => void;
+    origenFilter: string[]; // nuevo: para origen
+    setOrigenFilter: (origenFilter: string[]) => void;
     searchResults: Incidencia[];
     setSearchResults: (results: Incidencia[]) => void;
     isSearching: boolean;
@@ -20,6 +23,8 @@ const SearchContext = createContext<SearchContextType | undefined>(undefined);
 export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [query, setQuery] = useState<string>('');
     const [filter, setFilter] = useState<number>(-1);
+    const [statusFilter, setStatusFilter] = useState<number[]>([]); // ahora es un array
+    const [origenFilter, setOrigenFilter] = useState<string[]>([]); // nuevo estado
 
     // Estados para la búsqueda API
     const [searchResults, setSearchResults] = useState<Incidencia[]>([]);
@@ -33,6 +38,10 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 setQuery,
                 filter,
                 setFilter,
+                statusFilter,
+                setStatusFilter,
+                origenFilter, // nuevo
+                setOrigenFilter, // nuevo
                 searchResults,
                 setSearchResults,
                 isSearching,

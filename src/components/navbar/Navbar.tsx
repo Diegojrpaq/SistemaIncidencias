@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { Select, SelectItem, Input } from "@nextui-org/react";
 import { usePathname } from 'next/navigation';
-import { catalogoSucursales, dataUser, Incidencia } from '@/lib/interfaces';
+import { catalogoSucursales, dataUser } from '@/lib/interfaces';
 import { useSearch } from '@/context/SearchContext';
-import { getDataByGuia } from "@/lib/api";
+import { getDataByGuia, getOrigenesFromAPI } from "@/lib/api";
 import { urlServer } from "@/lib/url";
 
 interface navbarProps {
@@ -11,12 +11,22 @@ interface navbarProps {
   catalogoSucursales: catalogoSucursales[];
 }
 
+const statusOptions = [
+  { name: "Abiertas", uid: 1 },
+  { name: "En resolución", uid: 2 },
+  { name: "Cerradas", uid: 4 },
+];
+
 const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
   const {
     query,
     setQuery,
     filter,
     setFilter,
+    statusFilter,
+    setStatusFilter,
+    origenFilter,
+    setOrigenFilter,
     searchResults,
     setSearchResults,
     isSearching,
@@ -25,19 +35,73 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
     setHasSearched
   } = useSearch();
 
-  const [value, setValue] = React.useState<string>(`${user?.Sucursal_principal}`);
+  const [sucursalValue, setSucursalValue] = React.useState<string>(`${user?.Sucursal_principal}`);
+  const [statusValues, setStatusValues] = React.useState<Set<string>>(new Set());
+  const [origenValues, setOrigenValues] = React.useState<Set<string>>(new Set());
   const [filterValue, setFilterValue] = useState("");
+  const [origenOptions, setOrigenOptions] = useState<{ name: string, uid: string }[]>([]);
+  const [loadingOrigenes, setLoadingOrigenes] = useState(false);
   const pathname = usePathname();
 
-  // Verificar si estamos en la ruta /historial
   const isHistorialRoute = pathname === '/historial';
+  const isTableRoute = pathname === '/table'; // Nueva variable para ruta /table
 
-  const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setValue(e.target.value);
+  // Efecto para cargar orígenes desde la API - solo en ruta /table
+  useEffect(() => {
+    if (isTableRoute) {
+      const loadOrigenes = async () => {
+        setLoadingOrigenes(true);
+        try {
+          const destinos = await getOrigenesFromAPI();
+          console.log("📍 Destinos cargados desde API:", destinos);
+
+          // Mapear los datos a la estructura necesaria
+          const options = destinos.map(destino => ({
+            name: destino.nombre.trim(), // Limpiar espacios en blanco
+            uid: destino.nombre.trim()   // Usar el nombre como ID único
+          }));
+
+          // Ordenar alfabéticamente
+          options.sort((a, b) => a.name.localeCompare(b.name, 'es'));
+
+          setOrigenOptions(options);
+          console.log("📍 Opciones de origen procesadas:", options);
+        } catch (error) {
+          console.error('Error cargando orígenes:', error);
+          // Opcional: setear algunos orígenes por defecto en caso de error
+          setOrigenOptions([
+            { name: "GUADALAJARA", uid: "GUADALAJARA" },
+            { name: "MONTERREY", uid: "MONTERREY" },
+            { name: "PUEBLA", uid: "PUEBLA" },
+          ]);
+        } finally {
+          setLoadingOrigenes(false);
+        }
+      };
+
+      loadOrigenes();
+    }
+  }, [isTableRoute]); // Solo ejecutar cuando isTableRoute cambie
+
+  const handleSucursalChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSucursalValue(e.target.value);
     setFilter(Number(e.target.value))
   };
 
-  // Función para hacer la petición API (solo para /historial)
+  const handleStatusSelectionChange = (keys: any) => {
+    const keysSet = new Set(keys);
+    setStatusValues(keys);
+    const numericValues = Array.from(keysSet).map(key => Number(key));
+    setStatusFilter(numericValues);
+  };
+
+  const handleOrigenSelectionChange = (keys: any) => {
+    const keysSet = new Set(keys);
+    setOrigenValues(keys);
+    const stringValues = Array.from(keysSet).map(key => String(key));
+    setOrigenFilter(stringValues);
+  };
+
   const searchIncidencia = useCallback(async (numGuia: string) => {
     if (!numGuia.trim()) {
       setSearchResults([]);
@@ -66,24 +130,20 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
     }
   }, [setSearchResults, setHasSearched, setIsSearching]);
 
-  // Función para manejar cambios en el input (solo actualiza el valor, no busca)
   const onSearchChange = useCallback((value: string) => {
     if (isHistorialRoute) {
-      // Solo actualizar el valor del input, no buscar aún
       setFilterValue(value);
     } else {
-      // Para otras rutas, actualizar query
       setQuery(value);
     }
   }, [isHistorialRoute, setQuery]);
 
-  // Función para manejar la búsqueda al presionar Enter
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       const value = isHistorialRoute ? filterValue : query;
 
       if (isHistorialRoute) {
-        setQuery(value); // Actualizar query para que la tabla lo vea
+        setQuery(value);
         if (value.trim()) {
           searchIncidencia(value);
         } else {
@@ -91,11 +151,9 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
           setHasSearched(false);
         }
       }
-      // Para otras rutas, el valor ya está en query, no necesita hacer nada más
     }
   }, [isHistorialRoute, filterValue, query, searchIncidencia, setQuery, setSearchResults, setHasSearched]);
 
-  // Función para limpiar el input
   const onClear = useCallback(() => {
     if (isHistorialRoute) {
       setFilterValue("");
@@ -108,12 +166,12 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
   }, [isHistorialRoute, setQuery, setSearchResults, setHasSearched]);
 
   const sucursales = catalogoSucursales?.map((suc) => ({
-    key: suc.id?.toString() || '', // Asegurar que sea string y no undefined
+    key: suc.id?.toString() || '',
     label: suc.sucursal || 'Sin nombre',
   })) || []
 
   sucursales.push({
-    key: '-1', // Cambiar a string
+    key: '-1',
     label: 'Todas sucursales',
   })
 
@@ -129,21 +187,62 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
         Destino: {user?.Destino}
       </div>
 
-      <div className='w-full flex justify-end pr-4'>
-        <Select
-          value={filter.toString()}
-          label="Selecciona una sucursal"
+      <div className='w-full flex justify-end pr-4 gap-4'>
+        {/* Filtro de Sucursales - siempre visible */}
+        {/* <Select
+          value={sucursalValue}
+          label="Sucursal"
           className="max-w-xs"
           size='sm'
           defaultSelectedKeys={["-1"]}
-          onChange={handleSelectionChange}
+          onChange={handleSucursalChange}
         >
           {sucursales?.map((item) => (
             <SelectItem key={item.key} value={item.key}>
               {item.label}
             </SelectItem>
           ))}
-        </Select>
+        </Select> */}
+
+        {/* Filtro de Origen - solo en ruta /table */}
+        {isTableRoute && (
+          <Select
+            label="Origen"
+            selectionMode="multiple"
+            placeholder={loadingOrigenes ? "Cargando orígenes..." : "Todos los orígenes"}
+            className="max-w-xs"
+            size='sm'
+            selectedKeys={origenValues}
+            onSelectionChange={handleOrigenSelectionChange}
+            isLoading={loadingOrigenes}
+            isDisabled={loadingOrigenes}
+          >
+            {origenOptions.map((item) => (
+              <SelectItem key={item.uid} value={item.uid}>
+                {item.name}
+              </SelectItem>
+            ))}
+          </Select>
+        )}
+
+        {/* Filtro de Estatus - solo en ruta /table */}
+        {isTableRoute && (
+          <Select
+            label="Estatus"
+            selectionMode="multiple"
+            placeholder="Todos los estatus"
+            className="max-w-xs"
+            size='sm'
+            selectedKeys={statusValues}
+            onSelectionChange={handleStatusSelectionChange}
+          >
+            {statusOptions?.map((item) => (
+              <SelectItem key={item.uid.toString()} value={item.uid.toString()}>
+                {item.name}
+              </SelectItem>
+            ))}
+          </Select>
+        )}
       </div>
 
       <div>
@@ -172,7 +271,7 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
           />
         </div>
 
-        {/* Mostrar estado de búsqueda solo en /historial */}
+        {/* Estado de búsqueda - solo en /historial */}
         {isHistorialRoute && (
           <div className="text-xs text-default-400 mt-1 text-center">
             {isSearching && "Buscando..."}
