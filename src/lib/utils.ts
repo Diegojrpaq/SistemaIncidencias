@@ -1,23 +1,54 @@
 
 export function formatDate(dateStr: string): string {
-  // Extraer el año, mes y día de la cadena
-  const year = parseInt(dateStr.slice(0, 4));  // año
-  const month = parseInt(dateStr.slice(4, 6)) - 1;  // mes (restar 1 porque los meses en JavaScript empiezan en 0)
-  const day = parseInt(dateStr.slice(6, 8));  // día
+  if (!dateStr) return "N/A";
 
-   const date = new Date(dateStr);
+  let date: Date;
 
-  // Formatear fecha 'DD/MM/YYYY'
-  const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
-
-    return date.toLocaleDateString('es-MX', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    timeZone: 'America/Mexico_City', // asegura que no haya desfase
+  if (/^\d{8}$/.test(dateStr)) {
+    const isoDate = `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6, 8)}`;
+    date = new Date(isoDate);
+  } 
+  else {
+    date = new Date(dateStr);
+  }
+  if (isNaN(date.getTime())) return "Invalid Date";
+  return date.toLocaleDateString("es-MX", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "America/Mexico_City",
   });
-
 }
+
+
+
+export function normalizeOrigenName(origen: string): string {
+    if (!origen) return '';
+    
+    // Limpiar espacios, puntos, convertir a mayúsculas y eliminar acentos
+    return origen
+        .trim()
+        .toUpperCase()
+        .replace(/\./g, '') // Eliminar puntos
+        .replace(/\s+/g, ' ') // Unificar espacios múltiples
+        .normalize("NFD") // Eliminar acentos
+        .replace(/[\u0300-\u036f]/g, "");
+}
+
+// Mapeo específico basado en tu endpoint
+export const origenNameMap: Record<string, string> = {
+    // Posibles variaciones que podrían aparecer en incidencia.origen
+    'CD OBREGON': 'CD. OBREGON',
+    'CIUDAD OBREGON': 'CD. OBREGON',
+    'LOS MOCHIS': 'LOS MOCHIS',
+    'PUEBLA': 'PUEBLA',
+    'ZACATECAS': 'ZACATECAS',
+    'COLIMA': 'COLIMA',
+    'CD GUZMAN': 'CD. GUZMAN',
+    'CIUDAD GUZMAN': 'CD. GUZMAN',
+    'GÓMEZ PALACIO': 'GOMEZ PALACIO',
+    // Agrega más según lo que veas en tus datos
+};
 
 export function getDateAndTimeFormat(dateTime: Date | string): string {
   //Si es string
@@ -48,6 +79,7 @@ export function getDateAndTimeFormat(dateTime: Date | string): string {
       month: 'long',   // Mes con nombre completo (enero, febrero, etc.)
       day: 'numeric',  // Día del mes
     }) + `, ${hora}:${minutosFormateados} ${ampm}`; // Añadir AM/PM
+
 
   // Usamos toLocaleString para devolver la fecha y hora formateada
   // return fecha.toLocaleString('es-ES', { 

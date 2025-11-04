@@ -6,29 +6,31 @@ import MainIncidencias from '@/components/main/mainIncidencias';
 import { Incidencia } from '@/lib/interfaces';
 import { useSearch } from '@/context/SearchContext';
 
-export default function page() {
+export default function Page() { // Cambié 'page' a 'Page'
   const dataUserAndIncidencias = useContext(IncidenciasContext);
   const incidencias = dataUserAndIncidencias?.incidencias;
-  const { query, filter } = useSearch();
+  const { query, filter, statusFilter } = useSearch();
 
-  const searchIncidencias = incidencias?.filter(
-    (incidencia) =>
-      incidencia.numGuia.toLowerCase().includes(query.toLowerCase())
-  );
+  console.log('statusFilter:', statusFilter); // Para debug
 
   const filteredCards = incidencias?.filter((incidencia) => {
-    const matchesQuery = 
+    const matchesQuery =
       incidencia.numGuia.toLowerCase().includes(query.toLowerCase());
 
-    const matchesFilter = 
+    const matchesSucursalFilter =
       filter === -1 ||
-      filter === 0 || 
+      filter === 0 ||
       incidencia.idSucursal === filter;
 
-    return matchesQuery && matchesFilter;
-  })
+    // Lógica CORREGIDA para el filtro de estatus
+    const matchesStatusFilter =
+      statusFilter.length === 0 || // Si el array está vacío, mostrar TODOS
+      statusFilter.includes(incidencia.resuelto); // Si hay filtros, verificar coincidencia
 
-  //Filtrar las incidencias para cada columna
+    return matchesQuery && matchesSucursalFilter && matchesStatusFilter;
+  });
+
+  // Filtrar las incidencias para cada columna
   const incidenciasAbiertas = filteredCards?.filter((item: Incidencia) => item.resuelto === 1);
   const incidenciasResolucion = filteredCards?.filter((item: Incidencia) => item.resuelto === 2 || item.resuelto === 3);
   const incidenciasCerradas = filteredCards?.filter((item: Incidencia) => item.resuelto === 4);
@@ -51,6 +53,4 @@ export default function page() {
       </MainIncidencias>
     </>
   )
-
-
 }
