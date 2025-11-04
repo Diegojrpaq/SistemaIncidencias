@@ -103,7 +103,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children, dataUser }) => {
             flex flex-col h-full w-full 
             ${isMobile ?
                 'items-start justify-start gap-2' :
-                'justify-around'} px-3 
+                'justify-start'} px-3 
               overflow-y-auto overflow-x-hidden ${styles.scrollContainer}
             `}
             >
@@ -162,7 +162,7 @@ export function SidebarItem({ icon, text, active, alert, link }: propsSidebarIte
         className={`
         relative flex justify-center items-center p-2
         font-medium rounded-md cursor-pointer
-        transition-colors group
+        transition-colors group mb-5
         ${active
             ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
             : "hover:bg-indigo-50 text-gray-600"
