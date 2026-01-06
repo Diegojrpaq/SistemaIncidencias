@@ -103,7 +103,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children, dataUser }) => {
             flex flex-col h-full w-full 
             ${isMobile ?
                 'items-start justify-start gap-2' :
-                'justify-around'} px-3 
+                'justify-start gap-5'} px-3 
               overflow-y-auto overflow-x-hidden ${styles.scrollContainer}
             `}
             >

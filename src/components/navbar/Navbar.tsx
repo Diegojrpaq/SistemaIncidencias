@@ -188,7 +188,7 @@ const Navbar = ({ user, catalogoSucursales }: navbarProps) => {
       </div>
 
       <div className='w-full flex justify-end pr-4 gap-4'>
-        {/* Filtro de Sucursales - siempre visible */}
+        {/* Filtro de Sucursales */}
         {/* <Select
           value={sucursalValue}
           label="Sucursal"
